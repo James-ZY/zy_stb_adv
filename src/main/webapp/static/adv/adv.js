@@ -702,11 +702,13 @@ $(function() {
 			end: function () {
 				//关闭刷新素材数据
 				getSelectData(advertiser,adType,'',flag);
-                var cs = "sd";
-                if(flag == 1){
-                    cs = "hd";
+                if(adType == 5){
+                    var cs = "sd";
+                    if(flag == 1){
+                        cs = "hd";
+                    }
+                    checkSet(cs);
                 }
-                checkSet(cs);
             }
 		});
 	}

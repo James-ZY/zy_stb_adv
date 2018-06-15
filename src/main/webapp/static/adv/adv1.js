@@ -594,11 +594,13 @@ $(function() {
             end: function () {
                 //关闭刷新素材数据
                 getSelectData(advertiser,adType,'',flag);
-                var cs = "sd";
-                if(flag == 1){
-                    cs = "hd";
+                if(adType == 5){
+                    var cs = "sd";
+                    if(flag == 1){
+                        cs = "hd";
+                    }
+                    checkSet(cs);
                 }
-                checkSet(cs);
             }
         });
     }
@@ -784,7 +786,7 @@ $(function() {
                     });
                     $(".pcshowTime ").off('keyup').on('keyup', function (event) {
                         var adTypeId = $("#adTypeId").val();
-                        if(adTypeId == 4 || adTypeId == 5){
+                        if(adTypeId == 5){
                             var node = $(this).parent().parent().parent().parent().parent();
                             if(node.attr("class").indexOf("advStandard_list_Content")==-1){
                                 checkSet("hd");
