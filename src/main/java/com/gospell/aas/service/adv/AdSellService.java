@@ -1,6 +1,6 @@
 package com.gospell.aas.service.adv;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -26,18 +26,16 @@ import com.gospell.aas.repository.mybatis.adv.IAdComboDao;
 import com.gospell.aas.repository.mybatis.adv.IAdSellDao;
 import com.gospell.aas.service.BaseService;
 import com.gospell.aas.service.ServiceException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import springfox.documentation.spring.web.json.Json;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static com.sun.tools.internal.xjc.reader.Ring.add;
 
 @Service
 @Transactional(readOnly = true)
@@ -1109,7 +1107,7 @@ public class AdSellService extends BaseService {
 					resultList.add(dto);
 				}
 			}
-		System.out.println(JSONObject.toJSONString(resultList));
+		System.out.println(JSON.toJSONString(resultList));
 			return resultList;
 	}
 

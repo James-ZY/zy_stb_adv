@@ -1,7 +1,6 @@
 package com.gospell.aas.entity.adv;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -70,10 +69,10 @@ public class AdNetwork extends IdEntity<AdNetwork> {
 	private List<AdNetworkDistrict> adNetworkCategorys;// 区域
 	private String area;// 区域
 	
-	@Transient
 	private String selArea;//选择的区域信息 
 	
-
+	@Transient
+	private String selAllArea;//包含子类的区域
 
 	private List<AdCombo> comboList = Lists.newArrayList();// 包含的广告套餐
 	private List<AdChannel> channelList = Lists.newArrayList();// 包含的电视频道
@@ -163,12 +162,11 @@ public class AdNetwork extends IdEntity<AdNetwork> {
 		this.area = area;
 	}
 	
-	@Transient
+	@Column(name = "ad_sel_area")
 	public String getSelArea() {
 		return selArea;
 	}
 
-	@Transient
 	public void setSelArea(String selArea) {
 		this.selArea = selArea;
 	}
@@ -303,6 +301,16 @@ public class AdNetwork extends IdEntity<AdNetwork> {
 	}
 
 	@Transient
+	public String getSelAllArea() {
+		return selAllArea;
+	}
+
+	@Transient
+	public void setSelAllArea(String selAllArea) {
+		this.selAllArea = selAllArea;
+	}
+	
+	@Transient
 	public String getTypeName(){
 		String s = "";
 		if(null != typeList && typeList.size()>0){
@@ -319,4 +327,33 @@ public class AdNetwork extends IdEntity<AdNetwork> {
 		return s;
 	}
 
+	@Override
+	public  boolean equals(Object obj) {
+		if(obj == null) return false;
+		if(this == obj) return true;
+		if(obj instanceof AdNetwork){
+			AdNetwork net =(AdNetwork)obj;
+			if(net.id.equals(this.id )) return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	public static void main(String[] args) {
+         AdNetwork a1 = new AdNetwork();
+         a1.setId("f1398a19315041b89911e82f1af2c452");
+         a1.setNetworkId("123");
+
+		AdNetwork a2 = new AdNetwork();
+		a2.setId("f1398a19315041b89911e82f1af2c452");
+		a2.setNetworkId("456");
+		Set<AdNetwork> set = new HashSet<AdNetwork>();
+		set.add(a1);
+		set.add(a2);
+		System.out.println(set.size());
+	}
 }

@@ -24,7 +24,7 @@
 				        val = val.substring(0, val.lastIndexOf('-'));
 				    }
 				    console.log(val);
-				    $("#selArea").val(val);
+				    $("#selAllArea").val(val);
 
 					loading(accipiter.getLang("loading"));
 					form.submit();
@@ -39,9 +39,9 @@
 					}
 				}
 			});
-			var selAllArea = $("#selAllArea").text();
-			if(selAllArea != null &&selAllArea != ""){
-	      		var data=JSON.parse(selAllArea);
+			var selAreaInfo = $("#selAreaInfo").text();
+			if(selAreaInfo != null &&selAreaInfo != ""){
+	      		var data=JSON.parse(selAreaInfo);
 				appendSelfArea(data.adDistrictCategorys);				
 			}
 		});
@@ -68,9 +68,10 @@
 	</ul>
 	<form:form id="inputForm" modelAttribute="adNetwork" action="${ctx}/adv/network/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<input type="hidden" id="selArea" name="selArea" value="${selArea}">
+		<input type="hidden" id="selArea" name="selArea" value="${adNetwork.selArea}">
+		<input type="hidden" id="selAllArea" name="selAllArea" value="">
 		<input type="hidden" id="operatorsId" value="${adNetwork.adOperators.id}">
-		<p id="selAllArea" style="display:none">${selAllArea}</p>
+		<p id="selAreaInfo" style="display:none">${selAreaInfo}</p>
 		<input type="hidden" id="districtMode" value="selNetDis">
 		<div class="control-group">
 			<label class="control-label"><spring:message code='network.id' />:</label>

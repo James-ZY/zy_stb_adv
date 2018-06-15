@@ -13,6 +13,7 @@
    	a.ad_mobilephone as a_ad_mobilephone,
    	a.ad_telphone as a_ad_telphone,
    	a.ad_area as a_ad_area,
+    a.ad_sel_area as n_ad_sel_area,
    	a.ad_number as a_ad_number,
    	a.remarks as a_remarks,
    	a.update_date as a_update_date,
@@ -84,6 +85,7 @@
 		<result column="a_ad_mobilephone" property="mobilephone"/>
 		<result column="a_ad_telphone" property="telphone"/>
 		<result column="a_ad_area" property="area"/>
+		<result column="n_ad_sel_area" property="selArea"/>
 		<result column="a_ad_number" property="number"/>
 		<result column="a_remarks" property="remarks"/>
 		<result column="a_update_date" property="updateDate"/>
@@ -99,6 +101,7 @@
 		<result column="a_ad_mobilephone" property="mobilephone"/>
 		<result column="a_ad_telphone" property="telphone"/>
 		<result column="a_ad_area" property="area"/>
+		<result column="n_ad_sel_area" property="selArea"/>
 		<result column="a_ad_number" property="number"/>
 		<result column="a_remarks" property="remarks"/>
 		<result column="a_update_date" property="updateDate"/>

@@ -189,7 +189,9 @@ public class Result<T> {
 
         EXIST_ERROR("800", "数据已经存在"),
         
-        BLANK_PARAMETER("900", "参数值为空");
+        BLANK_PARAMETER("900", "参数值为空"),
+
+        NETWORK_CONFLICT("1000", "发送器冲突");
 
         /**
          * 状态码,长度固定为6位的字符串.

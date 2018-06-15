@@ -25,7 +25,7 @@
 				        val = val.substring(0, val.lastIndexOf('-'));
 				    }
 				    console.log(val);
-				    $("#selArea").val(val);
+				    $("#selAllArea").val(val);
 					loading(accipiter.getLang("loading"));
 					form.submit();
 				},
@@ -39,9 +39,9 @@
 					}
 				}
 			});
-			var selAllArea = $("#selAllArea").text();
-			if(selAllArea != null &&selAllArea != ""){
-	      		var data=JSON.parse(selAllArea);
+			var selAreaInfo = $("#selAreaInfo").text();
+			if(selAreaInfo != null &&selAreaInfo != ""){
+	      		var data=JSON.parse(selAreaInfo);
 				appendSelfArea(data.adDistrictCategorys);				
 			}
 		});
@@ -70,8 +70,9 @@
 	</ul>
 	<form:form id="inputForm" modelAttribute="adOperators" action="${ctx}/adv/operators/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<input type="hidden" id="selArea" name="selArea" value="${selArea}">
-		<p id="selAllArea" style="display:none">${selAllArea}</p>
+		<input type="hidden" id="selArea" name="selArea" value="${adOperators.selArea}">
+		<input type="hidden" id="selAllArea" name="selAllArea" value="">
+		<p id="selAreaInfo" style="display:none">${selAreaInfo}</p>
 		<input type="hidden" id="districtMode" value="setDis">
 		<tags:message content="${message}"/>
 	 			<c:choose>

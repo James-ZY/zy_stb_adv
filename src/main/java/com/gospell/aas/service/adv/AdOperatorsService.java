@@ -22,6 +22,7 @@ import com.gospell.aas.entity.adv.AdDistrictCategory;
 import com.gospell.aas.entity.adv.AdNetwork;
 import com.gospell.aas.entity.adv.AdOperators;
 import com.gospell.aas.entity.adv.AdOperatorsDistrict;
+import com.gospell.aas.repository.hibernate.adv.AdNetworkDistrictDao;
 import com.gospell.aas.repository.hibernate.adv.AdOperatorsDao;
 import com.gospell.aas.repository.hibernate.adv.AdOperatorsDistrictDao;
 import com.gospell.aas.repository.mybatis.adv.IAdOperatorsDao;
@@ -47,6 +48,9 @@ public class AdOperatorsService extends BaseService {
 	
 	@Autowired
 	private AdOperatorsDistrictDao adOperatorsDistrictDao;
+	
+	@Autowired
+	private AdNetworkDistrictDao adNetworkDistrictDao;
 
 	public AdOperators get(String id) {
 		return thisDao.get(id);
@@ -88,12 +92,18 @@ public class AdOperatorsService extends BaseService {
 	@Transactional(readOnly = false)
 	public void save(AdOperators entity) throws ServiceException {
 		thisDao.clear();
-		String selArea = entity.getSelArea();
+		String selArea = entity.getSelAllArea();
+		if(StringUtils.isBlank(entity.getId())){
+			entity.setId(IdGen.uuid());
+		}
+		thisDao.save(entity);
 		adOperatorsDistrictDao.deleteOpDis(entity.getId());
 		if(StringUtils.isNotBlank(selArea)){
 			
 			String[] list = selArea.split("-");
 			List<AdOperatorsDistrict> adDistrictCategorys = new ArrayList<AdOperatorsDistrict>();
+			List<AdNetwork> netList = entity.getNetworkList();
+
 			for (String string : list) {
 				AdOperatorsDistrict aod = new AdOperatorsDistrict();
 				aod.setId(IdGen.uuid());
@@ -103,11 +113,18 @@ public class AdOperatorsService extends BaseService {
 					aod.setSelfDistrictId(string.split(":")[1]);					
 				}
 				adDistrictCategorys.add(aod);
+				//修改运营商的自定义编号的时候需要同步修改发送器的自定义编号
+
+				if(null != netList && netList.size()>0){
+					for (AdNetwork adNetwork : netList) {
+						adNetworkDistrictDao.updateNetwork(adNetwork.getId(), string.split(":")[0], aod.getSelfDistrictId());
+					}
+				}			
+				
 			}
 			adOperatorsDistrictDao.save(adDistrictCategorys);
 		}
 		
-		thisDao.save(entity);
 	}
 	
 	/**

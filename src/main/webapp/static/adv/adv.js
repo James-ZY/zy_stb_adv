@@ -919,6 +919,10 @@ $(function() {
                         }
                     });
 					$(".tiemSet").off('keyup').on('keyup', function (event) {
+                        var min = $("#psTs").val();
+                        if($(this).val()<min){
+                            return false;
+                        }
                         plSet($(this));
                         var node = $(this).parent().parent();
                         if(node.attr("class").indexOf("advStandard_list_Content")==-1){
@@ -928,6 +932,10 @@ $(function() {
                         }
                     });
                     $(".tiemSet").change(function(){
+                        var min = $("#psTs").val();
+                        if($(this).val()<min){
+                            return false;
+                        }
                         plSet($(this));
                         var node = $(this).parent().parent();
                         if(node.attr("class").indexOf("advStandard_list_Content")==-1){

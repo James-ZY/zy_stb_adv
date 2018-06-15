@@ -144,4 +144,14 @@ public class AdTypeUtils {
 		return name;
 	}
 
+	/**
+	 * 获取广告显示模式
+	 * @param adType
+	 * @return
+	 */
+	public static List getAdDisplayType(String adType){
+		// TODO: 2018/4/18 zhw
+		return null;
+	}
+
 }

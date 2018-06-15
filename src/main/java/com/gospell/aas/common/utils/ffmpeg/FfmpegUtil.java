@@ -158,7 +158,6 @@ public class FfmpegUtil {
 	 * 
 	 * @param ffmpegPath
 	 * @param inputPath
-	 * @param outputPath
 	 * @return
 	 */
 	public static ConvertDTO getVedioInfo(String ffmpegPath, String inputPath) {
@@ -183,7 +182,7 @@ public class FfmpegUtil {
 	 * 
 	 * @param ffmpegPath
 	 * @param inputPath
-	 * @param outputPath
+	 * @param type
 	 * @return
 	 */
 	public static FfprobeVedioInfo getFfprobeVedioInfo(String ffmpegPath, String inputPath,String type) {
@@ -195,7 +194,7 @@ public class FfmpegUtil {
         String textpath = inputPath.substring(0, inputPath.lastIndexOf(".")) + ".txt";
 		List<String> command_image = getVedionInfoFfprobeCommand(ffmpegPath, inputPath,textpath);
 		if (null != command_image && command_image.size() > 0) {
-			processVedioInfo(command_image, dto1); 
+			processVedioInfo(command_image, dto1);
 			dto = FfprobeVedioInfoUtil.getVedioInfo(textpath,type);
 		}
 		return dto;
@@ -280,7 +279,14 @@ public class FfmpegUtil {
 			System.out.println("当前的命令是:"+s);
 			Process process = null;
 			try {
-						process = Runtime.getRuntime().exec(new String[]{"cmd","/c",s});
+				String osName = System.getProperty ("os.name");
+				if(osName.toLowerCase().startsWith("win")){
+					System.out.println("windows");
+					process = Runtime.getRuntime().exec(new String[]{"cmd","/c",s});
+				}else{
+					System.out.println("linux");
+					process = Runtime.getRuntime().exec(new String[]{"sh","-c",s});
+				}
 						StreamGobbler  errorGobbler  =  new  StreamGobbler(process.getErrorStream(),  "ERROR");
 			            errorGobbler.start();//  kick  off  stderr 
 			            StreamGobbler  outGobbler  =  new  StreamGobbler(process.getInputStream(),  "STDOUT");  
@@ -454,10 +460,9 @@ public class FfmpegUtil {
 	/**
 	 * 视频截图
 	 * 
-	 * @param type
+	 * @param ffmpegPath
 	 * @param oldfilepath
 	 * @param outputPath
-	 * @param dto
 	 * @return
 	 */
 	private static List<String> getFfmpegCommandImage(String ffmpegPath, String oldfilepath, String outputPath) {
@@ -494,10 +499,11 @@ public class FfmpegUtil {
 	/**
 	 * 设置ts转换为MP4的命令
 	 * 
-	 * @param type
+	 * @param minRate
+	 * @param ffmpegPath
 	 * @param oldfilepath
 	 * @param outputPath
-	 * @param dto
+	 * @param isChange
 	 * @return
 	 */
 	private static List<String> getFfmpegTsToMP4(Integer minRate,String ffmpegPath, String oldfilepath, String outputPath,boolean isChange) {
@@ -591,10 +597,9 @@ public class FfmpegUtil {
 	/**
 	 * 视频flv转ts格式ffmpeg命令
 	 * 
-	 * @param type
+	 * @param ffmpegPath
 	 * @param oldfilepath
 	 * @param outputPath
-	 * @param dto
 	 * @return
 	 */
 	private static List<String> getFfmpegFLVToTS(String ffmpegPath, String oldfilepath, String outputPath) {
@@ -619,7 +624,7 @@ public class FfmpegUtil {
 	/**
 	 * 获取视频信息的命令
 	 * 
-	 * @param type
+	 * @param ffmpegPath
 	 * @param oldfilepath
  
 	 */
@@ -643,7 +648,7 @@ public class FfmpegUtil {
 	/**
 	 * 获取视频信息的命令
 	 * 
-	 * @param type
+	 * @param ffmpegPath
 	 * @param oldfilepath
  
 	 */
@@ -652,7 +657,7 @@ public class FfmpegUtil {
 
 		List<String> command = new ArrayList<String>();
 	
-		command.add("ffprobe.exe");
+		command.add("ffprobe");
 		 
 		command.add("-v");
 		command.add("quiet");
@@ -674,10 +679,9 @@ public class FfmpegUtil {
 /**
  * 根据文件类型设置ffmpeg命令
  * 
- * @param type
+ * @param ffmpegPath
  * @param oldfilepath
  * @param outputPath
- * @param dto
  * @return
  */
 private static List<String> getFfmpegCommandM2v(String ffmpegPath, String oldfilepath, String outputPath) {

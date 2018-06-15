@@ -40,6 +40,10 @@ public class NettyConstant {
 	public static final String REP_PUSH_DEFAULTADV_FROM_SERVER = "902";// 播控主动推送单条默认开机画面广告到nettyserver的命令
 
     public static final String RESP_PUSH_DEFAULTADV_FROM_SERVER = "R902";// netty
+    
+    public static final String REQ_ADELEMENT_DISTRICT_INFO = "1401";//  请求该发送器的区域关系信息
+	
+	public static final String RESP_ADELEMENT_DISTRICT_INFO = "R1401";// 反馈指定发送器的区域关系信息
 	
 	public static final String RESP_BAD_REQUEST="R404";//请求错误
 	

@@ -14,6 +14,9 @@ public class SelectAdNetworkDTO {
 	
 	@JsonProperty("networkName")
 	private String networkName;
+
+	@JsonProperty("area")
+	private String area;
 	
 	@JsonProperty("invalid")
 	private Boolean invalid;// 是否有效
@@ -37,6 +40,14 @@ public class SelectAdNetworkDTO {
 		this.networkName = networkName;
 	}
 
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+	
 	public Boolean getInvalid() {
 		return invalid;
 	}

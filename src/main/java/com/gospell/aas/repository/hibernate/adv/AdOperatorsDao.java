@@ -29,4 +29,8 @@ public class AdOperatorsDao extends BaseDao<AdOperators> {
 	public List<AdOperators> findAll(){
 		return find("from AdOperators where delFlag = :p1",new Parameter(BaseEntity.DEL_FLAG_NORMAL));
 	}
+	
+	public List<AdOperators> findByOperatorsIds(String[] ids){
+		return find("from AdOperators where delFlag = :p1 and id in (:p2)", new Parameter(BaseEntity.DEL_FLAG_NORMAL,ids));
+	}
 }

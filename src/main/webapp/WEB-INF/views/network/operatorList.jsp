@@ -255,6 +255,7 @@
 		<th><spring:message code='operators.id' /></th>
 		<th><spring:message code='operators.name' /></th>
 		<th><spring:message code='operators.password' /></th>
+		<th><spring:message code='operators.service.area' /></th>
 		<th><spring:message code='network.name' /></th>
 		<th><spring:message code='operators.contact' /></th>
 		<th><spring:message code='operators.telphone' /></th>
@@ -269,6 +270,7 @@
 				<td><a href="${ctx}/adv/operators/form?id=${adOperators.id}">${adOperators.operatorsId}</a></td>
 				<td>${adOperators.operatorsName}</td>
 				<td>${adOperators.password}</td>
+				<td>${adOperators.area}</td>
 <%-- 				<c:if test="${!empty adOperators.network}">
 						<td>${adOperators.network.networkName}</td>
 				</c:if>

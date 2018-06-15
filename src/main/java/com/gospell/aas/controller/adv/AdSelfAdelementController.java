@@ -35,7 +35,7 @@ public class AdSelfAdelementController extends BaseController {
 
 	@Autowired
 	private AdSellService thisService;
-	
+
 	@Autowired
 	private AdComboService comboService;
 	@Autowired
@@ -57,8 +57,8 @@ public class AdSelfAdelementController extends BaseController {
 			return new AdSell();
 		}
 	}
-	
- 
+
+
 
 	@RequiresPermissions("sys:adv:self:view")
 	@RequestMapping(value = { "/list", "" })
@@ -72,19 +72,19 @@ public class AdSelfAdelementController extends BaseController {
 		}
 		model.addAttribute("page", page);
 		if(null != entity.getCreateStartDate()){
-		  model.addAttribute("beginCreateDate", DateUtils.formatDate(entity.getCreateStartDate(), "yyyy-MM-dd"));
+			model.addAttribute("beginCreateDate", DateUtils.formatDate(entity.getCreateStartDate(), "yyyy-MM-dd"));
 		}
 		if(null != entity.getCreateEndDate()){
- 	 	  model.addAttribute("endCreateDate",  DateUtils.formatDate(entity.getCreateEndDate(), "yyyy-MM-dd"));
+			model.addAttribute("endCreateDate",  DateUtils.formatDate(entity.getCreateEndDate(), "yyyy-MM-dd"));
 		}
-		
+
 		if(null != entity.getStartDate()){
-				model.addAttribute("beginDate",  DateUtils.formatDate(entity.getStartDate(), "yyyy-MM-dd"));
+			model.addAttribute("beginDate",  DateUtils.formatDate(entity.getStartDate(), "yyyy-MM-dd"));
 		}
 		if(null != entity.getEndDate()){
-				model.addAttribute("endDate", DateUtils.formatDate(entity.getEndDate(), "yyyy-MM-dd"));
+			model.addAttribute("endDate", DateUtils.formatDate(entity.getEndDate(), "yyyy-MM-dd"));
 		}
-		 
+
 		return "/adelement/advSelfList";
 	}
 
@@ -94,7 +94,7 @@ public class AdSelfAdelementController extends BaseController {
 		String id = entity.getId();
 
 		if (StringUtils.isNotBlank(id)) {
-			entity = comboService.get(entity.getId());			
+			entity = comboService.get(entity.getId());
 		}
 		model.addAttribute("adCombo", entity);
 
@@ -102,20 +102,61 @@ public class AdSelfAdelementController extends BaseController {
 				"yyyy-MM-dd");
 		String endDate = DateUtil.dateToStr(entity.getValidEndTime(),
 				"yyyy-MM-dd");
-		
-		List<AdNetwork> list = networkService.findAllByMabatis();
 
-		model.addAttribute("networkList", list);
+		if(null != entity.getIsFlag()){
+			if(entity.getIsFlag().equals(AdCombo.ADCOMOBO_NETWORK_ISFLAG)){
+				if(entity.getSendMode() == 2){
+					List<AdNetwork> list = entity.getNetworkList();
+					String netIds = "";
+					String ops = "";
+					for (AdNetwork adNetwork : list) {
+						netIds += adNetwork.getId()+"-";
+						ops += adNetwork.getAdOperators().getId()+"-";
+					}
+					model.addAttribute("netIds", netIds);
+					model.addAttribute("ops", ops);
+
+				}
+			}else{
+				if(entity.getSendMode() == 2){
+					List<AdChannel> list = entity.getChannelList();
+					List<String> nets = Lists.newArrayList();
+					String ops = "";
+					for (AdChannel adChannel : list) {
+						if(!nets.contains(adChannel.getAdNetWork().getAdOperators().getId())){
+							ops += adChannel.getAdNetWork().getAdOperators().getId()+"-";
+							nets.add(adChannel.getAdNetWork().getAdOperators().getId());
+						}
+					}
+					model.addAttribute("ops", ops);
+				}else{
+				}
+			}
+		}
+
 		model.addAttribute("startDate", startDate);
 		model.addAttribute("endDate", endDate);
 		model.addAttribute("startTime", entity.getStartTime());
 		model.addAttribute("endTime", entity.getEndTime());
 		model.addAttribute("operate", "form");
 		model.addAttribute("comboId", entity.getId());
-		
+
+		List<AdComboDistrict> adComboCategorys = entity.getAdComboCategorys();
+		if(adComboCategorys != null &&adComboCategorys.size() > 0 ){
+			String selArea = "";
+			for (AdComboDistrict adComboCategory : adComboCategorys) {
+				selArea += adComboCategory.getDistrict().getId()+"-";
+			}
+			if(selArea!=""){
+				selArea = selArea.substring(0, selArea.lastIndexOf('-'));
+			}
+			model.addAttribute("selArea", selArea);
+		}
+
+
 		return "/adelement/advSelfComboForm";
 	}
-	
+
 	@RequiresPermissions("sys:adv:self:view")
 	@RequestMapping(value = "/alertAdelement")
 	public String alertAdelement(Adelement element,String startDate,String endDate,String comboId,Model model) {
@@ -145,7 +186,7 @@ public class AdSelfAdelementController extends BaseController {
 		}
 		return "/adelement/advSelfAdelementList";
 	}
-	
+
 	@RequiresPermissions("sys:adv:self:view")
 	@RequestMapping(value = "/adelementPreview")
 	public String adelementPreview(Adelement entity,Model model) {
@@ -197,7 +238,7 @@ public class AdSelfAdelementController extends BaseController {
 			if(StringUtils.isNotBlank(id)){
 				childTypeId = type.getId();
 				AdType childtype = AdTypeUtils.get(entity.getChildAdType().getId());
-				 
+
 				childTypeName = childtype.getTypeName();
 			}
 		}
@@ -216,9 +257,9 @@ public class AdSelfAdelementController extends BaseController {
 			}
 		}
 		if(entity.getPosition()!=null){
-			
+
 		}
-		 
+
 		model.addAttribute("isSd",sd);
 		model.addAttribute("isHd",hd);
 		String localeChildTypeName = AdTypeUtils.getLocaleAdTypeName(childTypeName);
@@ -227,5 +268,5 @@ public class AdSelfAdelementController extends BaseController {
 		model.addAttribute("playTime", entity.getPlayTime());
 		return "/adelement/advSelfPreview";
 	}
-	
+
 }

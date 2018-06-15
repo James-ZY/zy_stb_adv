@@ -16,7 +16,6 @@ import com.gospell.aas.entity.adv.*;
 import com.gospell.aas.entity.sys.User;
 import com.gospell.aas.service.ServiceException;
 import com.gospell.aas.service.adv.*;
-import freemarker.ext.beans.StringModel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;

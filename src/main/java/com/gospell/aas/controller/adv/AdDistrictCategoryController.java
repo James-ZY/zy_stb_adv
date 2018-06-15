@@ -46,12 +46,15 @@ public class AdDistrictCategoryController extends BaseController {
 	@RequiresPermissions("sys:districtCategory:view")
 	@RequestMapping(value = { "/list", "" })
 	public String list(AdDistrictCategory entity, HttpServletRequest request,
-			HttpServletResponse response, Model model) {
+					   HttpServletResponse response, Model model) {
 
 		List<AdDistrictCategory> list = Lists.newArrayList();
 		List<AdDistrictCategory> sourcelist = thisService.findAllAdDistrictCategory();
-		AdDistrictCategory.sortList(list, sourcelist, AdDistrictCategory.getzeroAdCategoryId());
+		String type = thisService.getCurrentSysAreaType();
+		AdDistrictCategory.sortList(list, sourcelist, AdDistrictCategory.getzeroAdCategoryId(type));
 		model.addAttribute("list", list);
+		String key = AdDistrictCategory.TypeEnum.getByName(type).getKey();
+		model.addAttribute("key", key);
 		return "/adDistrictCategory/districtCategoryList";
 	}
 
@@ -59,9 +62,11 @@ public class AdDistrictCategoryController extends BaseController {
 	@RequestMapping(value = "/form")
 	public String form(AdDistrictCategory entity, Model model) {
 		if (entity.getParent() == null || entity.getParent().getId() == null) {
-			entity.setParent(new AdDistrictCategory(AdDistrictCategory.getzeroAdCategoryId()));
+			String type = thisService.getCurrentSysAreaType();
+			entity.setParent(new AdDistrictCategory(AdDistrictCategory.getzeroAdCategoryId(type)));
 		}
-		entity.setParent(thisService.get(entity.getParent().getId()));
+		AdDistrictCategory category = thisService.get(entity.getParent().getId());
+		entity.setParent(category);
 		model.addAttribute("adCategory", entity);
 		model.addAttribute("categroryNameSelect",
 				getMessage("select.category.parent"));
@@ -71,17 +76,19 @@ public class AdDistrictCategoryController extends BaseController {
 	@RequiresPermissions("sys:districtCategory:edit")
 	@RequestMapping(value = "/save")
 	public String save(AdDistrictCategory entity, HttpServletRequest request,
-			Model model, RedirectAttributes redirectAttributes) {
+					   Model model, RedirectAttributes redirectAttributes) {
 		if (StringUtils.isBlank(entity.getId()) || StringUtils.isBlank(entity.getCategoryId())) {
-			entity.setId(thisService.getId(entity.getParent().getId()));
-	        entity.setCategoryId(thisService.getId(entity.getParent().getId()));	
+			AdDistrictCategory parent = thisService.get(entity.getParent().getId());
+			entity.setId(thisService.getId(parent,true));
+			entity.setCategoryId(thisService.getId(parent,false));
 		}
 		String logInfo=logService.getLogInfo(entity.getId(), 0, getMessage("category"), entity.getCategoryId());
 		try {
 			if (!beanValidator(model, entity)) {
 				return form(entity, model);
-			}	
-
+			}
+			String type = thisService.getCurrentSysAreaType();
+			entity.setType(type);
 			thisService.save(entity);
 			addMessage(redirectAttributes, "msg.save.success");
 			logService.save(request, logInfo, null);
@@ -104,7 +111,7 @@ public class AdDistrictCategoryController extends BaseController {
 	@RequiresPermissions("sys:districtCategory:edit")
 	@RequestMapping(value = "/delete")
 	public String delete(AdDistrictCategory entity, HttpServletRequest request,
-			Model model, RedirectAttributes redirectAttributes) {
+						 Model model, RedirectAttributes redirectAttributes) {
 		String logInfo=logService.getLogInfo(entity.getId(), 1, getMessage("category"), entity.getCategoryId());
 		try {
 			thisService.delete(entity);
@@ -122,23 +129,23 @@ public class AdDistrictCategoryController extends BaseController {
 
 	/**
 	 * 现在广告类型为树形结构，判断同一级的TypeID不能重复
-	 * 
-	 * @param oldTypeId
-	 * @param typeId
+	 *
+	 * @param oldCategoryId
+	 * @param categoryId
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "checkcategoryId", method = RequestMethod.GET)
 	public String checktypeId(HttpServletRequest request, String oldCategoryId,
-			String categoryId) {
+							  String categoryId) {
 		try {
 			request.setCharacterEncoding("utf-8");
-
+			String type = thisService.getCurrentSysAreaType();
 			if (categoryId != null && categoryId.trim().equals(oldCategoryId)) {
 				return "true";
 			} else if (categoryId != null
 					&& thisService
-							.findAdDistrictCategoryByCateGoryId(categoryId.trim()) == null) {
+					.findAdDistrictCategoryByCateGoryId(categoryId.trim(),type) == null) {
 				return "true";
 			}
 			logger.info(UserUtils.getUser().getLoginName()+"现在广告类型为树形结构，判断同一级的TypeID不能重复成功，传入的新ID是:"+categoryId);
@@ -162,7 +169,7 @@ public class AdDistrictCategoryController extends BaseController {
 				AdDistrictCategory e = list.get(i);
 				if (extId == null
 						|| (extId != null && !extId.equals(e.getId()) && e
-								.getParentIds().indexOf("," + extId + ",") == -1)) {
+						.getParentIds().indexOf("," + extId + ",") == -1)) {
 					Map<String, Object> map = Maps.newHashMap();
 					map.put("id", e.getId());
 					map.put("pId", e.getParent() != null ? e.getParent()
@@ -187,16 +194,17 @@ public class AdDistrictCategoryController extends BaseController {
 			HttpServletResponse response) {
 		try {
 			response.setContentType("application/json; charset=UTF-8");
+			String type = thisService.getCurrentSysAreaType();
 			List<Map<String, Object>> mapList = Lists.newArrayList();
 			List<AdDistrictCategory> list = thisService.findAllAdDistrictCategory();
 			for (int i = 0; i < list.size(); i++) {
 				AdDistrictCategory e = list.get(i);
-				if (e.getId().equals(AdDistrictCategory.getzeroAdCategoryId())) {
+				if (e.getId().equals(AdDistrictCategory.getzeroAdCategoryId(type))) {
 					e.setCategoryName(getMessage("top.category"));
 				}
 				if (extId == null
 						|| (extId != null && !extId.equals(e.getId()) && e
-								.getParentIds().indexOf("," + extId + ",") == -1)) {
+						.getParentIds().indexOf("," + extId + ",") == -1)) {
 					Map<String, Object> map = Maps.newHashMap();
 					map.put("id", e.getId());
 					map.put("pId", e.getParent() != null ? e.getParent()
@@ -215,7 +223,7 @@ public class AdDistrictCategoryController extends BaseController {
 
 	/**
 	 * 获取区域设置信息
-	 * 
+	 *
 	 * @param map
 	 * @param request
 	 * @param response
@@ -224,13 +232,13 @@ public class AdDistrictCategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "getDistrictCategory", method = RequestMethod.POST)
 	public String getDistrictCategory(@RequestBody Map<String, Object> map,
-			HttpServletRequest request, HttpServletResponse response) {
-       return thisService.getDistrictJson(map);
+									  HttpServletRequest request, HttpServletResponse response) {
+		return thisService.getDistrictJson(map);
 	}
-	
+
 	/**
-	 * 获取区域设置信息
-	 * 
+	 * 获取运营商/发送器区域设置信息
+	 *
 	 * @param map
 	 * @param request
 	 * @param response
@@ -239,7 +247,7 @@ public class AdDistrictCategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "getOperatorDistrict", method = RequestMethod.POST)
 	public String getOperatorDistrict(@RequestBody Map<String, Object> map,
-			HttpServletRequest request, HttpServletResponse response) {
+									  HttpServletRequest request, HttpServletResponse response) {
 		String disId = (String) map.get("districts");
 		String operatorsId = (String) map.get("operatorsId");
 		if(StringUtils.isNotBlank(disId)){
@@ -248,10 +256,10 @@ public class AdDistrictCategoryController extends BaseController {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * 获取区域设置信息
-	 * 
+	 * 通过选择区域获取运营商信息
+	 *
 	 * @param map
 	 * @param request
 	 * @param response
@@ -260,12 +268,79 @@ public class AdDistrictCategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "getOperatorsByDis", method = RequestMethod.POST)
 	public String getOperatorsByDis(@RequestBody Map<String, Object> map,
-			HttpServletRequest request, HttpServletResponse response) {
+									HttpServletRequest request, HttpServletResponse response) {
 		String disId = (String) map.get("districts");
 		if(StringUtils.isNotBlank(disId)){
-			return thisService.getOperatorsByDis(disId.split(":")[0]);
+			return thisService.getOperatorsByDis(disId);
 		}else{
 			return null;
 		}
+	}
+
+
+
+	/**
+	 * 通过选择区域和运营商获取相关发送器(与频道无关)
+	 *
+	 * @param selectMap
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getNetworkByDis", method = RequestMethod.POST)
+	public String getNetworkByDis(@RequestBody Map<String, Object> selectMap,
+								  HttpServletRequest request, HttpServletResponse response) {
+		String type = thisService.getCurrentSysAreaType();
+		String disIds = (String) selectMap.get("districts");
+		String operatorsId = (String) selectMap.get("operatorsId");
+		String typeId = (String) selectMap.get("typeId");
+		String chlidType = (String) selectMap.get("chlidType");
+		String startDate = (String) selectMap.get("startDate");
+		String endDate = (String) selectMap.get("endDate");
+		String sendMode = (String) selectMap.get("sendMode");
+		String advertiserId = (String) selectMap.get("advertiserId");
+		String dto = "";
+		if(StringUtils.isNotBlank(disIds)){
+			try {
+				dto =  thisService.getNetworkByDis(disIds,operatorsId,typeId,chlidType,startDate,endDate,sendMode,advertiserId,type);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return dto;
+	}
+
+	/**
+	 * 通过选择区域和运营商获取相关发送器(与频道相关)
+	 *
+	 * @param selectMap
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getNetworkChannelByDis", method = RequestMethod.POST)
+	public String getNetworkChannelByDis(@RequestBody Map<String, Object> selectMap,
+										 HttpServletRequest request, HttpServletResponse response) {
+		String disIds = (String) selectMap.get("districts");
+		String operatorsId = (String) selectMap.get("operatorsId");
+		String typeId = (String) selectMap.get("typeId");
+		String chlidType = (String) selectMap.get("chlidType");
+		String startDate = (String) selectMap.get("startDate");
+		String endDate = (String) selectMap.get("endDate");
+		String sendMode = (String) selectMap.get("sendMode");
+		String advertiserId = (String) selectMap.get("advertiserId");
+		String dto = "";
+		if(StringUtils.isNotBlank(disIds)){
+			try {
+				dto =  thisService.getNetworkChannelByDis(disIds,operatorsId,typeId,chlidType,startDate,endDate,sendMode,advertiserId);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return dto;
 	}
 }

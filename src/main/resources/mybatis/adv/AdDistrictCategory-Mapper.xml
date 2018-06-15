@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdDistrictCategoryDao">
 	<select id="findMaxAdDistrictCategoryId" resultType="Integer">
-	   SELECT count(1)+1  from ad_district_category where parent_id = #{parentId} and del_flag = 0
+		SELECT count(1)+1 from ad_district_category where parent_id = #{parentId} and type = #{type}
+		and del_flag = 0
+	</select>
+
+	<select id="getOpsByParam" parameterType="map" resultType="Integer">
+		SELECT count(1) from ad_operator_district aod where aod.ad_operator_id =
+		#{operatorId} and aod.ad_district_id like CONCAT(#{districtId}, '%')
+		and ! ISNULL(aod.ad_self_district_id)
+	</select>
+
+	<select id="getNetDisByParam" parameterType="map" resultType="Integer">
+		SELECT an.ad_district_id,an.ad_self_district_id from ad_network_district an where  ! ISNULL(an.ad_self_district_id)
+		<if test="networkId != null and networkId != '' ">
+			an.ad_network_id = #{}
+		</if>
+		ORDER BY an.ad_district_id
 	</select>
 </mapper> 

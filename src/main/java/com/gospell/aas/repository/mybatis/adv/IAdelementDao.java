@@ -29,7 +29,7 @@ public interface IAdelementDao extends BaseMybatisDao<Adelement>{
 	
 	/**
 	 * 批量更新数据的状态为已下传
-	 * @param list
+	 * @param map
 	 */
 	public void updateIsPut(Map<String,Object> map) throws Exception;
 	

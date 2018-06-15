@@ -139,7 +139,7 @@ public class AdelementDTOUtil {
 								dto.setHdY(hdPosition.getBeginPointY() -hdRange.getBeginY());
 							}else{
 								dto.setHdFx(2);
-								dto.setHdY(hdPosition.getBeginPointY() -hdRange.getBeginY());
+								dto.setHdY(hdPosition.getEndPointY() -hdRange.getBeginY());
 							}
 							dto.setHdX(hdPosition.getBeginPointX()-hdRange.getBeginX());
 						}

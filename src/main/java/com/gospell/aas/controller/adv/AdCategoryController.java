@@ -45,7 +45,7 @@ public class AdCategoryController extends BaseController {
 	@RequiresPermissions("sys:category:view")
 	@RequestMapping(value = { "/list", "" })
 	public String list(AdCategory entity, HttpServletRequest request,
-			HttpServletResponse response, Model model) {
+					   HttpServletResponse response, Model model) {
 
 		List<AdCategory> list = Lists.newArrayList();
 		List<AdCategory> sourcelist = thisService.findAllAdCategory();
@@ -71,16 +71,16 @@ public class AdCategoryController extends BaseController {
 	@RequiresPermissions("sys:category:edit")
 	@RequestMapping(value = "/save")
 	public String save(AdCategory entity, HttpServletRequest request,
-			Model model, RedirectAttributes redirectAttributes) {
+					   Model model, RedirectAttributes redirectAttributes) {
 		if (StringUtils.isBlank(entity.getId()) || StringUtils.isBlank(entity.getCategoryId())) {
 			entity.setId(thisService.getNewCategoryId());
-	        entity.setCategoryId(thisService.getNewCategoryId());	
+			entity.setCategoryId(thisService.getNewCategoryId());
 		}
 		String logInfo=logService.getLogInfo(entity.getId(), 0, getMessage("category"), entity.getCategoryId());
 		try {
 			if (!beanValidator(model, entity)) {
 				return form(entity, model);
-			}	
+			}
 
 			thisService.save(entity);
 			addMessage(redirectAttributes, "msg.save.success");
@@ -104,7 +104,7 @@ public class AdCategoryController extends BaseController {
 	@RequiresPermissions("sys:category:edit")
 	@RequestMapping(value = "/delete")
 	public String delete(AdCategory entity, HttpServletRequest request,
-			Model model, RedirectAttributes redirectAttributes) {
+						 Model model, RedirectAttributes redirectAttributes) {
 		String logInfo=logService.getLogInfo(entity.getId(), 1, getMessage("category"), entity.getCategoryId());
 		try {
 			thisService.delete(entity);
@@ -122,15 +122,15 @@ public class AdCategoryController extends BaseController {
 
 	/**
 	 * 现在广告类型为树形结构，判断同一级的TypeID不能重复
-	 * 
-	 * @param oldTypeId
-	 * @param typeId
+	 *
+	 * @param oldCategoryId
+	 * @param categoryId
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "checkcategoryId", method = RequestMethod.GET)
 	public String checktypeId(HttpServletRequest request, String oldCategoryId,
-			String categoryId) {
+							  String categoryId) {
 		try {
 			request.setCharacterEncoding("utf-8");
 
@@ -138,7 +138,7 @@ public class AdCategoryController extends BaseController {
 				return "true";
 			} else if (categoryId != null
 					&& thisService
-							.findAdCategoryByCateGoryId(categoryId.trim()) == null) {
+					.findAdCategoryByCateGoryId(categoryId.trim()) == null) {
 				return "true";
 			}
 			logger.info(UserUtils.getUser().getLoginName()+"现在广告类型为树形结构，判断同一级的TypeID不能重复成功，传入的新ID是:"+categoryId);
@@ -162,7 +162,7 @@ public class AdCategoryController extends BaseController {
 				AdCategory e = list.get(i);
 				if (extId == null
 						|| (extId != null && !extId.equals(e.getId()) && e
-								.getParentIds().indexOf("," + extId + ",") == -1)) {
+						.getParentIds().indexOf("," + extId + ",") == -1)) {
 					Map<String, Object> map = Maps.newHashMap();
 					map.put("id", e.getId());
 					map.put("pId", e.getParent() != null ? e.getParent()
@@ -196,7 +196,7 @@ public class AdCategoryController extends BaseController {
 				}
 				if (extId == null
 						|| (extId != null && !extId.equals(e.getId()) && e
-								.getParentIds().indexOf("," + extId + ",") == -1)) {
+						.getParentIds().indexOf("," + extId + ",") == -1)) {
 					Map<String, Object> map = Maps.newHashMap();
 					map.put("id", e.getId());
 					map.put("pId", e.getParent() != null ? e.getParent()

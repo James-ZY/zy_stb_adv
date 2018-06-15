@@ -471,10 +471,7 @@ public class AdChannelService extends BaseService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<NetWorkDTO> getChannelListByNetWorkAndTypeId(String networkId,String typeId,String startTime,String endTime,String startDate,String endDate) throws Exception {
-		if(networkId.equals("33d59aa7e35148bea7bc48ace0f7a309")){
-			System.out.println(111);
-		}
+	public List<NetWorkDTO> getChannelListByNetWorkAndTypeId(String networkId,String typeId,String startTime,String endTime,String startDate,String endDate,String sendMode) throws Exception {
 		Map<String,Object> queryMap = new HashMap<String,Object>();
 		queryMap.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
 		queryMap.put("typeId", typeId);
@@ -483,7 +480,7 @@ public class AdChannelService extends BaseService {
 		List<NetWorkDTO> allList = Lists.newArrayList();
 		List<String> typeList = channelDao.getChannelType(networkId);
 		if (null != list && list.size() > 0) {
-			Map<String,Object> queryMap1 =getChannelByCombo(networkId, typeId, startTime, endTime,startDate,endDate);
+			Map<String,Object> queryMap1 =getChannelByCombo(networkId, typeId, startTime, endTime,startDate,endDate,sendMode);
 			List<AdChannel> channel_list = null;
 			if(queryMap1 != null){
 				queryMap.put("ids", queryMap1.get("ids"));
@@ -543,12 +540,13 @@ public class AdChannelService extends BaseService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public Map<String,Object> getChannelByCombo(String networkId,String typeId,String startTime,String endTime,String startDate,String endDate) throws Exception {
+	public Map<String,Object> getChannelByCombo(String networkId,String typeId,String startTime,String endTime,String startDate,String endDate,String sendMode) throws Exception {
 		Map<String,Object> queryMap = new HashMap<String,Object>();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		queryMap.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
 		queryMap.put("typeId", typeId);
 		queryMap.put("networkId", networkId);
+		queryMap.put("sendMode", sendMode);
 		queryMap.put("startDate", format.parse(startDate));
 		queryMap.put("endDate", format.parse(endDate));
 		queryMap.put("isValid", AdCombo.ADCOMOBO_YES_VALID);

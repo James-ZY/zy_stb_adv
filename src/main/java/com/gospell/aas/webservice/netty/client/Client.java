@@ -30,6 +30,7 @@ import com.gospell.aas.dto.push.PushAdelementDTO;
 import com.gospell.aas.entity.adv.Adelement;
 import com.gospell.aas.webservice.netty.dto.AdComboDeleteDTO;
 import com.gospell.aas.webservice.netty.dto.AdvDeleteDTO;
+import com.gospell.aas.webservice.netty.dto.AdvNetWorkDistrictDTO;
 import com.gospell.aas.webservice.netty.dto.ClientIdDTO;
 import com.gospell.aas.webservice.netty.dto.CloseDownAdComboDTO;
 import com.gospell.aas.webservice.netty.dto.CloseDownAdvDTO;
@@ -380,7 +381,75 @@ public class Client {
 			return false;
 		}
 	}
+	
+	/**
+	 * 推送单条套餐到客户端
+	 * 
+	 * @param clientIdList
+	 *            当前那些客户端
+	 * @param advJson
+	 *            广告下传的json字符串
+	 * @return
+	 */
+	public boolean putAdcombo1(String clientId, PushAdComboDTO push) {
 
+		RequestResult builder = new RequestResult();
+		builder.setClientId(Global.getConfig("clientId"));
+		builder.setCommandType(NettyConstant.REP_PUSH_ADCOMBO_FROM_SERVER);
+		List<String> id_list = Lists.newArrayList();
+		id_list.add(push.getId());
+	
+		List<PushAdComboDTO> push_list = Lists.newArrayList();
+		push_list.add(push);
+		String pushStr = JsonMapper.toJsonString(push_list);
+		List<PushAdcomboToClientDTO> list = Lists.newArrayList();
+		PushAdcomboToClientDTO dto = new PushAdcomboToClientDTO();
+		dto.setClientId(clientId);
+		dto.setPushList(pushStr);
+		dto.setComboIdList(id_list);
+		list.add(dto);
+
+		builder.setContent(JsonMapper.toJsonString(list));
+		builder.setStatus(NettyConstant.OK);
+
+		if (channel != null && channel.isActive()) {
+			try {
+				channel.writeAndFlush(JsonMapper.toJsonString(builder) + "\n")
+						.sync();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				return false;
+			}
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean putAdDistrictInfo(String clientId,AdvNetWorkDistrictDTO dto){
+		RequestResult builder = new RequestResult();
+		builder.setClientId(Global.getConfig("clientId"));
+		builder.setCommandType(NettyConstant.RESP_ADELEMENT_DISTRICT_INFO);
+
+		builder.setContent(JsonMapper.toJsonString(dto));
+		builder.setStatus(NettyConstant.OK);
+
+		if (channel != null && channel.isActive()) {
+			try {
+				channel.writeAndFlush(JsonMapper.toJsonString(builder) + "\n")
+						.sync();
+			} catch (InterruptedException e) {
+		 
+				return false;
+			}
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public List<ClientIdDTO> getClientIdDTO(List<String> clientIdList) {
 		List<ClientIdDTO> list = Lists.newArrayList();
 		for (int i = 0; i < clientIdList.size(); i++) {

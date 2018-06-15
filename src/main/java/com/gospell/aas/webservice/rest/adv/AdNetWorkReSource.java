@@ -29,6 +29,7 @@ import com.gospell.aas.dto.adv.ChannelDTO;
 import com.gospell.aas.dto.adv.SelectChannelDTO;
 import com.gospell.aas.entity.adv.AdDefaultControll;
 import com.gospell.aas.entity.adv.AdNetwork;
+import com.gospell.aas.entity.adv.AdNetworkDistrict;
 import com.gospell.aas.entity.adv.AdOperators;
 import com.gospell.aas.entity.adv.AdType;
 import com.gospell.aas.entity.sys.SysParam;
@@ -39,6 +40,7 @@ import com.gospell.aas.service.adv.AdOperatorsService;
 import com.gospell.aas.service.adv.AdTypeService;
 import com.gospell.aas.service.sys.SysParamService;
 import com.gospell.aas.webservice.netty.dto.AdvNetWorkChannelDTO;
+import com.gospell.aas.webservice.netty.dto.AdvNetWorkDistrictDTO;
 import com.gospell.aas.webservice.netty.dto.AdvNetWorkTimeSetDTO;
 import com.gospell.aas.webservice.netty.dto.AdvNetWorkTypeDTO;
 import com.gospell.aas.webservice.netty.dto.AdvNetWorkVideoRateDTO;
@@ -60,23 +62,25 @@ public class AdNetWorkReSource {
 
 	@Autowired
 	private AdOperatorsService opService;
-	
+
 	@Autowired
 	private SysParamService paramService;
-	
+
 	@Autowired
 	private IAdDefaultControlDao iadControllDao;
-	
+
 	@Autowired
 	private AdDefaultControllService controllService;
-	
+
 	@Autowired
 	private AdTypeService typeService;
+
+
 
 	@POST
 	@Path(value = "/add")
 	public RestResult getAdNetWork(AdvNetWorkChannelDTO dto,
-			@Context HttpServletRequest request) {
+								   @Context HttpServletRequest request) {
 
 		RestResult result = new RestResult();
 		try {
@@ -84,31 +88,31 @@ public class AdNetWorkReSource {
 				result.setStatus(Status.BLANK_PARAMETER.getCode());
 				return result;
 			} else {
- 
-			 
+
+
 				AdNetwork network = service.findByNetworkId(dto
 						.getNetworkId());
 				if (null == network) {
 					result.setStatus(Status.NOT_EXIST_ERROR.getCode());
 					return result;
-					 
+
 				} else {
-					 
-			 		service.saveChannleToNetwork(dto, network);
+
+					service.saveChannleToNetwork(dto, network);
 					result.setStatus(Status.OK.getCode());
 					return result;
 
 				}
 			}
 		} catch (Exception e) {
- 
+
 			result.setStatus(Status.INTERNAL_SERVER_ERROR.getCode());
 			return result;
-	 
+
 		}
 
 	}
-	
+
 	@POST
 	@Path(value = "/deleteChannel")
 	public RestResult deleteChannel(AdvNetWorkChannelDTO dto) {
@@ -123,39 +127,39 @@ public class AdNetWorkReSource {
 				List<String> channelIds = Lists.newArrayList();
 				List<SelectChannelDTO> channelList = new ArrayList<SelectChannelDTO>();
 				if (StringUtils.isNotBlank(networkId)) {
-					
+
 					AdNetwork network = service.findByNetworkId(dto
 							.getNetworkId());
 					if (null == network) {
 						result.setStatus(Status.NOT_EXIST_ERROR.getCode());
 						return result;
-						 
+
 					}else{
 						for (ChannelDTO model : dto.getChannelList()) {
 							channelIds.add(model.getChannelId());
 							SelectChannelDTO sd = new SelectChannelDTO();
 							sd.setChannelId(model.getChannelId());
 							channelList.add(sd);
-						}		
+						}
 						if (null != channelIds && channelIds.size()>0) {
 							List<String> deleteList = service.getCanDeleteAdChannel(network.getId(),channelIds);
 							if(null !=deleteList && deleteList.size()>0){
-								service.deleteChannels(network.getId(), deleteList);								
-							}							
+								service.deleteChannels(network.getId(), deleteList);
+							}
 							DeleteChannelDTO deletedto = new DeleteChannelDTO();
 							deletedto.setIsDelete(String.valueOf(true));
 							deletedto.setChannelList(channelList);
-						 	result.setContent(JsonMapper.toJsonString(deletedto));
+							result.setContent(JsonMapper.toJsonString(deletedto));
 							result.setStatus(Status.OK.getCode());
-					 		result.setMessage("删除发送器ID："+networkId+"下的频道成功！");
-					  }
+							result.setMessage("删除发送器ID："+networkId+"下的频道成功！");
+						}
 					}
 				}
 				return result;
 			}
-			
+
 		} catch (Exception e) {
- 
+
 			result.setStatus(Status.INTERNAL_SERVER_ERROR.getCode());
 			return result;
 
@@ -165,13 +169,14 @@ public class AdNetWorkReSource {
 	@POST
 	@Path(value = "/register")
 	public RestResult register(AdNetWorkDTO dto) {
+		System.out.println("network register");
 		RestResult result = new RestResult();
 		try {
 			if (null == dto) {
 				result.setStatus(Status.BLANK_PARAMETER.getCode());
 				return result;
 			} else {
-			AdNetwork network = service.findByNetworkIdAndOperatorId(dto
+				AdNetwork network = service.findByNetworkIdAndOperatorId(dto
 						.getNetworkId(),dto.getAdOperatorsId());
 				dto.setOnlineStatus("1");
 				if (null != network) {
@@ -184,7 +189,7 @@ public class AdNetWorkReSource {
 				} else {
 					network = service.findByNetworkId(dto.getNetworkId());
 					if(null != network){
-						result.setStatus(Status.EXIST_ERROR.getCode());
+						result.setStatus(Status.NETWORK_CONFLICT.getCode());
 						result.setMessage("已存在该发送器ID,请重新选择");
 						return result;
 					}else{
@@ -194,30 +199,30 @@ public class AdNetWorkReSource {
 							result.setStatus(Status.NOT_EXIST_ERROR.getCode());
 							result.setMessage("找不到对应的电视运营商");
 							return result;
-							
+
 						} else {
 							service.registerAdNetwork(dto, op);
 							result.setStatus(Status.OK.getCode());
 							result.setMessage("注册成功！");
 							result.setContent(JsonMapper.toJsonString(getSystemTimeZone()));//更新成功，需要把当前播控的时间和时区发送下去
 							initDefaultImage(dto.getAdOperatorsId());
-							return result;							
+							return result;
 						}
-						
+
 					}
 				}
-				
-				
+
+
 
 			}
 		} catch (Exception e) {
- 
+
 			result.setStatus(Status.INTERNAL_SERVER_ERROR.getCode());
 			return result;
 
 		}
 	}
-	
+
 	/**
 	 * 更新发送器状态
 	 * @param dto
@@ -247,8 +252,8 @@ public class AdNetWorkReSource {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * 判断默认文件是否存在
 	 * @param adNetworkId
@@ -280,9 +285,9 @@ public class AdNetWorkReSource {
 		if(null == hdlist || 0 == sdlist.size()){
 			saveCon(network, AdDefaultControll.FLAG_HD,AdType.Type_BROCAST);
 		}
-		
+
 	}
-	
+
 	private void saveCon(AdNetwork network,Integer flag,String typeId){
 		String imgpath = ApplicationContextHelper.getRootRealPath()+"/static/images/defaultkaiji.jpg";
 		String m2vpath = ApplicationContextHelper.getRootRealPath()+"/static/images/defaultkaiji.m2v";
@@ -311,19 +316,19 @@ public class AdNetWorkReSource {
 			e.printStackTrace();
 		}
 	}
-	   /**
-     * 获取当前时区以及当时的时间
-     * @return
-     */
-    private SystemTimeZoneDTO getSystemTimeZone(){
-		  
-		   SystemTimeZoneDTO d = new SystemTimeZoneDTO();
-		   d.setTimeZone(TimeZoneUtil.getTimeZone());
-		   d.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		   return d;
+	/**
+	 * 获取当前时区以及当时的时间
+	 * @return
+	 */
+	private SystemTimeZoneDTO getSystemTimeZone(){
+
+		SystemTimeZoneDTO d = new SystemTimeZoneDTO();
+		d.setTimeZone(TimeZoneUtil.getTimeZone());
+		d.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		return d;
 	}
-	
-	
+
+
 
 	@POST
 	@Path(value = "/addAdType")
@@ -338,7 +343,7 @@ public class AdNetWorkReSource {
 				String networkId = dto.getNetworkId();
 				String type = dto.getNotChannelTypeId();
 				if (StringUtils.isNotBlank(networkId)) {
-					 
+
 					if (StringUtils.isNotBlank(type)) {
 						String[] s = type.split(",");
 						List<String> typeIdList = Lists.newArrayList();
@@ -348,21 +353,21 @@ public class AdNetWorkReSource {
 						service.addAdTypeToNetwork(networkId, typeIdList);
 						result.setStatus(Status.OK.getCode());
 						result.setMessage("给发送器ID："+networkId+"添加广告类型成功！");
-				
+
 					}
 				}
 				return result;
 			}
-			
+
 		} catch (Exception e) {
 			result.setStatus(Status.INTERNAL_SERVER_ERROR.getCode());
 			return result;
 
 		}
 	}
-	
- 
-	
+
+
+
 	@POST
 	@Path(value = "/deleteAdType")
 	public RestResult deleteAdType(DeleteNetWorkTypeDTO dto) {
@@ -376,23 +381,23 @@ public class AdNetWorkReSource {
 				String networkId = dto.getNetworkId();
 				String type = dto.getTypeId();
 				if (StringUtils.isNotBlank(networkId)) {
-					 
+
 					if (StringUtils.isNotBlank(type)) {
-					 	Boolean b = service.deleteAdTypeToNetwork(networkId, type);
-					 	if(b == null) b =false;
-					 	IsDelete isDelete = new IsDelete();
-					 	isDelete.setIsDelete(String.valueOf(b));
-					 	result.setContent(JsonMapper.toJsonString(isDelete));
+						Boolean b = service.deleteAdTypeToNetwork(networkId, type);
+						if(b == null) b =false;
+						IsDelete isDelete = new IsDelete();
+						isDelete.setIsDelete(String.valueOf(b));
+						result.setContent(JsonMapper.toJsonString(isDelete));
 						result.setStatus(Status.OK.getCode());
 						result.setMessage("删除发送器ID："+networkId+"的广告类型成功！");
-				
+
 					}
 				}
 				return result;
 			}
-			
+
 		} catch (Exception e) {
-	 
+
 			result.setStatus(Status.INTERNAL_SERVER_ERROR.getCode());
 			return result;
 
@@ -408,7 +413,7 @@ public class AdNetWorkReSource {
 	@POST
 	@Path(value = "/addVedioRate")
 	public RestResult addVedioRate(AdvNetWorkVideoRateDTO dto,
-			@Context HttpServletRequest request) {
+								   @Context HttpServletRequest request) {
 
 		RestResult result = new RestResult();
 		try {
@@ -424,13 +429,13 @@ public class AdNetWorkReSource {
 				if (null == param) {
 					param = new SysParam();
 					param.setParamType(SysParam.NETWORK_VIDEO_RATE);
-					param.setParamKey(dto.getNetworkId());	 
+					param.setParamKey(dto.getNetworkId());
 				}
 				param.setParamValue(dto.getVideoRate());
-				param.setEnable(SysParam.ENABLE_YES);	
+				param.setEnable(SysParam.ENABLE_YES);
 				param.setCanUpdate(SysParam.CANUPDATE_NO);
 				paramService.save(param);
-				
+
 				map.put("paramType", SysParam.NETWORK_PICTURE_RATE);
 				map.put("paramKey", dto.getNetworkId());
 				param = paramService.getParam(map);
@@ -438,25 +443,25 @@ public class AdNetWorkReSource {
 					param = new SysParam();
 					param.setParamType(SysParam.NETWORK_PICTURE_RATE);
 					param.setParamKey(dto.getNetworkId());
- 
+
 				}
 				param.setParamValue(dto.getPictureRate()==null?"1.25":dto.getPictureRate());
-				param.setEnable(SysParam.ENABLE_YES);	
+				param.setEnable(SysParam.ENABLE_YES);
 				param.setCanUpdate(SysParam.CANUPDATE_NO);
 				paramService.save(param);
-				
+
 				result.setStatus(Status.OK.getCode());
 				return result;
 			}
 		} catch (Exception e) {
- 
+
 			result.setStatus(Status.INTERNAL_SERVER_ERROR.getCode());
 			return result;
-	 
+
 		}
 	}
-	
-	
+
+
 	/**
 	 * 增加插屏滚动 时间限制
 	 * @param dto
@@ -466,7 +471,7 @@ public class AdNetWorkReSource {
 	@POST
 	@Path(value = "/addTimeSet")
 	public RestResult addTimeSet(AdvNetWorkTimeSetDTO dto,
-			@Context HttpServletRequest request) {
+								 @Context HttpServletRequest request) {
 
 		RestResult result = new RestResult();
 		try {
@@ -484,7 +489,7 @@ public class AdNetWorkReSource {
 				if (null == param) {
 					param = new SysParam();
 					param.setParamType(SysParam.ADELEMENT_TIME_SET);
-					param.setParamKey(dto.getNetworkId());	 
+					param.setParamKey(dto.getNetworkId());
 				}
 				param.setParamValue(String.valueOf(s));
 				param.setEnable(SysParam.ENABLE_YES);
@@ -494,10 +499,46 @@ public class AdNetWorkReSource {
 				return result;
 			}
 		} catch (Exception e) {
- 
+
 			result.setStatus(Status.INTERNAL_SERVER_ERROR.getCode());
 			return result;
-	 
+
+		}
+	}
+
+	/**
+	 * 获取发送器的区域设置信息
+	 * @param dto
+	 * @param request
+	 * @return
+	 */
+	@POST
+	@Path(value = "/getAdDistrictInfo")
+	public RestResult getAdDistrictInfo(AdvNetWorkTypeDTO dto,
+										@Context HttpServletRequest request) {
+
+		RestResult result = new RestResult();
+		try {
+			if (null == dto) {
+				result.setStatus(Status.BLANK_PARAMETER.getCode());
+				return result;
+			} else {
+
+				AdNetwork network = service.findByNetworkId(dto.getNetworkId());
+				if (null == network) {
+					result.setStatus(Status.NOT_EXIST_ERROR.getCode());
+					return result;
+				} else {
+					AdvNetWorkDistrictDTO disDto = service.getNetDisDto(network);
+					result.setContent(JsonMapper.toJsonString(disDto));
+					result.setStatus(Status.OK.getCode());
+					return result;
+				}
+			}
+		} catch (Exception e) {
+			result.setStatus(Status.INTERNAL_SERVER_ERROR.getCode());
+			return result;
+
 		}
 	}
 }

@@ -18,10 +18,8 @@ public class NettyServerRun  implements ApplicationListener<ContextRefreshedEven
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		  if(event.getApplicationContext().getParent() == null)//root application context 没有parent，他就是老大.
 	        {  
-			  run();	
-	    		 
-	       
-	        }  
+			  run();
+	        }
 	        
 	       
 	}

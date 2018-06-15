@@ -22,4 +22,5 @@ public class AdNetworkDao extends BaseDao<AdNetwork> {
 	public AdNetwork findByNetworkIdAndOperatorId(String networkId,String adOperatorId){
         return getByHql("from AdNetwork where delFlag = :p1 and networkId = :p2 and adOperators.operatorsId = :p3 ", new Parameter( BaseEntity.DEL_FLAG_NORMAL,networkId,adOperatorId));
     }
+
 }

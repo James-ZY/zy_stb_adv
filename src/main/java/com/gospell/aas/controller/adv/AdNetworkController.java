@@ -32,6 +32,8 @@ import com.gospell.aas.entity.adv.Adelement;
 import com.gospell.aas.service.adv.AdNetworkService;
 import com.gospell.aas.service.adv.AdSellService;
 import com.gospell.aas.service.adv.AdelementService;
+import com.gospell.aas.webservice.netty.client.Client;
+import com.gospell.aas.webservice.netty.dto.AdvNetWorkDistrictDTO;
 
 @Controller
 @RequestMapping(value = "/adv/network")
@@ -76,10 +78,7 @@ public class AdNetworkController extends BaseController {
 		SelectDistrictDTO dto = new SelectDistrictDTO();
 		if(adNetworkCategorys != null &&adNetworkCategorys.size() > 0 ){
 			Map<String,String> selMap = new HashMap<String, String>();
-			String selArea = "";
-			String firId = "";
 			for (AdNetworkDistrict adNetworkDistrict : adNetworkCategorys) {
-				firId = adNetworkDistrict.getDistrict().getId().substring(0, 3);
 				DistrictCategoryModel dcModel = new DistrictCategoryModel();
 				dcModel.setCategoryId(adNetworkDistrict.getDistrict().getId());
 				dcModel.setCategoryName(adNetworkDistrict.getDistrict().getCategoryName());
@@ -92,10 +91,8 @@ public class AdNetworkController extends BaseController {
 				}
 				districtCategoryModels.add(dcModel);
 			}
-			selArea = firId + ":" + selMap.get(firId);
 			dto.setAdDistrictCategorys(districtCategoryModels);
-			model.addAttribute("selArea", selArea);
-			model.addAttribute("selAllArea", JsonMapper.toJsonString(dto));
+			model.addAttribute("selAreaInfo", JsonMapper.toJsonString(dto));
 		}
 		model.addAttribute("adNetwork", entity);
 		return "/network/networkForm";
@@ -112,6 +109,9 @@ public class AdNetworkController extends BaseController {
 		}
 		try {
 			thisService.save(entity);
+			//推送发送器区域信息
+			AdvNetWorkDistrictDTO disDto = thisService.getNetDisDto(entity);
+			Client.getInstance().putAdDistrictInfo(entity.getNetworkId(), disDto);
 			logService.save(request, logInfo, null);
 			logger.info(UserUtils.getUser().getLoginName()+"保存发送器区域信息："+entity.getId()+"成功！");
 			addMessage(redirectAttributes, "msg.save.success");

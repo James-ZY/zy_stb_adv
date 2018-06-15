@@ -80,10 +80,7 @@ public class AdOperatorsController extends BaseController {
 		SelectDistrictDTO dto = new SelectDistrictDTO();
 		if(adDistrictCategorys != null &&adDistrictCategorys.size() > 0 ){
 			Map<String,String> selMap = new HashMap<String, String>();
-			String selArea = "";
-			String firId = "";
 			for (AdOperatorsDistrict adOperatorsDistrict : adDistrictCategorys) {
-				firId = adOperatorsDistrict.getDistrict().getId().substring(0, 3);
 				DistrictCategoryModel dcModel = new DistrictCategoryModel();
 				dcModel.setCategoryId(adOperatorsDistrict.getDistrict().getId());
 				dcModel.setCategoryName(adOperatorsDistrict.getDistrict().getCategoryName());
@@ -96,10 +93,8 @@ public class AdOperatorsController extends BaseController {
 				}
 				districtCategoryModels.add(dcModel);
 			}
-			selArea = firId + ":" + selMap.get(firId);
 			dto.setAdDistrictCategorys(districtCategoryModels);
-			model.addAttribute("selArea", selArea);
-			model.addAttribute("selAllArea", JsonMapper.toJsonString(dto));
+			model.addAttribute("selAreaInfo", JsonMapper.toJsonString(dto));
 		}
 		model.addAttribute("adOperators", entity);
 		return "/network/operatorForm";
@@ -113,7 +108,6 @@ public class AdOperatorsController extends BaseController {
 		if (!beanValidator(model, entity)) {
 			return form(entity, model);
 		}
- 
 	
 		try {
 			if(StringUtils.isBlank(entity.getOperatorsId())){

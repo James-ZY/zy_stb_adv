@@ -68,6 +68,7 @@
 		<th><spring:message code='network.ip' /></th>
 		<th><spring:message code='network.port' /></th>
 		<th><spring:message code='network.operators' /></th>
+		<th><spring:message code='operators.area' /></th>
 		<th><spring:message code='not.channel.type' /></th>
 		 <th><spring:message code='valid.time' /></th>
 		<shiro:hasPermission name="sys:network:edit">
@@ -87,6 +88,7 @@
 				<c:if test="${!empty adNetwork.adOperators}">
 						<td>${adNetwork.adOperators.operatorsName}</td>
 				</c:if>
+				<td>${adNetwork.area}</td>
 				<td>${adNetwork.typeName}</td>
 	 			<td><fmt:formatDate value="${adNetwork.validDate}" pattern="yyyy-MM-dd"/></td>
 			 	<shiro:hasPermission name="sys:network:edit">

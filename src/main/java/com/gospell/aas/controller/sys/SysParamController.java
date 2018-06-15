@@ -1,5 +1,6 @@
 package com.gospell.aas.controller.sys;
 
+import java.awt.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -182,6 +184,21 @@ public class SysParamController extends BaseController {
 			dto.setPsTs(param.getParamValue());
 		}
 		return JsonMapper.toJsonString(dto);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "getFontParams", method = RequestMethod.POST)
+	public String getFontParams(@RequestBody Map<String, Object> map,
+								HttpServletRequest request, HttpServletResponse response) {
+		GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		String[] fontName = e.getAvailableFontFamilyNames();
+		List<String> list = Lists.newArrayList();
+		for (int i = 0; i < fontName.length; i++) {
+			list.add(fontName[i]);
+			System.out.println(fontName[i]);
+		}
+		return JsonMapper.toJsonString(list);
+
 	}
 		 
 }

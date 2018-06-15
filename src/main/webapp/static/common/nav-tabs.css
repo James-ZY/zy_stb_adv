@@ -113,7 +113,7 @@ body, label, input, button, select, textarea, .uneditable-input, .navbar-search 
 .ad_Preview{width: 100%;height: 720px;background-color: #f5f5f5;border-top: 1px solid #e5e5e5;position:relative;}
 .ad_Preview .Preview_tip{position:absolute;top:25px;width:180px;left:0;}
 .ad_Preview .Preview_tip p{font-weight:bold;text-indent:40px;}
-.ad_Preview .tv_icon{position:absolute;left:180px;top:60px;width:800px;height:656px;background-color:#ffff;background:url(../images/icon/tv-icon.png);background-repeat: no-repeat;background-size:cover;}
+.ad_Preview .tv_icon{position:absolute;top:60px;width:800px;height:656px;background-color:#ffff;background:url(../images/icon/tv-icon.png);background-repeat: no-repeat;background-size:cover;}
 .ad_Preview .Preview_content{width:720px;height:576px;position:absolute;top:37px;left:37px;overflow: hidden;}
 .adinfo_content{width:100%;height:auto;background-color: #f5f5f5;border-top: 1px solid #e5e5e5;margin-bottom:11px;position:relative;}
 .aduit_action{width:100%;height:auto;background-color: #f5f5f5;border-top: 1px solid #e5e5e5;margin-bottom:11px;position:relative;}

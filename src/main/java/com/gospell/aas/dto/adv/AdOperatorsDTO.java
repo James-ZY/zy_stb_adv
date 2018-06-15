@@ -14,7 +14,7 @@ public class AdOperatorsDTO {
 	    private String operatorsName;// 电视运营商名称
 				
 		@JsonProperty("networkList")
-	    private List<AdNetWorkDTO> networkList;// 电视运营商名称
+	    private List<AdNetWorkDTO> networkList;// 广告发送器列表
 		
 /*		@JsonProperty("networkId")
 		private String networkId;//广告发送器ID

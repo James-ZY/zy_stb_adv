@@ -47,6 +47,7 @@ public class AdOperators extends IdEntity<AdOperators> {
 	private String telphone;// 电话
 	private List<AdOperatorsDistrict> adDistrictCategorys;// 区域
 	private String area;// 区域
+	private String selArea;//选择的区域id
 	private String number;// 订户数
 	private List<AdNetwork> networkList;// 广告发送器ID
 
@@ -60,8 +61,8 @@ public class AdOperators extends IdEntity<AdOperators> {
 	private String uploadMessage;// 上传信息
 	
 	@Transient
-	private String selArea;//选择的区域信息 
-
+	private String selAllArea;//包含子类的区域
+	
 	public AdOperators() {
 		super();
 	}
@@ -193,6 +194,16 @@ public class AdOperators extends IdEntity<AdOperators> {
 		this.area = area;
 	}
 
+	
+	@Column(name = "ad_sel_area")
+	public String getSelArea() {
+		return selArea;
+	}
+
+	public void setSelArea(String selArea) {
+		this.selArea = selArea;
+	}
+	
 	@Column(name = "ad_number")
 	@ExcelField(title = "operators.number", align = 2, sort = 8, required = 0, max = 11)
 	public String getNumber() {
@@ -252,15 +263,16 @@ public class AdOperators extends IdEntity<AdOperators> {
 	public void setLogName(String logName) {
 		this.logName = logName;
 	}
-	
+
 	@Transient
-	public String getSelArea() {
-		return selArea;
+	public String getSelAllArea() {
+		return selAllArea;
 	}
 
 	@Transient
-	public void setSelArea(String selArea) {
-		this.selArea = selArea;
+	public void setSelAllArea(String selAllArea) {
+		this.selAllArea = selAllArea;
 	}
+
 
 }

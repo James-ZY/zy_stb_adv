@@ -226,6 +226,15 @@
     <function-signature>java.util.List getAdTypeById(java.lang.String)</function-signature>
     <example>${fns:getAdTypeById(typeId)}</example>  
   </function>
+
+  <!-- 获取广告显示模式 -->
+  <function>
+    <description>获取广告显示模式</description>
+    <name>getAdDisplayType</name>
+    <function-class>com.gospell.aas.common.utils.adv.AdTypeUtils</function-class>
+    <function-signature>java.util.List getAdDisplayType(java.lang.String)</function-signature>
+    <example>${fns:getAdDisplayType(typeId)}</example>
+  </function>
   
     <!-- 获取广告类型 -->
   <function>

@@ -139,7 +139,7 @@ public class AdComboPutFailRecordResource {
 				for (int i = 0; i < list.size(); i++) {
 					AdCombo combo = list.get(i);
 					PushAdComboDTO dto = new PushAdComboDTO();
-					comboService.setAdComboDTO(combo, dto);
+					comboService.setAdComboDTO(combo, dto,networkId);
 					pushList.add(dto);
 				}
 			}
@@ -147,7 +147,7 @@ public class AdComboPutFailRecordResource {
 				for (int i = 0; i < refer_list.size(); i++) {
 					AdCombo combo = refer_list.get(i);
 					PushAdComboDTO dto = new PushAdComboDTO();
-					comboService.setAdComboDTO(combo, dto);
+					comboService.setAdComboDTO(combo, dto,networkId);
 					List<AdChannel> channelList = combo.getChannelList();
 					if (null != channelList && channelList.size() > 0) {
 						dto.setChannelList(channelList);
