@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.sys.ISysParamDao">
+	<sql id="sysParamSql">
+		DISTINCT a.id as a_id,
+		a.param_type as a_param_type,
+		a.param_key as a_param_key,
+		a.param_value as a_param_value,
+		a.enable as a_enable,
+		a.can_update as a_can_update,
+		a.create_date as a_create_date,
+		a.update_date as a_update_date,
+		a.del_flag as a_del_flag
+	</sql>
+	<sql id="createusersql">
+		c.id AS c_id,
+		c.login_name as c_login_name,
+		c.name as c_name
+	</sql>
+	<sql id="updateusersql">
+		u.id AS u_c_id,
+		u.login_name as u_c_login_name,
+		u.name as u_c_name
+	</sql>
+	<select id="findAll" resultMap="pageResult" parameterType="SysParam">
+		select 
+		<include refid="sysParamSql"/>,
+	    <include refid="createusersql" />,
+	    <include refid="updateusersql" />
+		from sys_param a
+		left join sys_user c on a.create_by = c.id and c.del_flag=#{delFlag}
+		left join sys_user u on u.update_by = u.id and u.del_flag=#{delFlag}
+		where a.del_flag=#{delFlag}
+		<if test="createBy !=null and createBy.loginName != null and createBy.loginName !=''">
+			and c.login_name like CONCAT('%', #{createBy.loginName}, '%')
+		</if>
+		<if test="updateBy !=null and updateBy.loginName != null and updateBy.loginName !=''">
+			and u.login_name like CONCAT('%', #{updateBy.loginName}, '%')
+		</if>
+	   <if test="paramType != null and  paramType != ''">
+	   		and a.param_type = #{paramType}
+	   </if>
+	   <if test="paramKey != null and  paramKey != ''">
+	   		and a.param_key = #{paramKey}
+	   </if>
+	   <if test="paramValue != null and  paramValue != ''">
+	   		and a.param_value = #{paramValue}
+	   </if>
+	    <if test="enable != null and  enable != ''">
+	   		and a.enable = #{enable}
+	   </if>
+	    <if test="canUpdate != null and  canUpdate != ''">
+	   		and a.can_update = #{canUpdate}
+	   </if>
+	   	<if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        	</if>
+	</select>
+	
+	<select id="getParamList" resultMap="pageResult1" parameterType="map">
+		select 
+		 <include refid="sysParamSql"/>,
+		from sys_param a
+		where a.del_flag=#{delFlag}
+		<if test="createBy !=null and createBy.loginName != null and createBy.loginName !=''">
+			and c.login_name like CONCAT('%', #{createBy.loginName}, '%')
+		</if>
+		<if test="updateBy !=null and updateBy.loginName != null and updateBy.loginName !=''">
+			and u.login_name like CONCAT('%', #{updateBy.loginName}, '%')
+		</if>
+	   <if test="paramType != null and  paramType != ''">
+	   		and a.param_type = #{paramType}
+	   </if>
+	   <if test="paramKey != null and  paramKey != ''">
+	   		and a.param_key = #{paramKey}
+	   </if>
+	   <if test="paramValue != null and  paramValue != ''">
+	   		and a.param_value = #{paramValue}
+	   </if>
+	    <if test="enable != null and  enable != ''">
+	   		and a.enable = #{enable}
+	   </if>
+	   <if test="canUpdate != null and  canUpdate != ''">
+	   		and a.can_update = #{canUpdate}
+	   </if>
+	</select>
+	
+	<select id="getParam" resultMap="pageResult1"  parameterType="map">
+		select 
+		 <include refid="sysParamSql"/>
+		from sys_param a
+		where a.del_flag=#{delFlag}
+	   <if test="paramType != null and  paramType != ''">
+	   		and a.param_type = #{paramType}
+	   </if>
+	   <if test="paramKey != null and  paramKey != ''">
+	   		and a.param_key = #{paramKey}
+	   </if>
+	   <if test="paramValue != null and  paramValue != ''">
+	   		and a.param_value = #{paramValue}
+	   </if>
+	    <if test="enable != null and  enable != ''">
+	   		and a.enable = #{enable}
+	   </if>
+	   <if test="canUpdate != null and  canUpdate != ''">
+	   		and a.can_update = #{canUpdate}
+	   </if>
+	</select>
+		<select id="getMinParam" resultMap="pageResult1"  parameterType="map">
+		select 
+		 min(a.param_value) as a_param_value
+		from sys_param a
+		where a.del_flag=#{delFlag}
+	   <if test="paramType != null and  paramType != ''">
+	   		and a.param_type = #{paramType}
+	   </if>
+	    <if test="enable != null and  enable != ''">
+	   		and a.enable = #{enable}
+	   </if>
+	   <if test="netWorkList != null">
+	   		and a.param_key in
+		<foreach collection="netWorkList" item="item" index="index"  open="(" separator="," close=")">
+			'${item}'
+		</foreach>
+	   </if>	   
+	</select>
+	
+ 	<resultMap type="com.gospell.aas.entity.sys.SysParam" id="pageResult">
+	  	<id property="id" column="a_id" />
+	  	<result property="paramType" column="a_param_type"/>
+	  	<result property="paramKey" column="a_param_key"/>
+	  	<result property="paramValue" column="a_param_value"/>
+	  	<result property="enable" column="a_enable"/>
+	  	<result property="canUpdate" column="a_can_update"/>
+	  	<result property="createDate" column="a_create_date"/>
+	  	<result property="updateDate" column="a_update_date"/>
+	  	<result property="delFlag" column="a_del_flag"/>
+	  	<association property="createBy" resultMap="userResult"/>
+	  	<association property="updateBy" resultMap="userResult" columnPrefix="u_"/>
+    </resultMap>
+    
+    <resultMap type="com.gospell.aas.entity.sys.SysParam" id="pageResult1">
+	  	<id property="id" column="a_id" />
+	  	<result property="paramType" column="a_param_type"/>
+	  	<result property="paramKey" column="a_param_key"/>
+	  	<result property="paramValue" column="a_param_value"/>
+	  	<result property="enable" column="a_enable"/>
+	  	<result property="canUpdate" column="a_can_update"/>
+	  	<result property="createDate" column="a_create_date"/>
+	  	<result property="updateDate" column="a_update_date"/>
+	  	<result property="delFlag" column="a_del_flag"/>
+    </resultMap>
+
+	<resultMap type="User" id="userResult">
+	  	<id property="id" column="c_id" />
+	  	<result property="name" column="c_name"/>
+	  	<result property="loginName" column="c_login_name"/>
+	   
+    </resultMap>
+ 
+</mapper> 

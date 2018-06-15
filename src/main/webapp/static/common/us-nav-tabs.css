@@ -1,0 +1,49 @@
+
+.form-horizontal .control-label{padding-top:3px;padding-bottom:3px;height:28px;line-height:28px;width:230px;}
+.form-horizontal .label_weight{font-size:bold;text-align: left;text-indent: 40px;}
+.form-horizontal .controls{height:100%;margin-left:250px;}
+.form-horizontal .form-actions {padding-left: 250px;}
+.info-messages{left:490px;}
+.selectlength1{width:200px}
+.select2-results{font-size:12px;}
+@media screen and (max-width: 1470px){
+	/* 广告类型列表 */
+	.typeList table .td-control .td-open{width:16px;height:16px;background:url("../images/icon/tab-right.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.typeList table .td-control .td-close{width:16px;height:16px;background:url("../images/icon/table-left.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.typeList table .td-fore2{display:none}
+}
+@media screen and (max-width: 1600px){
+	/* 套餐列表 */
+	.combolist table .td-control .td-open{width:16px;height:16px;background:url("../images/icon/tab-right.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.combolist table .td-control .td-close{width:16px;height:16px;background:url("../images/icon/table-left.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.combolist table .td-fore2{display:none}
+}
+@media screen and (max-width: 1320px){
+	/* 套餐出售列表 */
+	.sellList table .td-control .td-open{width:16px;height:16px;background:url("../images/icon/tab-right.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.sellList table .td-control .td-close{width:16px;height:16px;background:url("../images/icon/table-left.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.sellList table .td-fore2{display:none}
+}
+@media screen and (max-width: 1300px){
+	/* 广告列表 */
+	.advList table .td-control .td-open{width:16px;height:16px;background:url("../images/icon/tab-right.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.advList table .td-control .td-close{width:16px;height:16px;background:url("../images/icon/table-left.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.advList table .td-fore2{display:none}
+}
+@media screen and (max-width: 1400px){
+	/* 广告审核列表 */
+	.aduitList table .td-control .td-open{width:16px;height:16px;background:url("../images/icon/tab-right.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.aduitList table .td-control .td-close{width:16px;height:16px;background:url("../images/icon/table-left.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.aduitList table .td-fore2{display:none}
+}
+@media screen and (max-width: 1400px){
+	/* 广告审核统计 */
+	.aduitStatic table .td-control .td-open{width:16px;height:16px;background:url("../images/icon/tab-right.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.aduitStatic table .td-control .td-close{width:16px;height:16px;background:url("../images/icon/table-left.png");display: inline-block;margin-left: 10px;vertical-align: sub;}
+	.aduitStatic table .td-fore2{display:none}
+}
+
+
+
+
+

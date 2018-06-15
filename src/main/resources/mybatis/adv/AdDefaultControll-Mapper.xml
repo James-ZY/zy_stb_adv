@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdDefaultControlDao">
+	<sql id="controlSql">
+		c.id as c_id,
+		c.file_path,c.file_image_path,
+		c.ad_width,c.ad_height,
+		c.play_order,c.file_size,
+		c.duration,c.file_format,c.resource_type,c.ad_status,
+		c.create_date,c.update_date,c.flag as c_flag
+	</sql>
+	<sql id="typeField">
+		t.id AS t_id,
+		t.ad_type_name AS t_name,
+		t.is_flag as t_is_flag,
+		t.ad_type_id as t_type_id,
+		t.status as t_status,
+		t.is_move as t_is_move,
+		t.is_position as t_is_position
+	</sql>
+	<sql id="adNetworkField">
+		n.id as n_id,
+		n.ad_network_id as n_ad_network_id,
+		n.ad_netwrok_name as n_ad_netwrok_name
+
+	</sql>
+	<sql id="userField">
+		u.id AS u_id,
+		u.login_name as u_login_name,
+		u.name AS u_name
+
+	</sql>
+	
+	<sql id="createUserField">
+		m.id AS m_u_id,
+		m.login_name as m_u_login_name,
+		m.name AS m_u_name
+
+	</sql>
+	
+	<select id="getControlByTypeId" resultMap="adcontrolMap" parameterType="map">
+		select 
+			<include refid="controlSql"/>
+		from ad_default_controller c
+		left join ad_type t on c.ad_type_id = t.id and  t.del_flag=#{delFlag}
+		left join ad_network n on c.ad_network_id = n.id and n.del_flag=#{delFlag}
+		where
+		c.del_flag=#{delFlag}
+		<if test="_parameter.containsKey('flag')">  
+        	AND c.flag = #{flag} 
+    	</if> 
+    	<if test="_parameter.containsKey('adTypeId')">  
+        	AND c.ad_type_id = #{adTypeId} 
+    	</if>  
+    	<if test="_parameter.containsKey('adNetworkId')">  
+        	AND c.ad_network_id = #{adNetworkId} 
+    	</if> 
+	 	
+
+	</select>
+	
+	<resultMap id="controlMap" type="com.gospell.aas.dto.adv.AdResourceDTO">
+      	<id column="c_id" property="id"/>
+      	<result column="c_path" property="path"/>
+    </resultMap>
+ 
+	<resultMap id="adcontrolMap" type="AdDefaultControll">
+      	<id column="c_id" property="id"/>
+      	<result column="file_path" property="filePath"/>
+      	<result column="file_image_path" property="fileImagePath"/>
+      	<result column="ad_width" property="width"/>
+      	<result column="ad_height" property="height"/>
+      	<result column="play_order" property="playOrder"/>
+      	<result column="file_size" property="fileSize"/>
+      	<result column="duration" property="duration"/>
+      	<result column="file_format" property="fileFormat"/>
+      	<result column="resource_type" property="resourceType"/>
+      	<result column="ad_status" property="status"/>
+      	<result column="c_flag" property="flag"/>
+    </resultMap>
+	<select id="getControlByIds" resultMap="adcontrolMap">
+		select 
+		<include refid="controlSql"/>
+		 from ad_default_controller c
+		where c.id in 
+		 <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach>  
+		and c.del_flag='0'
+	</select>
+	
+	<select id="findList" resultMap="contorlListResult" parameterType="AdDefaultControll">
+	   select 
+	  	<include refid="controlSql"/>,
+	  	<include refid="typeField"/>,
+	  	<include refid="adNetworkField"/>,
+	  	<include refid="createUserField"/>,
+	  	<include refid="userField"/>
+	    FROM 
+		ad_default_controller c 
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		left join ad_network n ON c.ad_network_id = n.id and n.del_flag=#{delFlag}
+		left join sys_user m on c.create_by =  m.id and m.del_flag=#{delFlag}
+		left join sys_user u on c.update_by = u.id and u.del_flag=#{delFlag}
+		where c.del_flag =#{delFlag}
+      
+        <if test="flag != null">
+            	and c.flag=#{flag}
+        </if>
+         <if test="createBy != null and createBy.loginName != null and createBy.loginName != ''">
+            	and m.login_name like CONCAT('%', #{createBy.loginName}, '%')
+        </if>
+           <if test="updateBy != null and updateBy.loginName != null and updateBy.loginName != ''">
+            	and u.login_name like CONCAT('%', #{updateBy.loginName}, '%')
+        </if>
+         <if test="adNetwork != null and adNetwork.id != null and adNetwork.id != ''">
+            	and n.id=#{adNetwork.id}
+        </if>
+        <if test="adType != null and adType.id != null and adType.id != ''">
+            	and t.id=#{adType.id}
+        </if>
+        <if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        </if>
+	</select>
+ 
+	 <resultMap id="contorlListResult" type="AdDefaultControll">
+	      	<id column="c_id" property="id"/>
+	      	<result column="file_path" property="filePath"/>
+	      	<result column="file_image_path" property="fileImagePath"/>
+	      	<result column="ad_width" property="width"/>
+	      	<result column="ad_height" property="height"/>
+	      	<result column="play_order" property="playOrder"/>
+	      	<result column="file_size" property="fileSize"/>
+	      	<result column="duration" property="duration"/>
+	      	<result column="file_format" property="fileFormat"/>
+	      	<result column="resource_type" property="resourceType"/>
+	      	<result column="ad_status" property="status"/>
+	      	<result column="create_date" property="createDate"/>
+	      	<result column="update_date" property="updateDate"/>
+	      	<result column="c_flag" property="flag"/>
+	      	<association property="adType" resultMap="typeResult"/>
+	      	<association property="updateBy" resultMap="userResult" />
+	        <association property="createBy" resultMap="userResult" columnPrefix="m_"/>
+	      	<association property="adNetwork" resultMap="adNetworkResult"/>
+	  </resultMap>
+	  <resultMap type="AdType" id="typeResult">
+	  	<id property="id" column="t_id" />
+	  	<result property="typeId" column="t_type_id"/>
+	  	<result property="typeName" column="t_name"/>
+	  	<result property="isFlag" column="t_is_flag"/>
+	  	<result property="status" column="t_status"/>
+	  	<result property="isMove" column="t_is_move"/>
+	  	<result property="isPosition" column="t_is_position"/>
+    </resultMap>
+     <resultMap type="AdNetwork" id="adNetworkResult">
+	  	<id property="id" column="n_id" />
+	  	<result property="networkId" column="n_ad_network_id"/>
+	  	<result property="networkName" column="n_ad_netwrok_name"/>
+    </resultMap>
+     <resultMap type="User" id="userResult">
+	  	<id property="id" column="u_id" />
+	  	<result property="name" column="u_name"/>
+	  	<result property="loginName" column="u_login_name"/>
+    </resultMap>
+    
+    <update id="update" parameterType="AdDefaultControll">
+    	 UPDATE ad_default_controller
+		  SET
+			update_date =now(),
+			update_by =#{updateBy.id}
+		where id =#{id}
+    </update>
+	
+</mapper> 

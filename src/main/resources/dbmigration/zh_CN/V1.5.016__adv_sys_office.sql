@@ -1,0 +1,7 @@
+INSERT INTO `sys_office` VALUES ('1', '0', '0,', '1', '100000', '运营商', '1', '1', null, null, null, null, null, null, '1', '2015-12-12 10:39:41', '1', '2015-12-12 10:39:41', null, '0');
+INSERT INTO `sys_office` VALUES ('2', '1', '0,1,', null, '001', '运营管理', '1', '2', null, null, null, null, null, null, 'admin', '2016-05-31 16:32:47', 'admin', '2016-05-31 16:52:50', '主要负责电视运营商、广告套餐、合同、报表统计等相关管理', '0');
+INSERT INTO `sys_office` VALUES ('3', '1', '0,1,', null, '002', '网络管理', '1', '2', null, null, null, null, null, null, 'admin', '2016-05-31 16:50:01', 'admin', '2016-05-31 16:52:55', '主要负责发送器的管理', '0');
+INSERT INTO `sys_office` VALUES ('4', '5', '0,1,5', null, '003', '内容审核', '1', '2', null, null, null, null, null, null, 'admin', '2016-05-31 16:51:05', 'admin', '2016-11-15 17:42:22', '主要负责广告内容的审核', '0');
+INSERT INTO `sys_office` VALUES ('5', '1', '0,1,', null, '004', '广告商管理', '1', '2', null, null, null, null, null, null, 'admin', '2016-05-31 16:51:35', 'admin', '2016-08-13 15:04:08', '主要负责对签约的广告商进行管理', '0');
+INSERT INTO `sys_office` VALUES ('6', '5', '0,1,5,', null, '006', '广告商', '1', '3', null, null, null, null, null, null, 'admin', '2016-05-31 16:52:15', 'admin', '2016-08-13 15:28:18', '主要是签约的广告商系统用户发布、预览广告', '0');
+INSERT INTO `sys_office` VALUES ('7', '5', '0,1,5,', null, '005', '广告商自身管理', '1', '3', null, null, null, null, null, null, 'admin', '2016-08-13 15:28:06', 'admin', '2016-08-13 15:28:06', '', '1');

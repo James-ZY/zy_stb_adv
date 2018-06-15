@@ -1,0 +1,1 @@
+ alter table ad_postion ADD status int(11) NOT NULL Default 0;

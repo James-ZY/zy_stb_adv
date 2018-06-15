@@ -1,0 +1,1 @@
+ALTER TABLE ad_combo  ADD  is_valid int(11) NOT NULL default 1 COMMENT '套餐是否有效（0失效 1有效）';

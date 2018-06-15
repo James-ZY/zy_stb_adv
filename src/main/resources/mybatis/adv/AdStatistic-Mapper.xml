@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdStatisticDao">
+
+	<sql id="adStatisticSql">
+		DISTINCT s.id as s_id,
+		s.stb_serial_number as s_stb_serial_number,
+		s.smartcard_id as s_smartcard_id,
+		s.play_start_date as s_play_start_date,
+		s.play_end_date as s_play_end_date,
+		s.duration as s_duration,
+		s.system_type as s_system_type,
+		s.boss_user_code as s_boss_user_code,
+		s.is_scan as s_is_scan,
+		s.del_flag as s_del_flag,
+		s.create_date as s_create_date
+	</sql>
+	
+	<sql id="adelementField">
+	    a.id As a_id,
+		a.ad_name as a_ad_name,
+		a.start_date as a_start_date,
+		a.end_date as a_end_date,
+		a.ad_add_text as a_ad_add_text,
+		a.ad_id as a_ad_id,
+		a.ad_flag as a_ad_flag,
+		a.ad_status as a_ad_status,
+		a.ad_format as a_ad_format,
+		a.show_way as a_show_way,
+		a.remarks as a_remarks
+	</sql>
+	<sql id="countSql">
+	 e.ad_id as e_ad_id,
+	 count(DISTINCT s.id) as s_play_count
+	</sql>
+	<sql id="typeClickCountSql">
+		c.ad_type_id as ad_type_id,
+		 count(DISTINCT s.id) as s_play_count
+	</sql>
+	<sql id="typePlayCountSql">
+		c.ad_type_id as ad_type_id,
+		  sum(s.duration) as s_play_count
+	</sql>
+	<sql id="elementClickCountSql">
+		e.ad_id as e_ad_id,e.ad_name as e_ad_name,c.ad_type_id as ad_type_id,
+		 count(DISTINCT s.id) as s_play_count
+	</sql>
+	<sql id="elementPlayCountSql">
+		e.ad_id as e_ad_id,e.ad_name as e_ad_name,c.ad_type_id as ad_type_id,
+		sum(s.duration) as s_play_count
+	</sql>
+	 <select id="statisticPlayCount" parameterType="AdStatistic"  resultMap="countResult">
+		select 
+			<include refid="countSql"/>
+		from ad_statistics s
+		left join ad_element e on s.adv_id = e.id and e.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+		<if test="playStartDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{playStartDate}, '%Y-%m-%d')
+		</if>
+		<if test="playEndDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{playEndDate}, '%Y-%m-%d')
+		</if>
+		<if test="adElemet != null and adElemet.adId != null and adElemet.adId !=''">
+			and e.ad_id like  CONCAT(#{adElemet.adId}, '%')
+		</if>
+			and s.is_scan =#{isScan}
+		GROUP BY e.ad_id
+		order by s_play_count desc,e.ad_id
+	</select>
+
+	<!-- 统计不同类型广告点击次数 -->
+	<select id="statisticAdvTypeClickCount" parameterType="AdStatistic" resultMap="typeCountResult">
+		select
+		<include refid="typeClickCountSql"/>
+		from ad_statistics s
+		left join ad_element e on s.adv_id = e.id and e.del_flag=#{delFlag}
+		LEFT JOIN ad_combo c on e.ad_combo_id = c.id
+		where s.del_flag=#{delFlag}
+		<if test="playStartDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{playStartDate}, '%Y-%m-%d')
+		</if>
+		<if test="playEndDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{playEndDate}, '%Y-%m-%d')
+		</if>
+		<if test="adElemet != null and adElemet.adId != null and adElemet.adId !=''">
+			and e.ad_id like  CONCAT(#{adElemet.adId}, '%')
+		</if>
+		and s.is_scan =#{isScan}
+		GROUP BY c.ad_type_id
+		order by s_play_count desc,e.ad_id
+	</select>
+
+	<!-- 统计不同类型广告播放时长 -->
+	<select id="statisticAdvTypePlayCount" parameterType="AdStatistic" resultMap="typeCountResult">
+		 select
+		<include refid="typePlayCountSql"/>
+		from ad_statistics s
+		left join ad_element a on s.adv_id = a.id and a.del_flag=#{delFlag}
+		LEFT JOIN ad_combo c on a.ad_combo_id = c.id
+		where s.del_flag=#{delFlag}
+		<if test="playStartDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{playStartDate}, '%Y-%m-%d')
+		</if>
+		<if test="playEndDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{playEndDate}, '%Y-%m-%d')
+		</if>
+		<if test="adElemet != null and adElemet.adId != null and adElemet.adId !=''">
+			and e.ad_id like  CONCAT(#{adElemet.adId}, '%')
+		</if>
+ 		and s.is_scan =#{isScan}
+		group by c.ad_type_id
+		order by duration desc
+	</select>
+
+	<!-- 统计某类型广告点击次数 -->
+	<select id="statisticAdvElementClickCount" parameterType="AdStatistic" resultMap="elementCountResult">
+		select
+		<include refid="elementClickCountSql"/>
+		from ad_statistics s
+		left join ad_element e on s.adv_id = e.id and e.del_flag=#{delFlag}
+		LEFT JOIN ad_combo c on e.ad_combo_id = c.id
+		where s.del_flag=#{delFlag}
+		<if test="playStartDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{playStartDate}, '%Y-%m-%d')
+		</if>
+		<if test="playEndDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{playEndDate}, '%Y-%m-%d')
+		</if>
+		<if test="adElemet != null and adElemet.adId != null and adElemet.adId !=''">
+			and e.ad_id like  CONCAT(#{adElemet.adId}, '%')
+		</if>
+		and s.is_scan =#{isScan}
+		GROUP BY e.ad_id
+		order by s_play_count desc,e.ad_id
+	</select>
+
+	<select id="statisticAdvElementPlayCount" parameterType="AdStatistic" resultMap="elementCountResult">
+		 select
+		<include refid="elementPlayCountSql"/>
+		from ad_statistics s
+		left join ad_element e on s.adv_id = e.id and e.del_flag=#{delFlag}
+		LEFT JOIN ad_combo c on e.ad_combo_id = c.id
+		where s.del_flag=#{delFlag}
+		<if test="playStartDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{playStartDate}, '%Y-%m-%d')
+		</if>
+		<if test="playEndDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{playEndDate}, '%Y-%m-%d')
+		</if>
+		<if test="adElemet != null and adElemet.adId != null and adElemet.adId !=''">
+			and e.ad_id like  CONCAT(#{adElemet.adId}, '%')
+		</if>
+		and s.is_scan =#{isScan}
+		group by e.ad_id
+		order by s_play_count desc,e.ad_id
+	</select>
+
+	 <select id="statisticPlayAllCount" parameterType="AdStatistic"  resultType="Integer">
+		select 
+			 count(DISTINCT e.id) as s_play_count
+		from ad_statistics s
+		left join ad_element e on s.adv_id = e.id and e.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+		<if test="playStartDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{playStartDate}, '%Y-%m-%d')
+		</if>
+		<if test="playEndDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{playEndDate}, '%Y-%m-%d')
+		</if>
+		<if test="adElemet != null and adElemet.adId != null and adElemet.adId !=''">
+			and e.ad_id like  CONCAT(#{adElemet.adId}, '%')
+		</if>
+		and s.is_scan =#{isScan}
+	</select>
+	 <select id="statisticPlayDetail" parameterType="AdStatistic"  resultMap="detailResult">
+		select 
+			<include refid="adStatisticSql"/>,
+			<include refid="adelementField"/>
+		from ad_statistics s
+		left join ad_element a on s.adv_id = a.id and a.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+		<if test="playStartDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{playStartDate}, '%Y-%m-%d')
+		</if>
+		<if test="playEndDate != null">
+			and DATE_FORMAT(s.play_start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{playEndDate}, '%Y-%m-%d')
+		</if>
+		<if test="adElemet != null and adElemet.adId != null and adElemet.adId !=''">
+			and a.ad_id like  CONCAT(#{adElemet.adId}, '%')
+		</if>
+ 		and s.is_scan =#{isScan}
+		order by a.ad_id,s.play_start_date desc
+	</select>
+	
+	 <select id="selectAdStatisticByDateList" parameterType="map"  resultMap="detailResult">
+		select 
+			<include refid="adStatisticSql"/>,
+			<include refid="adelementField"/>
+				from ad_statistics s
+		left join ad_element a on s.adv_id = a.id and a.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+		and DATE_FORMAT(s.play_start_date, '%Y-%m-%d %h:%i:%s ') in 
+		<foreach item="item" index="index" collection="dateList" open="(" separator="," close=")">  
+  			 DATE_FORMAT(#{item}, '%Y-%m-%d %h:%i:%s')
+ 		</foreach> 
+ 		and s.is_scan =#{isScan}
+		and s.smartcard_id = #{smartcardId}
+	</select>
+	
+	<resultMap type="com.gospell.aas.dto.adv.AdStatisticPlayDTO" id="countResult">
+	  	<id property="advId" column="e_ad_id" />
+	  	<result property="count" column="s_play_count"/>
+    </resultMap>
+
+	<resultMap type="com.gospell.aas.dto.adv.AdStatisticTypePlayDTO" id="typeCountResult">
+		<id property="advTypeId" column="ad_type_id" />
+		<result property="count" column="s_play_count"/>
+	</resultMap>
+
+	<resultMap id="elementCountResult" type="com.gospell.aas.dto.adv.AdElementStatisticPlayDTO">
+		<id property="advId" column="e_ad_id" />
+		<id property="advName" column="e_ad_name" />
+		<id property="advTypeId" column="ad_type_id" />
+		<result property="count" column="s_play_count"/>
+	</resultMap>
+     <resultMap type="Adelement" id="adelementResult">
+	  	<id property="id" column="a_id" />
+	  	<result property="adName" column="a_ad_name"/>
+	  	<result property="startDate" column="a_start_date"/>
+	  	<result property="endDate" column="a_end_date"/>
+	  	<result property="addText" column="a_ad_add_text"/>
+	  	<result property="adId" column="a_ad_id"/>
+	  	<result property="isFlag" column="a_ad_flag"/>
+	  	<result property="status" column="a_ad_status"/>
+	  	<result property="format" column="a_ad_format"/>
+	  	<result property="showWay" column="a_show_way"/>
+	  	<result property="remarks" column="a_remarks"/>
+    </resultMap>
+ 
+	 <resultMap type="AdStatistic" id="detailResult">
+	  	<id property="id" column="s_id" />
+	  	<result property="stdSerialNumber" column="s_stb_serial_number"/>
+	  	<result property="smartcardId" column="s_smartcard_id"/>
+	  	<result property="playStartDate" column="s_play_start_date"/>
+	  	<result property="playEndDate" column="s_play_end_date"/>
+	  	<result property="systemType" column="s_system_type"/>
+	  	<result property="bossUserCode" column="s_boss_user_code"/>
+	  	<result property="duration" column="s_duration"/>
+	  	<result property="isScan" column="s_is_scan"/>
+	  	<result property="createDate" column="s_create_date"/>
+	  	<result property="delFlag" column="s_del_flag"/>
+	  	<association property="adElemet" resultMap="adelementResult"/>
+    </resultMap>
+ 
+</mapper> 

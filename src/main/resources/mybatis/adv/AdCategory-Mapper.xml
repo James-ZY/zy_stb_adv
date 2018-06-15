@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdCategoryDao">
+	<select id="findMaxAdCategoryId" resultType="Integer">
+	   SELECT max(category_id+1) from ad_category
+	</select>
+</mapper> 

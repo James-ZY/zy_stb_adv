@@ -1,0 +1,1 @@
+update ad_resoure_type r set r.format='jpg,png' where r.ad_type_id='1' or r.ad_type_id='9';

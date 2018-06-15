@@ -1,0 +1,16 @@
+--SET FOREIGN_KEY_CHECKS=0;
+--DROP TABLE IF EXISTS `ad_combo_channel`;
+--CREATE TABLE `ad_combo_channel_1` (
+  --`ad_combo_id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '广告套餐ID',
+  --`ad_network_id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '广告发送器ID',
+  --`ad_channel_id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '频道Id',
+  --`id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '编号',
+  --`create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人',
+  --`create_date` datetime COLLATE utf8_bin  DEFAULT NULL COMMENT '创建时间',
+  --`update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT '更新人',
+  --`update_date` datetime DEFAULT NULL COMMENT '更新时间',
+  --`remarks` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '备注',
+  --`del_flag` char(1) COLLATE utf8_bin NOT NULL DEFAULT '0' COMMENT '删除标记',
+  --PRIMARY KEY (`id`),
+ -- KEY `ad_combo_channel_del_flag` (`del_flag`)
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='套餐-频道表';

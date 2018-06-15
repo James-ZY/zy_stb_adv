@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdOperatorsDao">
+    
+   <sql id="operatorSql">
+    DISTINCT a.id as a_id,
+   	a.ad_operators_id as a_ad_operators_id,
+   	a.ad_operators_name as a_ad_operators_name,
+   	a.ad_password as a_ad_password,
+   	a.ad_contact as a_ad_contact,
+   	a.ad_mobilephone as a_ad_mobilephone,
+   	a.ad_telphone as a_ad_telphone,
+   	a.ad_area as a_ad_area,
+   	a.ad_number as a_ad_number,
+   	a.remarks as a_remarks,
+   	a.update_date as a_update_date,
+   	a.create_date as a_create_date
+   </sql>
+   
+  <sql id="networkSql">
+	 n.id as n_id,
+	 n.ad_network_id as n_ad_network_id,
+	 n.ad_netwrok_name as n_network_name,
+	 n.ad_status as n_ad_status
+  </sql>
+	<select id="findList" resultMap="pageResult" parameterType="AdOperators">
+	select 
+		<include refid="operatorSql"/>,
+		<include refid="networkSql"/>
+	from ad_operators a
+	left join ad_network n on a.id = n.ad_operators_id and n.del_flag=#{delFlag}
+	where a.del_flag=#{delFlag}
+	<if test="operatorsId != null and operatorsId != ''">
+	  and a.ad_operators_id like CONCAT(#{operatorsId},'%')
+	</if>
+	<if test="operatorsName != null and operatorsName != ''">
+	  and a.ad_operators_name like CONCAT('%',#{operatorsName},'%')
+	</if>
+
+	<if test="adNetworkId != null and adNetworkId !=''">
+		and n.id=#{adNetworkId}
+	</if>
+	<if test="page.orderBy !=null and page.orderBy !=''">
+			ORDER BY ${page.orderBy}
+	</if>
+	
+	</select>
+	
+		<select id="findAll" resultMap="pageResult" parameterType="AdOperators">
+		select 
+			<include refid="operatorSql"/>,
+			<include refid="networkSql"/>
+		from ad_operators a
+		left join ad_network n on a.id = n.ad_operators_id and n.del_flag=#{delFlag}
+		where a.del_flag=#{delFlag}
+		and n.del_flag =#{delFlag}
+		 order by a.ad_operators_id desc
+	  </select>
+	
+	<select id="findAdOperatorsByOpId" parameterType="map" resultMap="opResult">
+		select 
+			<include refid="operatorSql"/>
+		from ad_operators a
+		where a.del_flag=#{delFlag}
+		and a.ad_operators_id in
+		<foreach collection="idList" item="item" index="index"  open="(" separator="," close=")">
+			'${item}'
+		</foreach>
+	 
+	</select>
+	
+	<select id="findMaxAdOperatorId" resultType="Integer">
+	   select max(ad_operators_id+1) from ad_operators
+	</select>
+	
+	 <resultMap type="AdOperators" id="opResult">
+		<id column="a_id" property="id"/>
+		<result column="a_ad_operators_id" property="operatorsId"/>
+		<result column="a_ad_operators_name" property="operatorsName"/>
+		<result column="a_ad_password" property="password"/>
+		<result column="a_ad_contact" property="contact"/>
+		<result column="a_ad_mobilephone" property="mobilephone"/>
+		<result column="a_ad_telphone" property="telphone"/>
+		<result column="a_ad_area" property="area"/>
+		<result column="a_ad_number" property="number"/>
+		<result column="a_remarks" property="remarks"/>
+		<result column="a_update_date" property="updateDate"/>
+		<result column="a_create_date" property="createDate"/>
+ 
+	</resultMap>
+	<resultMap type="AdOperators" id="pageResult">
+		<id column="a_id" property="id"/>
+		<result column="a_ad_operators_id" property="operatorsId"/>
+		<result column="a_ad_operators_name" property="operatorsName"/>
+		<result column="a_ad_password" property="password"/>
+		<result column="a_ad_contact" property="contact"/>
+		<result column="a_ad_mobilephone" property="mobilephone"/>
+		<result column="a_ad_telphone" property="telphone"/>
+		<result column="a_ad_area" property="area"/>
+		<result column="a_ad_number" property="number"/>
+		<result column="a_remarks" property="remarks"/>
+		<result column="a_update_date" property="updateDate"/>
+		<result column="a_create_date" property="createDate"/>
+		<collection property="networkList" ofType="AdNetwork" resultMap="networkMap"/>
+	</resultMap>
+	<resultMap id="networkMap" type="AdNetwork">
+     	<id column="n_id" property="id"/>
+     	<result column="n_ad_network_id" property="networkId"/>
+     	<result column="n_network_name" property="networkName"/>
+     	   	<result column="n_ad_status" property="status"/>
+    </resultMap>
+</mapper> 

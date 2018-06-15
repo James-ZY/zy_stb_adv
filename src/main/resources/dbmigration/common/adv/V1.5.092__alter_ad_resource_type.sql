@@ -1,0 +1,1 @@
+ALTER TABLE ad_resoure_type modify column format varchar(255);

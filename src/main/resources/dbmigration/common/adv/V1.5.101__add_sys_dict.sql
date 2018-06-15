@@ -1,0 +1,16 @@
+INSERT INTO `sys_dict`  VALUES ('caf8b0d4ee30454cb63b3aa11f1c22a8', '新增', '3', 'sys_log_type', '日志类型', '30', 'admin', '2017-06-30 15:52:24', 'admin', '2017-06-30 16:48:28', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('f210307ab9a44f55adaa831dc9e174ef', 'add', '3', 'sys_log_type', '日志类型', '30', 'admin', '2017-06-30 15:52:50', 'admin', '2017-06-30 16:48:37', NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('929ffd304201442f948735df0cd2dac7', '修改', '4', 'sys_log_type', '日志类型', '40', 'admin', '2017-06-30 15:54:38', 'admin', '2017-06-30 16:48:58', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('a70fdb8a6a0742ad82bfb3de316eaa0d', 'update', '4', 'sys_log_type', '日志类型', '40', 'admin', '2017-06-30 15:55:18', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('2b8070dbb8184a3ab1e7ebfb2b619902', '删除', '5', 'sys_log_type', '日志类型', '50', 'admin', '2017-06-30 15:58:14', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('8f45a75bfea245b08a772d221cda5e42', 'delete', '5', 'sys_log_type', '日志类型', '50', 'admin', '2017-06-30 15:58:40', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('3619f80d56ba4567bf4134e33d71bda1', '导入', '6', 'sys_log_type', '日志类型', '60', 'admin', '2017-06-30 15:59:24', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('cde5101f1d364bc0a3b552f54debb29f', 'import', '6', 'sys_log_type', '日志类型', '60', 'admin', '2017-06-30 15:59:44', 'admin', '2017-06-30 16:01:27', NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('9feb6ad80180426db9c507618af12b2a', '导出', '7', 'sys_log_type', '日志类型', '70', 'admin', '2017-06-30 16:00:06', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('e48f15a9f2574dcdb8575cef3b89513e', 'export', '7', 'sys_log_type', '日志类型', '70', 'admin', '2017-06-30 16:00:32', 'admin', '2017-06-30 16:01:37', NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('275d982690de4eb59a3548c892b700ef', '审核', '8', 'sys_log_type', '日志类型', '80', 'admin', '2017-06-30 16:02:26', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('2f195a820c754716b55558475a3199cd', 'audit', '8', 'sys_log_type', '日志类型', '80', 'admin', '2017-06-30 16:02:51', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('ee08f9135be14e78aacc329960a041ac', '认领', '9', 'sys_log_type', '日志类型', '90', 'admin', '2017-06-30 16:03:14', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('78eb5925522e4f3f9b26f5adf8b6ba0b', 'claim', '9', 'sys_log_type', '日志类型', '90', 'admin', '2017-06-30 16:03:56', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('954c3f93e4f04e6b8bd05dd29bb61455', '其他', '10', 'sys_log_type', '日志类型', '100', 'admin', '2017-06-30 16:04:15', 'admin', '2017-06-30 16:16:02', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('da142bcac9eb46ffb0525b9c1abc9290', 'other', '10', 'sys_log_type', '日志类型', '100', 'admin', '2017-06-30 16:04:40', NULL, NULL, NULL, '0', '1');

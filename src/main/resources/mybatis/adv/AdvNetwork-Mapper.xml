@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdvNetWorkDao">
+
+	<sql id="positionSql">
+		DISTINCT p.id as p_id,
+		p.adv_id as p_adv_id,
+		p.ad_status as p_status,
+		p.client_id as p_client_id
+	</sql>
+    
+   <select id="insertEntity" parameterType="java.util.List">
+	
+	  insert into
+	  ad_adv_network(id,adv_id,client_id,ad_status,create_date)
+	  values
+	  <foreach collection="list" item="item" index="index"
+	   separator=",">
+	   (#{item.id,jdbcType=VARCHAR},#{item.advId,jdbcType=VARCHAR},#{item.clientId,jdbcType=VARCHAR},
+	   #{item.status,jdbcType=INTEGER},#{item.createDate,jdbcType=TIMESTAMP})
+  </foreach>
+ </select>
+
+  <resultMap id="positionMap" type="AdvNetwork">
+      	<id column="p_id" property="id"/>
+      	<result column="p_adv_id" property="advId"/>
+      	<result column="p_status" property="status"/>
+      	<result column="p_client_id" property="clientId"/>
+    </resultMap>
+  <select id="selectData" resultMap="positionMap" parameterType="map">
+		select 
+		<include refid="positionSql"/>
+		from ad_adv_network p
+		where
+	  	 p.del_flag =#{delFlag}
+	  	 and p.ad_status=#{status}
+		 and p.client_id=#{clientId}
+  </select>
+  
+  <delete id="deleteList">
+  		delete from ad_adv_network 
+  		where adv_id in
+  		 <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach> 
+ 		and ad_status = #{status}
+ 		and client_id = #{clientId} 
+  </delete>
+  
+   <delete id="deleteList1">
+  		delete from ad_adv_network 
+  		where adv_id = #{advId}
+ 		and ad_status in
+  		<foreach item="item" index="index" collection="statusItem" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach> 
+ 		and client_id in
+  		<foreach item="item" index="index" collection="clientItem" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach> 
+  </delete>
+
+	
+	 
+	
+</mapper> 

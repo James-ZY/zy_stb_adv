@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdRangeDao">
+	<!-- Station实体类字段 -->
+	<sql id="rangeField">
+		r.id As r_id,
+		r.range_name,
+		r.begin_x,r.begin_y,r.end_x,
+		r.end_y,r.status,r.flag
+	</sql>
+	<sql id="typeField">
+		t.id AS t_id,
+		t.ad_type_name AS t_name
+	</sql>
+	
+	<update id="updateRangeStatus" parameterType="map">
+	 	update ad_range r
+		set r.status = #{status}
+		where r.ad_type_id = #{typeId}
+		and r.flag = #{flag}
+		and r.del_flag=#{delFlag}
+	</update>
+	
+	<!--保存 -->
+	<insert id="save" parameterType="AdRange">
+		INSERT INTO
+		ad_range(id, range_name, begin_x, begin_y, end_x, end_y, status,
+		flag, ad_type_id,create_by,create_date,remarks)
+		VALUES(#{id}, #{rangeName}, #{beginX}, #{beginY}, #{endX}, #{endY}, #{status},
+		#{flag},  #{type.id},#{createBy.id},now(),#{remarks})
+	</insert>
+	
+	<!-- 删除 -->
+	<delete id="deleteById" parameterType="string">
+		UPDATE ad_range set del_flag=1 where id=#{id}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="AdRange">
+		UPDATE ad_range
+		  SET
+			range_name =#{rangeName},
+			begin_x =#{beginX},
+			begin_y =#{beginY},
+			end_x =#{endX},
+			end_y =#{endY},
+			status =#{status},
+			flag =#{flag},
+			ad_type_id =#{type.id},
+			update_date =now(),
+			update_by =#{updateBy.id}
+		where id =#{id}
+	</update>
+	<select id="findList" resultMap="rangeResult" parameterType="AdRange">
+	   select 
+	    <include refid="rangeField" />,
+	    <include refid="typeField" />
+	    FROM 
+			ad_range AS r left join ad_type AS t
+			ON r.ad_type_id =t.id and t.del_flag= #{delFlag}
+			where r.del_flag = #{delFlag}
+			<if test="type != null and type.id != null and type.id != '' ">
+            	and t.id = #{type.id}
+        	</if>
+        	<if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        	</if>
+	</select>
+	
+	<select id="getUseInAdRange" resultMap="rangeResult" parameterType="map">
+		select
+		<include refid="rangeField" />,
+		<include refid="typeField" />
+		FROM
+		ad_range AS r left join ad_type AS t
+		ON r.ad_type_id =t.id and t.del_flag= #{delFlag}
+		where r.del_flag = #{delFlag}
+		and r.status =#{status}
+		<if test="flag !=null  and typeId !=''">
+			and r.flag = #{flag}
+		</if>
+		<if test="typeId !=null and typeId !=''">
+			and t.id = #{typeId}
+		</if>
+	</select>
+	
+	<resultMap type="AdRange" id="rangeResult">
+	  	<id property="id" column="r_id" />
+	  	<result property="rangeName" column="range_name"/>
+	  	<result property="beginX" column="begin_x"/>
+	  	<result property="beginY" column="begin_y"/>
+	  	<result property="endX" column="end_x"/>
+	  	<result property="endY" column="end_y"/>
+	  	<result property="status" column="status"/>
+	  	<result property="flag" column="flag"/>
+	  	<association property="type" resultMap="typeResult"/>
+    </resultMap>
+    
+   	<resultMap type="AdType" id="typeResult">
+	  	<id property="id" column="t_id" />
+	  	<result property="typeName" column="t_name"/>
+	  	 
+    </resultMap>
+ 
+</mapper> 

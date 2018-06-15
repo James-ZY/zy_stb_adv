@@ -1,0 +1,18 @@
+INSERT INTO `sys_dict`  VALUES ('cfdaa3b1c7dc4c39b59282743675b913', '数据库管理', '数据库管理', 'menu_database_management', '数据库管理', '10', 'admin', '2017-07-03 16:14:21', 'admin', '2017-07-03 16:17:00', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('de9ad646f04f48dc93860c422ee6fd31', 'DataBase Manage', 'DataBase Manage', 'menu_database_management', 'DataBase Manage', '20', 'admin', '2017-07-03 16:15:27', 'admin', '2017-07-03 16:17:06', NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('51d533f001a54d21954c93d20c96e26d', '数据库备份还原', '数据库备份还原', 'menu_backup_restore', '数据库备份还原', '10', 'admin', '2017-07-03 16:29:36', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('4d4ec3f6c0214dc99a223bd85527b87d', 'Database Backup Restore', 'Database Backup Restore', 'menu_backup_restore', 'Database Backup Restore', '20', 'admin', '2017-07-03 16:30:20', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('b897a90d686b4d9b8fff55dfa0e72a97', '禁止', '0', 'sys_task_status', '自动调度任务状态', '10', 'admin', '2017-07-04 15:39:04', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('9f84693dd07344bca7ea7b285c4427a5', 'forbid', '0', 'sys_task_status', '自动调度任务状态', '10', 'admin', '2017-07-04 15:39:42', 'admin', '2017-07-04 15:45:08', NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('6cd36de8e8bf4260be7e8cc8e327c519', '启动', '1', 'sys_task_status', '自动调度任务状态', '20', 'admin', '2017-07-04 15:43:00', 'admin', '2017-07-04 15:44:54', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('dae8ba04e6de4419b0a3d7a98ca8b69d', 'start', '1', 'sys_task_status', '自动调度任务状态', '20', 'admin', '2017-07-04 15:43:54', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('6877de40fb104be7966dfd969778fe0f', '禁止', '禁止', 'menu_forbid', '禁止', '10', 'admin', '2017-07-05 09:30:03', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('0b1c891879ad4241a5ccc6b3fab0134c', 'forbid', 'forbid', 'menu_forbid', 'forbid', '10', 'admin', '2017-07-05 09:30:51', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('87464e0e6a3140d196e3800e7726e20e', '启动', '启动', 'menu_start', '启动', '20', 'admin', '2017-07-05 09:31:11', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('0ee148ab22554b279fd6ce624e227c71', 'start', 'start', 'menu_start', 'start', '20', 'admin', '2017-07-05 09:31:47', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('e3d4225ff5054e1da862696d7c5c43c5', '定时任务管理', '定时任务管理', 'sys_task_manage', '定时任务管理', '10', 'admin', '2017-07-06 17:17:53', 'admin', '2017-07-06 17:20:38', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('260b8df04e5943129000847a0a47f6af', 'Timed Task Manage', 'Timed Task Manage', 'sys_task_manage', 'Timed Task Manage', '10', 'admin', '2017-07-06 17:19:00', 'admin', '2017-07-06 17:20:43', NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('3985cb64dda4450483a880278b612c5b', '备份', '备份', 'sys_database_backup', '备份', '10', 'admin', '2017-07-06 17:25:53', 'admin', '2017-07-06 17:27:45', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('8edaa378557e4ccfbce32d6afb6a3c77', 'backup', 'backup', 'sys_database_backup', 'backup', '10', 'admin', '2017-07-06 17:26:11', 'admin', '2017-07-06 17:27:59', NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('2670342888474257a9fecb5e580e86ea', '还原', '还原', 'sys_database_restore', '还原', '20', 'admin', '2017-07-06 17:26:59', 'admin', '2017-07-06 17:27:29', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('bfa8e0d4de1948e89eceb60eb73758d2', 'restore', 'restore', 'sys_database_restore', 'restore', '20', 'admin', '2017-07-06 17:27:19', NULL, NULL, NULL, '0', '1');

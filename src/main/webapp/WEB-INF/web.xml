@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	
+	<display-name>aas</display-name>
+	
+	<!-- 表示Tomcat要为此web应用复制 Session -->
+	<distributable/>
+	
+	<!-- 激活Tomcat的defaultServlet来处理静态文件 -->
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.jpg</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.gif</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.png</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.js</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>	
+        <url-pattern>*.css</url-pattern>
+    </servlet-mapping>
+
+	<!-- Spring ApplicationContext配置文件的路径,可使用通配符，用于后面的Spring Context Loader -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+    
+	<!-- spring的监听器 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	
+	
+	</listener>
+
+	<!-- 防止spring内存溢出监听器 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+	
+	<listener>  
+    	<listener-class>org.springframework.web.context.request.RequestContextListener </listener-class>  
+	</listener> 
+	
+	<!-- web.xml -->
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>web.root</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+	</listener>
+	 
+
+	<filter>
+		<description>字符集过滤器</description>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+	<!-- 实现Hibernate的延迟加载功能，基于一个请求一个hibernate session的原则 -->
+	<filter>
+		<filter-name>openSessionInViewFilter</filter-name>
+		<filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>openSessionInViewFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+
+	<!-- Shiro Security filter -->
+	<filter>
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+	
+    <filter>
+        <filter-name>httpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>       
+    <filter-mapping>
+        <filter-name>httpMethodFilter</filter-name>
+        <servlet-name>springDispatcher</servlet-name>
+    </filter-mapping>
+  
+	<!-- Cache Control Header filter -->
+	<filter>
+		<filter-name>cacheControlHeaderFilter</filter-name>
+		<filter-class>com.gospell.aas.common.web.CacheControlHeaderFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>cacheControlHeaderFilter</filter-name>
+		<url-pattern>/static/*</url-pattern>
+	</filter-mapping>
+
+	<!-- SiteMesh -->
+	<filter>
+		<filter-name>sitemeshFilter</filter-name>
+		<filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>sitemeshFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+<!-- 	<filter> -->
+<!-- 		<filter-name>app</filter-name> -->
+<!-- 		<filter-class>com.gospell.aas.common.security.AppLoginFilter</filter-class> -->
+<!-- 	</filter> -->
+<!-- 	<filter-mapping> -->
+<!-- 		<filter-name>app</filter-name> -->
+<!-- 		<url-pattern>/rs/*</url-pattern> -->
+<!-- 	</filter-mapping> -->
+
+	<!-- Spring MVC Servlet -->
+	<servlet>
+		<servlet-name>springDispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring-mvc.xml</param-value>
+		</init-param>
+		<!-- 启动级别 -->
+		<load-on-startup>1</load-on-startup>
+		<!-- 用websocket就不要再用servlet的异步了
+        <async-supported>true</async-supported>
+         -->
+	</servlet>
+	<!-- 覆盖default servlet的/, springmvc servlet将处理原来处理静态资源的映射 -->
+	<servlet-mapping>
+		<servlet-name>springDispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+	<!-- JAX-RS REST -->
+	<servlet>
+		<servlet-name>JAX-RS REST Service</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>com.gospell.aas.webservice.rest</param-value>
+		</init-param>
+		<init-param>
+			<param-name>jersey.config.server.provider.classnames</param-name>
+            <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+		</init-param>
+		<!-- 非框架级别的init 参数在其类中加注解 -->
+                
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JAX-RS REST Service</servlet-name>
+		<url-pattern>/rs/*</url-pattern>
+	</servlet-mapping>
+    
+    <!-- session超时 -->
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+	<!--  错误 页面配置-->
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/WEB-INF/views/error/500.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/views/error/500.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/error/404.jsp</location>
+	</error-page>
+	 
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/error/404.json</location>
+	</error-page>
+	
+</web-app>

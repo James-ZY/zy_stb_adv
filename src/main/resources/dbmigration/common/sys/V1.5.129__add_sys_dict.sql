@@ -1,0 +1,2 @@
+INSERT INTO `sys_dict`  VALUES ('d32afc94b3f34358ba512c532bdfb2ff', '广告显示设置', 'ATS', 'sys_param_manage', '系统参数设置', '20', 'admin', '2017-12-13 17:55:02', 'admin', '2017-12-13 17:55:42', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('73257bf9f4e24fceaef251b913d137f2', 'adelement_time_set', 'ATS', 'sys_param_manage', '系统参数设置', '20', 'admin', '2017-12-13 17:55:26', 'admin', '2017-12-13 17:56:35', NULL, '0', '1');

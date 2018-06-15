@@ -1,0 +1,25 @@
+DROP TABLE IF EXISTS `ad_controller`;
+CREATE TABLE `ad_controller` (
+  `id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '编号',
+  `file_path` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '文件路径',
+  `file_image_path` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '视频截图路径',
+  `ad_width` int(11) COLLATE utf8_bin DEFAULT NULL DEFAULT 0 COMMENT '文件宽',
+  `ad_height` int(11) COLLATE utf8_bin DEFAULT NULL DEFAULT 0 COMMENT '文件高',
+  `play_order` int(11) COLLATE utf8_bin DEFAULT NULL DEFAULT 0 COMMENT '播放顺序',
+  `file_size` varchar(11) COLLATE utf8_bin DEFAULT NULL COMMENT '文件大小',
+  `file_format`  varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT '文件格式ʽ',
+  `resource_type`  int(11) COLLATE utf8_bin DEFAULT 0 COMMENT '资源类型（1图片 2视频）',
+  `ad_status`  int(11) COLLATE utf8_bin DEFAULT 0 COMMENT '状态（0待审核 1审核通过 -1审核不通过）',
+   `duration` int(11) DEFAULT NULL,
+  `ad_reason` varchar(1000) COLLATE utf8_bin DEFAULT NULL COMMENT '审核备注',
+  `ad_type_id`  varchar(64) COLLATE utf8_bin NOT NULL COMMENT '广告类型id',
+  `ad_advertiser_id`  varchar(64) COLLATE utf8_bin NOT NULL COMMENT '广告商id',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人',
+  `create_date` datetime COLLATE utf8_bin  DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT '更新人',
+  `update_date` datetime DEFAULT NULL COMMENT '更新时间',
+  `remarks` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '备注',
+  `del_flag` char(1) COLLATE utf8_bin NOT NULL DEFAULT '0' COMMENT '删除标记',
+  PRIMARY KEY (`id`),
+   key `ad_controller` (`file_path`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='资源控制表';

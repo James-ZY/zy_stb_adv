@@ -1,0 +1,1 @@
+ALTER TABLE sys_log  ADD  log_info text DEFAULT NULL COLLATE utf8_bin COMMENT '日志信息';

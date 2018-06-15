@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdTrackDao">
+	<!-- Station实体类字段 -->
+	<sql id="trackField">
+		r.id As r_id,
+		r.track_name,
+		r.coordinates,
+		r.show_time,
+		r.bg_width,
+		r.bg_height,
+		r.status,r.flag
+	</sql>
+	<sql id="typeField">
+		t.id AS t_id,
+		t.ad_type_name AS t_name
+	</sql>
+	<sql id="rangeField">
+		g.id AS g_id,
+		g.range_name AS g_name
+	</sql>
+	
+	<update id="updateTrackStatus" parameterType="map">
+	 	update ad_track r
+		set r.status = #{status}
+		where r.ad_type_id = #{typeId}
+		and r.flag = #{flag}
+		and r.del_flag=#{delFlag}
+	</update>
+	
+	<!--保存 -->
+	<insert id="save" parameterType="AdTrack">
+		INSERT INTO
+		ad_track(id, track_name, coordinates, status,
+		flag, ad_type_id,ad_range_id,show_time,bg_width,bg_height,create_by,create_date,remarks)
+		VALUES(#{id}, #{trackName}, #{coordinates}, #{status},
+		#{flag},  #{type.id},#{range.id},#{showTime},#{bgWidth},#{bgHeight},#{createBy.id},now(),#{remarks})
+	</insert>
+	
+	<!-- 删除 -->
+	<delete id="deleteById" parameterType="string">
+		UPDATE ad_track set del_flag=1 where id=#{id}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="AdTrack">
+		UPDATE ad_track
+		  SET
+			track_name =#{trackName},
+			coordinates =#{coordinates},
+			status =#{status},
+			flag =#{flag},
+			ad_type_id =#{type.id},
+			ad_range_id =#{range.id},
+			show_time =#{showTime},
+			bg_height =#{bgWidth},
+			bg_height =#{bgHeight},
+			update_date =now(),
+			update_by =#{updateBy.id}
+		where id =#{id}
+	</update>
+	<select id="findList" resultMap="trackResult" parameterType="AdTrack">
+	   select 
+	    <include refid="trackField" />,
+	    <include refid="typeField" />,
+		<include refid="rangeField" />
+	    FROM 
+			ad_track AS r left join ad_type AS t
+			ON r.ad_type_id =t.id and t.del_flag= #{delFlag} left join ad_range AS g
+			ON r.ad_range_id =g.id
+			and g.del_flag= #{delFlag}
+			where r.del_flag = #{delFlag}
+			<if test="type != null and type.id != null and type.id != '' ">
+            	and t.id = #{type.id}
+			</if>
+			<if test="range != null and range.id != null and range.id != '' ">
+				and t.id = #{range.id}
+			</if>
+			<if test="page.orderBy !=null and page.orderBy !=''">
+					ORDER BY ${page.orderBy}
+			</if>
+	</select>
+	
+	<select id="getUseInAdTrack" resultMap="trackResult" parameterType="map">
+	   select 
+	    <include refid="trackField" />,
+	    <include refid="typeField" />,
+		<include refid="rangeField" />
+	    FROM 
+			ad_track AS r left join ad_type AS t
+			ON r.ad_type_id =t.id and t.del_flag= #{delFlag} left join ad_range AS g
+			ON r.ad_range_id =g.id
+			and g.del_flag= #{delFlag}
+			where r.del_flag = #{delFlag}
+			 and r.status =#{status}
+			 <if test="flag !=null and flag !=''">
+        		and r.flag = #{flag}
+        	</if>
+        	<if test="typeId !=null and typeId !=''">
+        		and t.id = #{typeId}
+        	</if>
+			<if test="rangeId !=null and rangeId !=''">
+				and t.id = #{rangeId}
+			</if>
+	</select>
+
+	<resultMap type="AdTrack" id="trackResult">
+	  	<id property="id" column="r_id" />
+	  	<result property="trackName" column="track_name"/>
+	  	<result property="coordinates" column="coordinates"/>
+	  	<result property="showTime" column="show_time"/>
+		<result property="bgWidth" column="bg_width"/>
+		<result property="bgHeight" column="bg_height"/>
+	  	<result property="status" column="status"/>
+	  	<result property="flag" column="flag"/>
+	  	<association property="type" resultMap="typeResult"/>
+		<association property="range" resultMap="rangeResult"/>
+    </resultMap>
+    
+   	<resultMap type="AdType" id="typeResult">
+	  	<id property="id" column="t_id" />
+	  	<result property="typeName" column="t_name"/>
+	  	 
+    </resultMap>
+	<resultMap type="AdRange" id="rangeResult">
+		<id property="id" column="g_id" />
+		<result property="rangeName" column="g_name"/>
+
+	</resultMap>
+ 
+</mapper> 

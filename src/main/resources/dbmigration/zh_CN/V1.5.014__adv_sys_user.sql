@@ -1,0 +1,1 @@
+INSERT INTO `sys_user` VALUES (null, null, null, '1', '1', 'admin', 'admin', '5bbeeac36c116166392cac02f3b79d53a39a0c61fc83df0b02657d72', '系统超级管理员', null, null, null, null, null, null, 'admin', '2016-05-30 00:00:00', null, null, null, '0', null, null);

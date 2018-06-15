@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdPositionDao">
+		<!-- 根据广告套餐ID（与频道无关）返回发送器ID -->
+	<sql id="positionSql">
+		p.id as id,
+		p.position_id as position_id,
+		p.position_name as position_name,
+		p.begin_point_x,
+		p.begin_point_y,
+		p.end_point_x,
+		p.end_point_y,
+		p.velocity,
+		p.status as position_status
+	</sql>
+	<sql id="typeSql">
+		t.id AS t_id,
+		t.ad_type_name AS t_name,
+		t.is_flag as t_is_flag,
+		t.ad_type_id as t_type_id,
+		t.status as t_status,
+		t.is_move as t_is_move,
+		t.is_position as t_is_position
+	</sql>
+ 
+ 	
+	<select id="getPositionByComboId" resultMap="positionMap" parameterType="map">
+		select 
+		<include refid="positionSql"/>
+		from ad_postion p
+		left join ad_type t on p.ad_type_id = t.id
+		left join ad_combo c on t.id = c.ad_type_id
+		where
+		t.del_flag=#{delFlag}
+		and c.del_flag=#{delFlag}
+		and p.del_flag =#{delFlag}
+		and p.status=#{status}
+		and c.id=#{id}
+
+ 
+	</select>
+	
+	<select id="getPositionByTypeId" resultMap="positionMap" parameterType="map">
+		select 
+		<include refid="positionSql"/>
+		from ad_postion p
+		left join ad_type t on p.ad_type_id = t.id
+		where
+		t.del_flag=#{delFlag}
+		and p.del_flag =#{delFlag}
+		and p.status=#{status}
+		and t.id=#{id}
+
+ 
+	</select>
+	<!-- 获取当前坐标下面有多少个广告 -->
+	<select id="getPotionContianAdvCount" resultType="Integer" parameterType="map">
+		select count(DISTINCT e.id) from ad_postion p
+		left join ad_element e on p.id = e.ad_position_id and e.del_flag=#{delFlag}
+		where 
+		p.del_flag=#{delFlag}
+		and p.id=#{id}
+	
+	</select>
+	
+	<select id="findList" resultMap="pageResult" parameterType="AdPosition">
+		select 
+		<include refid="positionSql"/>,
+		<include refid="typeSql"/>
+		from ad_postion p
+		left join ad_type t on p.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where
+			p.del_flag = #{delFlag}
+		  <if test="adType != null and adType.id != null and adType.id != ''">
+			and t.id = #{adType.id}
+		  </if>
+		   <if test="positionName != null  and positionName != ''">
+			and p.position_name  like CONCAT('%', #{positionName}, '%')
+		  </if>
+		   <if test="pointId != null and pointId != ''">
+			and p.position_id  like CONCAT(#{pointId}, '%')
+		  </if>
+	 	  <if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+         </if>
+
+ 
+	</select>
+	<resultMap id="positionMap" type="AdPosition">
+      	<id column="id" property="id"/>
+      	<result column="position_id" property="pointId"/>
+      	<result column="position_name" property="positionName"/>
+      	<result column="begin_point_x" property="beginPointX"/>
+      	<result column="begin_point_y" property="beginPointY"/>
+      	<result column="end_point_x" property="endPointX"/>
+      	<result column="end_point_y" property="endPointY"/>
+      	<result column="velocity" property="velocity"/>
+      	<result column="position_status" property="status"/>
+    </resultMap>
+    <resultMap id="pageResult" type="AdPosition">
+      	<id column="id" property="id"/>
+      	<result column="position_id" property="pointId"/>
+      	<result column="position_name" property="positionName"/>
+      	<result column="begin_point_x" property="beginPointX"/>
+      	<result column="begin_point_y" property="beginPointY"/>
+      	<result column="end_point_x" property="endPointX"/>
+      	<result column="end_point_y" property="endPointY"/>
+      	<result column="velocity" property="velocity"/>
+      	<result column="position_status" property="status"/>
+      	<association property="adType" resultMap="typeResult"/>
+    </resultMap>
+    
+        
+   	<resultMap type="AdType" id="typeResult">
+	  	<id property="id" column="t_id" />
+	  	<result property="typeId" column="t_type_id"/>
+	  	<result property="typeName" column="t_name"/>
+	  	<result property="isFlag" column="t_is_flag"/>
+	  	<result property="status" column="t_status"/>
+	  	<result property="isMove" column="t_is_move"/>
+	  	<result property="isPosition" column="t_is_position"/>
+    </resultMap>
+	
+</mapper> 

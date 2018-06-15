@@ -1,0 +1,1 @@
+ALTER TABLE ad_network  ADD  ad_status int(11) NOT NULL default 1 COMMENT '广告发送器是否有效（0失效 1有效）';

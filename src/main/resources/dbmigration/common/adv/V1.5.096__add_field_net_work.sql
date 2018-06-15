@@ -1,0 +1,1 @@
+ ALTER TABLE ad_network  ADD  valid_date datetime DEFAULT NULL COMMENT '发送器的有效时间';

@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdSellDao">
+
+	<sql id="sellSql">
+		DISTINCT s.id as s_id,
+		s.start_date as s_start_date,
+		s.end_date as s_end_date,
+		s.del_flag as s_del_flag,
+		s.create_date as s_create_date,
+		s.update_date as s_update_date,
+		s.status as s_status
+	</sql>
+	
+	<sql id="comboSql">
+		c.id as c_id,
+		c.ad_combo_name as c_comboName
+
+	</sql>
+	<sql id="typeSql">
+		t.id as t_id,
+		t.ad_type_name as t_type_name
+	</sql>
+	
+	<sql id="comboSellSql">
+		DISTINCT c.id as c_id,
+		c.ad_combo_name as c_ad_combo_name,
+		c.ad_is_flag as c_ad_is_flag,
+		c.start_hour as c_start_hour,
+		c.end_hour as c_end_hour,
+		c.start_minutes as c_start_minutes,
+		c.start_second as c_start_second,
+		c.end_minutes as c_end_minutes,
+		c.end_second as c_end_second,
+		c.show_time as c_show_time,
+		c.show_count as c_show_count,
+		c.status as c_status,
+		c.`week` as c_week,
+		c.valid_start_time as c_valid_start_time,
+		c.valid_end_time as c_valid_end_time,
+		c.del_flag as c_del_flag
+	 
+	</sql>
+    <sql id="newComboSellSql">
+        c.id as c_id,
+        c.ad_combo_name as c_ad_combo_name,
+        c.ad_is_flag as c_ad_is_flag,
+        c.start_hour as c_start_hour,
+        c.end_hour as c_end_hour,
+        c.start_minutes as c_start_minutes,
+        c.start_second as c_start_second,
+        c.end_minutes as c_end_minutes,
+        c.end_second as c_end_second,
+        c.show_time as c_show_time,
+        c.show_count as c_show_count,
+        c.status as c_status,
+        c.`week` as c_week,
+        c.valid_start_time as c_valid_start_time,
+        c.valid_end_time as c_valid_end_time,
+        c.del_flag as c_del_flag
+
+    </sql>
+	<!-- 查询sell表的时候在关联的时候不能添加Distinct -->
+	<sql id="comboQuerySql">
+		c.id as c_id,
+		c.ad_combo_name as c_ad_combo_name,
+		c.ad_is_flag as c_ad_is_flag,
+		c.start_hour as c_start_hour,
+		c.end_hour as c_end_hour,
+		c.start_minutes as c_start_minutes,
+		c.start_second as c_start_second,
+		c.end_minutes as c_end_minutes,
+		c.end_second as c_end_second,
+		c.show_time as c_show_time,
+		c.show_count as c_show_count,
+		c.status as c_status,
+		c.`week` as c_week,
+		c.del_flag as c_del_flag
+	</sql>
+	<!--广告字段  -->
+	<sql id="adelementField">
+		DISTINCT a.id As a_id,
+		a.ad_name as a_ad_name,
+		a.start_date as a_start_date,
+		a.end_date as a_end_date,
+		a.ad_add_text as a_ad_add_text,
+		a.ad_id as a_ad_id,
+		a.ad_flag as a_ad_flag,
+		a.ad_status as a_ad_status,
+		a.ad_format as a_ad_format,
+		a.show_way as a_show_way,
+		a.claim_date as a_claim_date,
+		a.audit_date as a_audit_date,
+		a.remarks as a_remarks,
+		a.ad_play_time as a_ad_play_time,
+	 	a.ad_is_sd  as a_ad_is_sd,
+	 	a.ad_is_hd  as a_ad_is_hd
+	</sql>
+	
+	<sql id="advSql">
+		a.id as a_id,
+		a.advertiser_id as a_advertiser_id,
+		a.name as a_name
+	</sql>
+	<sql id="createUserSql">
+		u.id as u_id,
+		u.login_name as u_login_name,
+		u.name as u_name
+	</sql>
+	
+	<sql id="updateUserSql">
+		h.id as h_id,
+		h.login_name as h_login_name,
+		h.name as h_name
+	</sql>
+	 <select id="findAll" parameterType="AdSell" resultMap="sellMap">
+		select 
+		<include refid="sellSql"/>,
+		<include refid="comboQuerySql"/>,
+		<include refid="typeSql"/>,
+		<include refid="advSql"/>,
+		<include refid="createUserSql"/>,
+		<include refid="updateUserSql"/>
+	 	 from ad_sell s
+		left join ad_combo c on s.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id = t.id  and t.del_flag=#{delFlag}
+		left join ad_advertiser a on s.advertiser_id = a.id and a.del_flag=#{delFlag}
+		left join sys_user u on s.create_by = u.id and u.del_flag=#{delFlag}
+		left join sys_user h on s.update_by = h.id and h.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+		<if test="createStartDate != null">
+			and DATE_FORMAT(s.create_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{createStartDate}, '%Y-%m-%d')
+		</if>
+		<if test="createEndDate != null">
+			and DATE_FORMAT(s.create_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{createEndDate}, '%Y-%m-%d')
+		</if>
+		
+		<if test="null != startDate">
+			and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		</if>
+		<if test="null != endDate">
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		</if>
+		<if test="null != adCombo">
+				<if test="null != adCombo.comboName and '' != adCombo.comboName">
+					and c.ad_combo_name  like CONCAT('%', #{adCombo.comboName}, '%')
+				</if>
+				<if test="adCombo.adType != null">
+					 <if test="adCombo.adType.id != null and adCombo.adType.id !=''">
+			 			 and t.id = #{adCombo.adType.id}
+					 </if>
+				</if>
+		</if>
+		<if test="null != createBy  and createBy.loginName != null and createBy.loginName != ''">
+			and  u.login_name like CONCAT(#{createBy.loginName},'%')
+		</if>
+		<if test="updateBy != null and updateBy.loginName != null and updateBy.loginName != ''">
+			and  h.login_name like CONCAT(#{updateBy.loginName},'%')
+		</if>
+	   <if test="advertiser != null and advertiser.id !=null and advertiser.id !=''">
+			and a.id=#{advertiser.id}
+	   </if>
+	   <if test="page.orderBy != null and page.orderBy !=''">
+	  	 ORDER BY ${page.orderBy}
+	   </if>
+ 
+	 </select>
+	<select id="getIsRepeatAcombo" resultType="String">
+		
+		select distinct s.id from ad_sell s
+		left join ad_combo c on s.ad_combo_id = c.id
+		left join ad_advertiser a on s.advertiser_id = a.id
+		left join ad_type t on c.ad_type_id = t.id
+		where s.del_flag='0'
+		AND
+		a.id=#{advtersier_id}
+		and 
+		t.id=#{typeId}
+		and
+		((DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d'))
+		  or (DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		))
+		
+		
+	</select>
+	
+	<select id="findComboInSell" resultType="String" parameterType="map">
+		
+		select distinct s.id from ad_combo c
+		left join ad_sell s on c.id =s.ad_combo_id and s.del_flag=#{delFlag}
+		where c.del_flag=#{delFlag}
+		and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{currentDate},'%Y-%m-%d')
+		and c.`status` =#{status}
+		and c.id=#{comboId}
+		and s.status = 1
+	</select>
+	<!-- 查询销售时间范围内是否有广告 -->
+	<select id="fingAdvInSellTime" resultType="Integer" parameterType="AdSell">
+		select   count(DISTINCT a.id) as a_count  from ad_element a 
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag=#{delFlag}
+	 
+		where a.del_flag =#{delFlag}
+ 
+		and DATE_FORMAT(a.start_date, '%Y-%m-%d')  <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and  DATE_FORMAT(a.end_date, '%Y-%m-%d')  <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+	 	 and c.id=#{adCombo.id}
+	</select>
+	
+	<!-- 查询销售时间范围内的广告 -->
+	<select id="fingAdvInSell" resultMap="elementMap" parameterType="AdSell">
+		select 
+        <include refid="adelementField"/>
+        from ad_element a
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		where a.del_flag =#{delFlag}
+<!--         and a.ad_status = '3'
+ -->		and DATE_FORMAT(a.start_date, '%Y-%m-%d')  <![CDATA[>=]]>
+		DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date,
+		'%Y-%m-%d')  <![CDATA[<=]]>
+		DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and c.id=#{adCombo.id}
+	</select>
+	
+	<!-- 查询销售时间范围内的广告 -->
+	<select id="fingAdSellByCombo" resultMap="sellMap" parameterType="map" >
+		select 
+        <include refid="sellSql"/>
+        from ad_sell s
+		left join ad_combo c on s.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		where s.del_flag =#{delFlag}
+		and s.status = '1'
+        and  s.ad_combo_id = #{adcomboId}
+        and s.advertiser_id = #{advertiserId}
+		and DATE_FORMAT(s.start_date, '%Y-%m-%d')  <![CDATA[>=]]>
+		DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(s.end_date,
+		'%Y-%m-%d')  <![CDATA[<=]]>
+		DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+	</select>
+	
+	<select id="findSellByComboId" resultType="String" parameterType="map">
+		SELECT s.id FROM ad_sell s 
+        left join ad_combo c on s.ad_combo_id = c.id and c.del_flag=#{delFlag}
+      	 where s.del_flag=#{delFlag}
+		and c.id=#{id}
+		limit 1
+	</select>
+	
+	<select id="findSellByComboIdAndAdvId" resultMap="sellMap" parameterType="map">
+		select 
+		<include refid="sellSql"/>,
+		<include refid="comboQuerySql"/>,
+		<include refid="typeSql"/>,
+		<include refid="advSql"/>,
+		<include refid="createUserSql"/>,
+		<include refid="updateUserSql"/>
+		from ad_sell s 
+		left join ad_combo c on s.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id = t.id  and t.del_flag=#{delFlag}
+		left join ad_advertiser a on s.advertiser_id = a.id and a.del_flag=#{delFlag}
+		left join sys_user u on s.create_by = u.id and u.del_flag=#{delFlag}
+		left join sys_user h on s.update_by = h.id and h.del_flag=#{delFlag}
+		where 
+			s.del_flag=#{delFlag}
+		and s.status = '1'
+		and 
+			((DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d'))
+			or 
+			(DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			 and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			))
+		and 
+		DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and 
+			c.id=#{comboId}
+		and 
+			a.id=#{advId}
+		order by s.start_date
+	</select>
+	
+	
+	<select id="findSellByComboIdAndAdvPlayDate" resultMap="sellDateMap" parameterType="map">
+		select 
+		<include refid="sellSql"/>
+		from ad_sell s 
+		left join ad_combo c on s.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		left join ad_advertiser a on s.advertiser_id = a.id and a.del_flag=#{delFlag}
+		where 
+			s.del_flag=#{delFlag}
+		and 
+			DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			 
+		and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and 
+			c.id=#{comboId}
+		and 
+			a.id=#{advId}
+		order by s.start_date
+	</select>
+	
+	<select id="getAdcomboCountByType" parameterType="map" resultType="Integer">
+		select  count(DISTINCT c.id) as c_ount from ad_sell s
+		left join ad_combo c on s.ad_combo_id =c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+		and
+		 (
+		(DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)
+ 		and t.id=#{typeId}
+	</select>
+	
+	<select id="getAdcomboCountDetail" parameterType="map" resultMap="comboSellMap">
+		select  
+		<include refid="comboSellSql"/>,
+		<include refid="typeSql"/>
+		from ad_sell s
+		left join ad_combo c on s.ad_combo_id =c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+		<if test="startDate != null and endDate != null">
+		and
+		 (
+		(DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)
+		</if>
+ 		<if test="adCombo!=null">
+ 			<if test=" adCombo.comboName !=null 
+			 and adCombo.comboName !=''">
+			 			and c.ad_combo_name  like CONCAT('%', #{adCombo.comboName}, '%')
+			</if>
+			<if test="adCombo.adType !=null and adCombo.adType.id !=null 
+			 and adCombo.adType.id !=''">
+			 		and t.id=#{adCombo.adType.id}
+			</if>
+			
+		</if>
+ 		ORDER BY c.ad_combo_name
+	</select>
+	
+	<select id="getAdcomboSellAdvtiserCount" parameterType="AdSell" resultMap="advtiserSellNumberMap">
+		select  DISTINCT a.advertiser_id as a_id ,a.`name` as a_name,count(DISTINCT c.id) as c_ount from ad_advertiser a
+		left join ad_sell s on a.id = s.advertiser_id and s.del_flag=#{delFlag}
+		left join ad_combo c on s.ad_combo_id =c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+		and
+		 (
+		(DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)
+		<if test="adCombo!=null">
+			<if test="adCombo.adType !=null and adCombo.adType.id !=null 
+			 and adCombo.adType.id !=''">
+			 		and t.id=#{adCombo.adType.id}
+			</if>
+		</if>
+		<if test="advertiser !=null and advertiser.id !=null
+			 and advertiser.id !=''">
+		    and a.id=#{advertiser.id}
+		</if>
+ 		group by a_id,a_name order by c_ount desc
+	</select>
+
+	<!-- 获取广告商购买时长 zhw -->
+	<select id="getAdcomboSellAdvtiserTime" parameterType="AdSell" resultMap="advtiserSellNumberMap">
+			SELECT
+				sum(
+					getSellTime (
+						#{startDate},
+						#{endDate},
+						s.start_date,
+						s.end_date
+					)
+				) AS c_ount,
+				s.advertiser_id as a_id,
+				a.`name` as a_name
+			FROM
+				ad_sell s
+			LEFT JOIN ad_combo c on s.ad_combo_id = c.id and c.del_flag=#{delFlag}
+			LEFT JOIN ad_type t on c.ad_type_id = t.ad_type_id and t.del_flag=#{delFlag}
+			LEFT JOIN ad_advertiser a on s.advertiser_id = a.id and a.del_flag=#{delFlag}
+			where s.del_flag=#{delFlag}
+			<if test="adCombo!=null">
+				<if test="adCombo.adType !=null and adCombo.adType.id !=null
+					 and adCombo.adType.id !=''">
+					and  t.id = #{adCombo.adType.id}
+				</if>
+			</if>
+			<if test="advertiser !=null and advertiser.id !=null
+				 and advertiser.id !=''">
+				and s.advertiser_id=#{advertiser.id}
+			</if>
+			GROUP BY s.advertiser_id
+	</select>
+
+	<select id="getSellAdvTiserComboDetail" parameterType="AdSell" resultMap="comboSellMap">
+		select  
+		 <include refid="comboSellSql"/>,
+		<include refid="typeSql"/>
+		from ad_advertiser a
+		left join ad_sell s on a.id = s.advertiser_id and s.del_flag=#{delFlag}
+		left join ad_combo c on s.ad_combo_id =c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where s.del_flag=#{delFlag}
+        <if test="startDate != null and endDate != null">
+		and
+		 (
+		(DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)
+        </if>
+		<if test="adCombo!=null">
+			<if test="adCombo.adType !=null and adCombo.adType.id !=null 
+			 and adCombo.adType.id !=''">
+			 		and t.id=#{adCombo.adType.id}
+			</if>
+			<if test="adCombo.comboName !=null and adCombo.comboName !=''">
+			 		and c.ad_combo_name  like CONCAT('%', #{adCombo.comboName}, '%')
+			</if>
+		</if>
+		<if test="advertiser !=null and advertiser.advertiserId !=null 
+			 and advertiser.advertiserId !=''">
+		    and a.advertiser_id=#{advertiser.advertiserId}
+		</if>
+ 		order by c.ad_combo_name
+	</select>
+	
+	
+	<select id="getSellDayTimeNumber" resultMap="sellChannleComboNumber" parameterType="AdSell">
+	
+		select a, 
+		sum( 
+		case when (a !=0 and a != 23 and c.start_hour <![CDATA[<=]]> a  and c.end_hour =a )or(a !=0 and a!=23 and c.start_hour <![CDATA[<=]]> a and c.end_hour  <![CDATA[>=]]>  b) then 1 
+		 when (a=0  and c.start_hour =a and c.end_hour <![CDATA[<]]> 1 )or(a=0  and c.start_hour = a and c.end_hour  <![CDATA[>]]> 1) then 1 
+		 when (a =23  and c.end_hour =a and c.end_hour =a)or( a =23 and c.start_hour <![CDATA[<]]>  a and c.end_hour =23) then 1 
+		else  0 end ) as c_count from ad_combo  c,
+		(select 0 a,1 b union all select 1,2 union  all select 2,3 union all select 3,4 union  all select 4,5
+		union all select 5,6 union  all select 6,7 union all select 7,8 union  all select 8,9
+		union all select 9,10 union  all select 10,11 union all select 11,12 union  all select 12,13
+		union all select 13,14 union  all select 14,15 union all select 15,16 union  all select 16,17
+		union all select 17,18 union  all select 18,19 union all select 19,20 union  all select 20,21
+		union all select 21,22 union  all select 22,23 union all select 23,24) aa 
+		where c.id in(
+		SELECT   DISTINCT c1.id FROM ad_combo c1
+		left join ad_sell s on c1.id = s.ad_combo_id and s.del_flag=#{delFlag}
+		where c1.del_flag=#{delFlag}
+		and  (
+				(DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+					and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+				) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+					and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+				)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+					and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+					and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+				)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+					and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+					and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+				)
+				)
+		<if test="adCombo!=null">
+			<if test="adCombo.adType !=null and adCombo.adType.id !=null 
+			 and adCombo.adType.id !=''">
+			 			and c1.ad_type_id=#{adCombo.adType.id}
+						
+			</if>
+			 and c1.ad_is_flag=#{adCombo.isFlag}
+		</if>
+	
+		)
+		group by a
+	</select>
+	<!-- 查询当前时间下是否还有正在销售与频道无关的套餐 的个数-->
+	<select id="sellNotChannelComboInNetworkNow" resultType="Integer" parameterType="map">
+	select count(DISTINCT c.id) from ad_sell s
+	left join ad_combo c on s.ad_combo_id = c.id and c.del_flag =#{delFlag}
+	left join ad_combo_network cn on c.id = cn.ad_combo_id
+	left join ad_network n on cn.ad_network_id = n.id and n.del_flag =#{delFlag}
+	where s.del_flag = #{delFlag}
+	and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{nowDate}, '%Y-%m-%d')
+	and n.id = #{networkId}
+	
+	</select>
+	<!-- 查询当前时间下是否还有正在销售与频道相关的套餐 的个数-->
+	<select id="sellChannelComboInNetworkNow" resultType="Integer" parameterType="map">
+	select count(DISTINCT c.id) from ad_sell s
+	left join ad_combo c on s.ad_combo_id = c.id
+	left join ad_combo_channel cc on c.id = cc.ad_combo_id
+	left join ad_channel ca on cc.ad_channel_id = ca.id and ca.del_flag =#{delFlag}
+	left join ad_network n on ca.ad_network_id = n.id and n.del_flag =#{delFlag}
+	where s.del_flag = #{delFlag}
+	and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{nowDate}, '%Y-%m-%d')
+	and n.id = #{networkId}
+	
+	</select>
+	
+		<!--获取某个销售记录下的广告的最迟的播放时间-->
+	<select id="getAdvMaxDateInSell" resultType="java.util.Date" parameterType="map">
+		select max(e.end_date) from ad_element e 
+		left join ad_combo c on e.ad_combo_id = c.id  and c.del_flag=#{delFlag}
+		left join ad_sell s on c.id = s.ad_combo_id and s.del_flag=#{delFlag}
+		where e.del_flag=#{delFlag}
+		and e.start_date <![CDATA[>=]]>  s.start_date
+		and e.end_date <![CDATA[<=]]>  s.end_date
+		and s.id=#{sellId}
+	</select>
+	<!-- 查询某个套餐在一定时间范围以内是否已经卖给广告商了 -->
+	<select id="findSellCountByComboId" resultType="Integer" parameterType="map">
+		select count(DISTINCT s.id) from ad_sell s
+		left join ad_combo c on s.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		where  
+		s.del_flag=#{delFlag}
+		and  s.status = #{status}
+	  
+		and  (
+						(DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+							and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+						) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+							and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+						)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+							and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+							and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+						)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+							and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+							and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+						)
+			 )
+		and c.id = #{comboId}
+		<if test="sellId != null and sellId !=''">
+			and s.id != #{sellId}
+		</if>
+	
+	</select>
+	
+	<!--获取套餐下发布和未发布广告的集合-->
+	<select id="getAdComboPublishNumber" resultMap="adComboPublishNumber" parameterType="map">
+		SELECT a1.*,IFNULL(a2.count1,0) publishCount,IFNULL(a3.count2,0) unPublishCount,(IFNULL(a2.count1,0)+IFNULL(a3.count2,0)) allCount,ac.ad_type_id from (SELECT a.ad_combo_id,a.advertiser_id,a.start_date,a.end_date  from ad_sell a GROUP BY a.ad_combo_id) a1
+	    LEFT JOIN ad_combo ac on a1.ad_combo_id = ac.id
+	    LEFT JOIN (SELECT ad.ad_combo_id ad_combo_id1,count(1) count1 from (SELECT ae.* from ad_element ae where ae.ad_status in (3,4) and ae.del_flag=0) ad  GROUP BY ad.ad_combo_id) a2 on a1.ad_combo_id = a2.ad_combo_id1
+	    LEFT JOIN (SELECT ad2.ad_combo_id ad_combo_id2,count(1) count2 from (SELECT ae2.* from ad_element ae2 where ae2.ad_status in (-1,0,1,2) and ae2.del_flag=0) ad2  GROUP BY ad2.ad_combo_id) a3 on a1.ad_combo_id = a3.ad_combo_id2
+	    where ac.del_flag=#{delFlag}
+		<if test="startDate != null">
+			and DATE_FORMAT(a1.start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		</if>
+		<if test="endDate != null">
+			and DATE_FORMAT(a1.start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		</if>
+	    <if test="typeId != null and typeId !=''">
+	        and ac.ad_type_id=#{typeId}
+		</if>		
+		 <if test="comboRelease != null and comboRelease !=''">
+	        and IFNULL(a2.count1,0) ${comboRelease} 0
+		</if>
+		ORDER BY ac.ad_type_id
+		<if test="startNum != null and pageSize != null">
+	        limit #{startNum},#{pageSize}
+		</if>
+	</select>
+	
+		<!--获取套餐下发布和未发布广告的数量-->
+	<select id="getAdComboPublishCount" resultType="Integer" parameterType="map">
+        SELECT count(DISTINCT a1.ad_combo_id) as s_combo_count from (SELECT a.ad_combo_id,a.advertiser_id,a.start_date,a.end_date  from ad_sell a GROUP BY a.ad_combo_id) a1
+	    LEFT JOIN ad_combo ac on a1.ad_combo_id = ac.id
+	    LEFT JOIN (SELECT ad.ad_combo_id ad_combo_id1,count(1) count1 from (SELECT ae.* from ad_element ae where ae.ad_status in (3,4) and ae.del_flag=0) ad  GROUP BY ad.ad_combo_id) a2 on a1.ad_combo_id = a2.ad_combo_id1
+	    LEFT JOIN (SELECT ad2.ad_combo_id ad_combo_id2,count(1) count2 from (SELECT ae2.* from ad_element ae2 where ae2.ad_status in (-1,0,1,2) and ae2.del_flag=0) ad2  GROUP BY ad2.ad_combo_id) a3 on a1.ad_combo_id = a3.ad_combo_id2
+	    where ac.del_flag=#{delFlag}
+		<if test="startDate != null">
+			and DATE_FORMAT(a1.start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		</if>
+		<if test="endDate != null">
+			and DATE_FORMAT(a1.start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		</if>
+	    <if test="typeId != null and typeId !=''">
+	        and ac.ad_type_id=#{typeId}
+		</if>
+		 <if test="comboRelease != null and comboRelease !=''">
+	        and IFNULL(a2.count1,0) ${comboRelease} 0
+		</if>
+	</select>
+	
+	<!--用于统计一段时间内售出的广告套餐个数-->
+	<select id="getAdComboSellCount" resultMap="adComboSellCountDto" parameterType="map">
+		SELECT b.*,IFNULL(a3.count,0) sellCount from 
+        (SELECT @cdate := date_add(@cdate,interval +1 day) sell_date from   
+		(SELECT @cdate := date_add(DATE_FORMAT(#{startDate}, '%Y-%m-%d'),interval -1 day) from ad_sell limit #{days}) t1 ) b
+		
+		LEFT JOIN
+		
+		(SELECT a2.create_date,count(1) count from (SELECT a1.* from 
+		(SELECT a.ad_combo_id,advertiser_id, DATE_FORMAT(a.create_date,'%Y-%m-%d') create_date,ac.ad_type_id from ad_sell a LEFT JOIN ad_combo ac on a.ad_combo_id = ac.id) a1
+		WHERE a1.ad_type_id = #{typeId} 
+		<if test="advertiserid != null and advertiserid !=''">
+	        and a1.advertiser_id=#{advertiserid}
+		</if>
+		<if test="startDate != null">
+			and DATE_FORMAT(a1.create_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		</if>
+		<if test="endDate != null">
+			and DATE_FORMAT(a1.create_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		</if>
+	    ) a2
+	    GROUP BY a2.create_date) a3		
+		on b.sell_date = a3.create_date ORDER BY b.sell_date
+	</select>
+
+    <!-- 分类型统计广告商购买套餐情况 zhw-->
+	<select id="findAdvtiserRateInAdTypes" parameterType="map" resultMap="advtiserRateMap">
+		SELECT
+			c.ad_type_id as ad_type_id,
+			s.advertiser_id as advertiser_id,
+			a.`name` as advertiser_name,
+			COUNT(a.id) as `count`
+		from ad_sell s
+		LEFT JOIN ad_combo c on s.ad_combo_id = c.id
+		LEFT JOIN ad_advertiser a on s.advertiser_id = a.id
+		where s.del_flag = '0' and c.del_flag = '0' and a.del_flag = '0'
+        <if test="startDate != null and endDate != null">
+            and  (
+            (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            ) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            )or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            )or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            )
+            )
+        </if>
+		group by c.ad_type_id,s.advertiser_id
+	</select>
+
+    <!-- 查询某类型广告购买记录 zhw-->
+    <select id="findAdSellByAdType" parameterType="AdSell" resultMap="sellDetailMap">
+        select
+        <include refid="newComboSellSql"/>,
+        <include refid="typeSql"/>
+        ,
+        s.id as s_id,
+        s.start_date as s_start_date,
+        s.end_date as s_end_date,
+        s.del_flag as s_del_flag,
+        a.id as a_id,
+        a.`name` as a_name
+		from ad_advertiser a
+		left join ad_sell s on a.id = s.advertiser_id and s.del_flag='0'
+		left join ad_combo c on s.ad_combo_id =c.id and c.del_flag='0'
+		<if test="adCombo != null and history == 0 and adCombo.startHour != null and adCombo.endHour != null">
+				and c.start_hour &lt;= #{adCombo.startHour}
+				and c.end_hour &gt;= #{adCombo.endHour}
+		</if>
+		<if test="history != 0">
+			and c.end_hour = #{adCombo.startHour}
+		</if>
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag='0'
+		where s.del_flag='0'
+        <if test="adCombo != null and adCombo.adType.id != null">
+            and t.id=#{adCombo.adType.id}
+        </if>
+        <if test="advertiser !=null and advertiser.advertiserId != null and advertiser.advertiserId != ''">
+            and a.id=#{advertiser.advertiserId}
+        </if>
+        <if test="startDate != null and endDate != null">
+            and  (
+            (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            ) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            )or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            )or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+            )
+            )
+        </if>
+ 		order by s.start_date,a.`name` desc
+
+    </select>
+
+	<select id="findAdComboSellAndValidTime" parameterType="map" resultMap="timeRateMap">
+		SELECT
+		t.ad_type_id as t_id,
+		t.ad_type_name as t_type_name,
+		IFNULL(tmp1.valid_time,0) as valid_time,
+		IFNULL(tmp2.sell_time,0) as sell_time,
+		IFNULL((sell_time/tmp1.valid_time),0) as percent
+		from
+		(
+
+		SELECT c.ad_type_id,round(sum((DATEDIFF(
+		c.valid_end_time,
+		c.valid_start_time
+		)+1)*IFNULL(((end_hour - start_hour)*3600+(end_minutes - start_minutes)*60+(end_second - start_second)),86400)/3600)) as valid_time
+		from ad_combo c
+		where  c.del_flag = '0'
+		<if test="startDate!=null">
+			and c.valid_start_time &gt; #{startDate}
+		</if>
+		<if test="endDate!=null">
+			and c.valid_end_time &lt; #{endDate}
+		</if>
+		GROUP BY c.ad_type_id
+
+		) tmp1
+		LEFT JOIN
+		(
+
+		SELECT c.ad_type_id,round(sum((DATEDIFF(s.end_date,s.start_date)+1)*IFNULL(((c.end_hour - c.start_hour)*3600+(c.end_minutes - c.start_minutes)*60+(c.end_second - c.start_second)),86400)/3600)) as sell_time
+		from ad_sell s
+		LEFT JOIN ad_combo c on s.ad_combo_id = c.id
+		where s.del_flag = '0' and c.del_flag = '0'
+		<if test="startDate!=null">
+			and c.valid_start_time &gt; #{startDate}
+		</if>
+		<if test="endDate!=null">
+			and c.valid_end_time &lt; #{endDate}
+		</if>
+		group by c.ad_type_id
+
+		) tmp2
+		on tmp1.ad_type_id = tmp2.ad_type_id
+		LEFT JOIN ad_type t on tmp1.ad_type_id = t.id
+		ORDER BY tmp1.valid_time desc
+	</select>
+	<resultMap id="advtiserRateMap" type="com.gospell.aas.dto.adv.AdvtiserRateDTO">
+		<result column="ad_type_id" property="adTypeId"/>
+		<result column="advertiser_id" property="advId"/>
+		<result column="advertiser_name" property="advName"/>
+		<result column="count" property="count"/>
+	</resultMap>
+	<resultMap id="timeRateMap" type="com.gospell.aas.dto.adv.AdComboSellTimeDTO">
+		<id property="typeId" column="t_id" />
+		<result property="validTime" column="valid_time"/>
+		<result property="sellTime" column="sell_time"/>
+		<result property="percent" column="percent"/>
+		<result property="typeName" column="t_type_name"/>
+	</resultMap>
+    <resultMap id="sellChannleComboNumber" type="com.gospell.aas.dto.adv.ChannelAdComboSellNumberDTO">
+      	<id column="a" property="time"/>
+      	<result column="c_count" property="count"/>
+    </resultMap>
+	<resultMap type="com.gospell.aas.dto.adv.AdvtiserSellNumber" id="advtiserSellNumberMap">
+		<id column="a_id" property="advId"/>
+      	 <result column="a_name" property="advName"/>
+      	<result column="c_ount" property="count"/>
+	</resultMap>
+	<resultMap type="com.gospell.aas.dto.adv.AdComboPublishNumber" id="adComboPublishNumber">
+		<id column="ad_combo_id" property="adCombo.id"/>
+		<result column="advertiser_id" property="advertiser.id"/>
+      	<result column="ad_type_id" property="adType.id"/>
+      	<result column="publishCount" property="publishCount"/>
+      	<result column="unPublishCount" property="unPublishCount"/>
+      	<result column="allCount" property="allCount"/>
+	</resultMap>
+	<resultMap type="com.gospell.aas.dto.adv.AdComboPublishNumberDto" id="adComboPublishNumberDto">
+		<id column="ad_type_id" property="typeId"/>
+      	<result column="start_date" property="startDate"/>
+      	<result column="end_date" property="endDate"/>
+	</resultMap>	
+    <resultMap type="com.gospell.aas.dto.adv.AdComboSellCountDto" id="adComboSellCountDto">
+		<id column="sell_date" property="sellDate"/>
+      	<result column="sellCount" property="sellCount"/>
+	</resultMap>
+	<resultMap type="AdSell" id="sellDateMap">
+		<id column="s_id" property="id"/>
+      	<result column="s_start_date" property="startDate"/>
+      	<result column="s_end_date" property="endDate"/>
+      	<result column="s_del_flag" property="delFlag"/>
+      	<result column="s_create_date" property="createDate"/>
+      	<result column="s_update_date" property="updateDate"/>
+	</resultMap>
+	<resultMap type="AdSell" id="sellMap">
+		<id column="s_id" property="id"/>
+      	<result column="s_start_date" property="startDate"/>
+      	<result column="s_end_date" property="endDate"/>
+      	<result column="s_del_flag" property="delFlag"/>
+      	<result column="s_create_date" property="createDate"/>
+      	<result column="s_update_date" property="updateDate"/>
+      	<result column="s_status" property="status"/>
+      	<association property="adCombo" resultMap="comboSellMap"/>
+     	<association property="advertiser" resultMap="advMap"/>
+     	<association property="createBy" resultMap="userResultMap"/>
+     	<association property="updateBy" resultMap="updateUserResultMap"/>
+	</resultMap>
+	
+	<resultMap type="AdSell" id="sellDetailMap">
+		<id column="s_id" property="id"/>
+      	<result column="s_start_date" property="startDate"/>
+      	<result column="s_end_date" property="endDate"/>
+      	<result column="s_del_flag" property="delFlag"/>
+      	<association property="adCombo" resultMap="comboSellMap"/>
+        <association property="advertiser" resultMap="advtiserMap"/>
+	</resultMap>
+    <resultMap id="advtiserMap" type="Advertiser">
+        <id column="a_id" property="id"/>
+        <result column="a_name" property="name"/>
+    </resultMap>
+	<resultMap type="AdCombo" id="comboSellMap">
+		 <id column="c_id" property="id"/>
+      	<result column="c_ad_combo_name" property="comboName"/>
+      	<result column="c_ad_is_flag" property="isFlag"/>
+      	<result column="c_start_hour" property="startHour"/>
+      	<result column="c_end_hour" property="endHour"/>
+      	<result column="c_start_minutes" property="startMinutes"/>
+      	<result column="c_start_second" property="startSecond"/>
+      	<result column="c_end_second" property="endSecond"/>
+      	<result column="c_end_minutes" property="endMinutes"/>
+      	<result column="c_show_time" property="showTime"/>
+      	<result column="c_show_count" property="showCount"/>
+      	<result column="c_week" property="week"/>
+      	<result column="c_del_flag" property="delFlag"/>
+      	<result column="c_is_put" property="isPut"/>
+      	<result column="c_status" property="status"/>
+      	<result column="c_valid_start_time" property="validStartTime"/>
+      	<result column="c_valid_end_time" property="validEndTime"/>
+        <association property="adType" resultMap="typeByComboMap"/>
+	</resultMap>
+	<resultMap type="AdType" id="typeByComboMap">
+		<id column="t_id" property="id"/>
+		<result column="t_type_name" property="typeName"/>
+	</resultMap>
+	<resultMap type="AdCombo" id="comboMap">
+		<id column="c_id" property="id"/>
+      	<result column="c_comboName" property="comboName"/>
+	</resultMap>
+    <resultMap type="Advertiser" id="advMap">
+		<id column="a_id" property="id"/>
+		<result column="a_advertiser_id" property="advertiserId"/>
+      	<result column="a_name" property="name"/>
+	</resultMap>
+	<resultMap type="Adelement" id="elementMap">
+	  	<id property="id" column="a_id" />
+	  	<result property="adName" column="a_ad_name"/>
+	  	<result property="startDate" column="a_start_date"/>
+	  	<result property="endDate" column="a_end_date"/>
+	  	<result property="addText" column="a_ad_add_text"/>
+	  	<result property="adId" column="a_ad_id"/>
+	  	<result property="isFlag" column="a_ad_flag"/>
+	  	<result property="status" column="a_ad_status"/>
+	  	<result property="format" column="a_ad_format"/>
+	  	<result property="showWay" column="a_show_way"/>
+	  	<result property="remarks" column="a_remarks"/>
+	  	<result property="claimDate" column="a_claim_date"/>
+	  	<result property="auditDate" column="a_audit_date"/>
+	  	<result property="playTime" column="a_ad_play_time"/>
+	 	<result property="isSd" column="a_ad_is_sd"/>
+	 	<result property="isHd" column="a_ad_is_hd"/>
+    </resultMap>
+	<resultMap type="User" id="userResultMap">
+		<id column="u_id" property="id"/>
+		<result column="u_login_name" property="loginName"/>
+		<result column="u_name" property="name"/>
+	</resultMap>
+	<resultMap type="User" id="updateUserResultMap">
+		<id column="h_id" property="id"/>
+		<result column="h_login_name" property="loginName"/>
+		<result column="h_name" property="name"/>
+	</resultMap>
+ 
+</mapper> 

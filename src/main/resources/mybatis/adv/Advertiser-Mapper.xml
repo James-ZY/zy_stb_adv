@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdvertiserDao">
+	 
+	 <sql id="advSql">
+	 	DISTINCT a.id as a_id,
+	 	a.business_license_number  as a_business_license_number,
+	 	a.business_license  as a_business_license,
+	 	a.industry  as a_industry,
+	 	a.industry_aptitude  as a_industry_aptitude,
+	 	a.advertiser_id  as a_advertiser_id,
+	 	a.name  as a_name,
+	 	a.advertiser_type  as a_advertiser_type,
+	 	a.contacts  as a_contacts,
+	 	a.web_name  as a_web_name,
+	 	a.address as a_address,
+	 	a.phone  as a_phone,
+	 	a.mobile  as a_mobile,
+	 	a.email  as a_email
+	  
+	 </sql>
+	 
+	<!-- 查询广告商是否有系统可以登录的用户存在 -->
+	<select id="findUserIdByAdvertiserId" resultType="Integer" parameterType="Advertiser">
+		select count(DISTINCT u.id) from ad_advertiser a
+		left join sys_user u on a.id = u.advertiser_id and u.del_flag=#{delFlag}
+		where a.id=#{id}
+		and a.del_flag=#{delFlag}
+	</select>
+	
+	<!-- 查询广告商购买了哪些广告套餐，当前用户判断是否可以删除广告商，所以只查询一条数据提高效率 -->
+	<select id="findComboIdByAdvertiserId" resultType="String" parameterType="Advertiser">
+		select DISTINCT(c.id) from ad_advertiser a
+		left join ad_sell s on a.id = s.advertiser_id and s.del_flag=#{delFlag}
+		left join ad_combo c on s.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		where a.del_flag=#{delFlag}
+		and a.id =#{id}
+		limit 1
+	</select>
+	
+	<select id="findAdvertiserByAdvId" parameterType="map" resultMap="allAdvertiserMap">
+		select 
+			<include refid="advSql"/>
+		from ad_advertiser a
+		where a.del_flag=#{delFlag}
+		and a.advertiser_id in
+		<foreach collection="idList" item="item" index="index"  open="(" separator="," close=")">
+			'${item}'
+		</foreach>
+	 
+	</select>
+	<select id="findSingelAdvertiserByAdvId" parameterType="map" resultMap="allAdvertiserMap">
+		select 
+			<include refid="advSql"/>
+		from ad_advertiser a
+		where a.del_flag=#{delFlag}
+		and a.advertiser_id =#{advId}
+	</select>
+	
+	<select id="findAllAdvertiser" parameterType="Advertiser" resultMap="allAdvertiserMap">
+		select 
+			<include refid="advSql"/>
+		from ad_advertiser a
+		where a.del_flag=#{delFlag}
+		
+	
+	</select>
+	
+	<select id="findMaxAdvertiserId" resultType="Integer">
+	   select max(advertiser_id+1) from ad_advertiser
+	</select>
+ 
+	<resultMap type="Advertiser" id="allAdvertiserMap">
+		<id property="id" column="a_id"/>
+		<result property="businessLicenseNumber" column="a_business_license_number"/>
+		<result property="businessLicense" column="a_business_license"/>
+		<result property="industry" column="a_industry"/>
+		<result property="industryAptitude" column="a_industry_aptitude"/>
+		<result property="advertiserId" column="a_advertiser_id"/>
+		<result property="name" column="a_name"/>
+		<result property="type" column="a_advertiser_type"/>
+		<result property="contacts" column="a_contacts"/>
+		<result property="webName" column="a_web_name"/>
+		<result property="address" column="a_address"/>
+		<result property="phone" column="a_phone"/>
+		<result property="mobile" column="a_mobile"/>
+		<result property="email" column="a_email"/>
+	</resultMap>
+	
+	
+ 
+</mapper> 

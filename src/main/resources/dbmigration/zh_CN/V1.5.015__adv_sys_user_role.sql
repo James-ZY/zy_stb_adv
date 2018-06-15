@@ -1,0 +1,1 @@
+INSERT INTO `sys_user_role` VALUES ('admin', 'admin');

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdControlDao">
+	<sql id="controlSql">
+		c.id as c_id,
+		c.file_path,c.file_image_path,
+		c.ad_width,c.ad_height,
+		c.play_order,c.file_size,c.ad_preview_vedio_path,
+		c.duration,c.file_format,c.resource_type,c.ad_status,
+		c.ad_roll_text as c_ad_roll_text,
+		c.create_date,c.update_date,c.flag as c_flag,c.ad_version as c_version,c.ad_roll_flag as c_rollFlag
+	</sql>
+	<sql id="typeField">
+		t.id AS t_id,
+		t.ad_type_name AS t_name,
+		t.is_flag as t_is_flag,
+		t.ad_type_id as t_type_id,
+		t.status as t_status,
+		t.is_move as t_is_move,
+		t.is_position as t_is_position
+	</sql>
+	<sql id="advertiserField">
+		a.id AS a_id,
+		a.name AS a_name
+
+	</sql>
+	<sql id="userField">
+		u.id AS u_id,
+		u.login_name as u_login_name,
+		u.name AS u_name
+
+	</sql>
+	
+	<sql id="createUserField">
+		m.id AS m_u_id,
+		m.login_name as m_u_login_name,
+		m.name AS m_u_name
+
+	</sql>
+	
+	<select id="getControlByTypeId" resultMap="adcontrolMap" parameterType="map">
+		select 
+			<include refid="controlSql"/>
+		from ad_controller c
+		left join ad_type t on c.ad_type_id = t.id and  t.del_flag=#{delFlag}
+		left join ad_advertiser d on c.ad_advertiser_id = d.id and d.del_flag=#{delFlag}
+		where
+		c.del_flag=#{delFlag} and (c.file_format is not NULL or c.file_size is not null)
+		<if test="_parameter.containsKey('resolution')">  
+        	AND c.flag = #{resolution} 
+    	</if> 
+    	<if test="_parameter.containsKey('advId')">  
+        	AND d.id = #{advId} 
+    	</if>  
+    	<if test="_parameter.containsKey('typeId')">  
+        	AND t.id = #{typeId} 
+        	<if test="typeId ==5">
+            	and c.ad_roll_flag=#{rollFlag}
+           </if>
+    	</if>
+		<if test="null != versionIds and versionIds.size()>0">
+		and c.ad_version in
+		<foreach item="item" index="index" collection="versionIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		</if>
+
+
+
+	</select>
+	
+	<resultMap id="controlMap" type="com.gospell.aas.dto.adv.AdResourceDTO">
+      	<id column="c_id" property="id"/>
+      	<result column="c_path" property="path"/>
+      	<result column="c_v_path" property="vedioImagePath"/>
+    </resultMap>
+ 
+	<resultMap id="adcontrolMap" type="AdControll">
+      	<id column="c_id" property="id"/>
+      	<result column="file_path" property="filePath"/>
+      	<result column="file_image_path" property="fileImagePath"/>
+      	<result column="ad_width" property="width"/>
+      	<result column="ad_height" property="height"/>
+      	<result column="play_order" property="playOrder"/>
+      	<result column="file_size" property="fileSize"/>
+      	<result column="duration" property="duration"/>
+      	<result column="file_format" property="fileFormat"/>
+      	<result column="resource_type" property="resourceType"/>
+      	<result column="ad_status" property="status"/>
+      	<result column="ad_preview_vedio_path" property="previewVedioPath"/>
+      	<result column="c_flag" property="flag"/>
+		<result column="c_version" property="version"/>
+		<result column="c_rollFlag" property="rollFlag"/>
+		<result column="c_ad_roll_text" property="rollText"/>
+    </resultMap>
+	<select id="getControlByIds" resultMap="adcontrolMap">
+		select 
+		<include refid="controlSql"/>
+		 from ad_controller c
+		where c.id in 
+		 <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach>  
+		and c.del_flag='0'
+	</select>
+	
+	<select id="findList" resultMap="contorlListResult" parameterType="AdControll">
+	   select 
+	  	<include refid="controlSql"/>,
+	  	<include refid="typeField"/>,
+	  	<include refid="advertiserField"/>,
+	  	<include refid="createUserField"/>,
+	  	<include refid="userField"/>
+	    FROM 
+		ad_controller c 
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		left join ad_advertiser a ON c.ad_advertiser_id = a.id and a.del_flag=#{delFlag}
+		left join sys_user m on c.create_by =  m.id and m.del_flag=#{delFlag}
+		left join sys_user u on c.update_by = u.id and u.del_flag=#{delFlag}
+		where c.del_flag =#{delFlag}
+      
+        <if test="flag != null">
+            	and c.flag=#{flag}
+        </if>
+         <if test="createBy != null and createBy.loginName != null and createBy.loginName != ''">
+            	and m.login_name like CONCAT('%', #{createBy.loginName}, '%')
+        </if>
+           <if test="updateBy != null and updateBy.loginName != null and updateBy.loginName != ''">
+            	and u.login_name like CONCAT('%', #{updateBy.loginName}, '%')
+        </if>
+        <if test="createBy != null and createBy.name != null and createBy.name != ''">
+            	and m.name like CONCAT('%', #{createBy.name}, '%')
+        </if>
+           <if test="updateBy != null and updateBy.name != null and updateBy.name != ''">
+            	and u.name like CONCAT('%', #{updateBy.name}, '%')
+        </if>
+         <if test="advertiser != null and advertiser.id != null and advertiser.id != ''">
+            	and a.id=#{advertiser.id}
+        </if>
+        <if test="adType != null and adType.id != null and adType.id != ''">
+            	and t.id=#{adType.id}
+        </if>
+		<if test="version != null and version != ''">
+			and c.ad_version=#{version}
+		</if>
+        <if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        </if>
+	</select>
+	<!-- 查询某个广告素材是否被广告引用，为了效率只查询一条 -->
+	<select id="getAdelementByControllId" resultType="String" parameterType="map">
+		select a.id from ad_element a
+		left join ad_control_adelement aa on a.id = aa.ad_adv_id 
+		left join ad_controller c on aa.ad_control_id = c.id and c.del_flag=#{delFlag}
+		WHERE
+		a.del_flag=#{delFlag}
+		and c.id=#{id}
+		limit 1
+	</select>
+
+	<select id="getControllVersionList" resultType="String" parameterType="map">
+		SELECT c.ad_version
+	    FROM ad_controller c
+		<if test="advertiserId != null and advertiserId != '' ">
+			WHERE c.ad_advertiser_id = #{advertiserId}
+		</if>
+		GROUP BY c.ad_version
+		ORDER BY c.create_date DESC
+	</select>
+	
+		<!-- 查询某个广告素材是否被广告引用，为了效率只查询一条 -->
+	<select id="getAdelementCountById" resultType="Integer" parameterType="map">
+		select count(DISTINCT a.id) from ad_element a
+		left join ad_control_adelement aa on a.id = aa.ad_adv_id 
+		left join ad_controller c on aa.ad_control_id = c.id and c.del_flag=#{delFlag}
+		WHERE
+		a.del_flag=#{delFlag}
+		and a.ad_status in 
+		 <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach>  
+		and c.id=#{id}
+		 
+	</select>
+ 
+	 <resultMap id="contorlListResult" type="AdControll">
+	      	<id column="c_id" property="id"/>
+	      	<result column="file_path" property="filePath"/>
+	      	<result column="file_image_path" property="fileImagePath"/>
+	      	<result column="ad_width" property="width"/>
+	      	<result column="ad_height" property="height"/>
+	      	<result column="play_order" property="playOrder"/>
+	      	<result column="file_size" property="fileSize"/>
+	      	<result column="duration" property="duration"/>
+	      	<result column="file_format" property="fileFormat"/>
+	      	<result column="resource_type" property="resourceType"/>
+	      	<result column="ad_status" property="status"/>
+	      	<result column="create_date" property="createDate"/>
+	      	<result column="update_date" property="updateDate"/>
+	      	<result column="c_flag" property="flag"/>
+		    <result column="c_version" property="version"/>
+	      	<result column="c_rollFlag" property="rollFlag"/>
+		    <result column="c_ad_roll_text" property="rollText"/>
+	      	<association property="adType" resultMap="typeResult"/>
+	      	<association property="updateBy" resultMap="userResult" />
+	        <association property="createBy" resultMap="userResult" columnPrefix="m_"/>
+	      	<association property="advertiser" resultMap="advertiserResult"/>
+	  </resultMap>
+	  <resultMap type="AdType" id="typeResult">
+	  	<id property="id" column="t_id" />
+	  	<result property="typeId" column="t_type_id"/>
+	  	<result property="typeName" column="t_name"/>
+	  	<result property="isFlag" column="t_is_flag"/>
+	  	<result property="status" column="t_status"/>
+	  	<result property="isMove" column="t_is_move"/>
+	  	<result property="isPosition" column="t_is_position"/>
+    </resultMap>
+     <resultMap type="Advertiser" id="advertiserResult">
+	  	<id property="id" column="a_id" />
+	  	<result property="name" column="a_name"/>
+	  	
+    </resultMap>
+     <resultMap type="User" id="userResult">
+	  	<id property="id" column="u_id" />
+	  	<result property="name" column="u_name"/>
+	  	<result property="loginName" column="u_login_name"/>
+    </resultMap>
+    
+    <update id="update" parameterType="AdControll">
+    	 UPDATE ad_controller
+		  SET
+			ad_preview_vedio_path =#{previewVedioPath},
+			update_date =now(),
+			update_by =#{updateBy.id}
+		where id =#{id}
+    </update>
+	
+</mapper> 

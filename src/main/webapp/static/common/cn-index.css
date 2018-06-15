@@ -1,0 +1,25 @@
+/*屏幕设配  */
+.navbar .nav .menu>a{background-position-x: 50%;background-position-y: 15px;line-height: 124px;}
+.navbar #menu .active>a{background-position-x: 50%;background-position-y: 15px;line-height: 124px;}
+.navbar #menu .menu>a:hover{background-position-x: 50%;background-position-y: 15px;line-height: 124px;}
+.adv-logo{background-position: 0 10px;background:url("../images/icon/logo5.1.png") no-repeat;top: 18px;}
+@media screen and (max-width: 1359px){
+.navbar .brand{width:200px}
+.adv-logo{background-position: 0 20px;background:url("../images/icon/logo1gai.png") no-repeat;top: 18px;background-position-y: 10px;}
+.navbar .nav>li>a{padding-top:0;padding-bottom:0;text-shadow: none;color:#B2F1FE;padding-left:15px;padding-right:15px;}
+}
+@media screen and (max-width: 1529px) and (min-width:1360px){
+.navbar .brand{width:200px}
+.adv-logo{background-position: 0 20px;background:url("../images/icon/logo1gai.png") no-repeat;top: 18px;background-position-y: 10px;}
+.navbar .nav>li>a{padding-top:0;padding-bottom:0;text-shadow: none;color:#B2F1FE;padding-left:20px;padding-right:20px;}
+}
+@media screen and (min-width: 1660px){
+.navbar .nav>li>a{padding-top:0;padding-bottom:0;text-shadow: none;color:#B2F1FE;padding-left:35px;padding-right:35px;}
+}
+@media screen and (max-width: 1659px) and (min-width:1530px){
+.navbar .nav>li>a{padding-top:0;padding-bottom:0;text-shadow: none;color:#B2F1FE;padding-left:30px;padding-right:30px;}
+}
+.navbar .pull-right>.logout a {
+    padding-left:0;padding-right:0;margin-right:20px;overflow:hidden;
+}
+/*table*/

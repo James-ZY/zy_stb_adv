@@ -1,0 +1,47 @@
+
+/*屏幕设配  */
+@media screen and (max-width: 1300px){
+.navbar .pull-right>.dropdown>a {
+    padding-left:0;padding-right:0;margin-right:20px;
+    width:60px;
+    overflow:hidden;
+    overflow: hidden; white-space: nowrap;text-overflow: ellipsis;*zoom:1
+}
+.navbar .pull-right>.logout a {
+    padding-left:0;padding-right:0;margin-right:20px;overflow:hidden;
+}
+.navbar .nav>li>a{padding-top:0;padding-bottom:0;text-shadow: none;color:#B2F1FE;padding-left:35px;padding-right:5px;}
+.navbar .nav .menu>a{background-position: 5px!important;background-position: 5px;}
+.navbar .brand{width:200px}
+.adv-logo{background-position: 0 20px;background:url("../images/icon/logo1gai.png") no-repeat;top: 18px;}
+}
+@media screen and (max-width: 1530px) and (min-width:1300px){
+	.navbar .pull-right>.dropdown>a {
+    padding-left:0;padding-right:0;margin-right:20px;
+    width:60px;
+    overflow:hidden;
+    overflow: hidden; white-space: nowrap;text-overflow: ellipsis;*zoom:1
+}
+.navbar .pull-right>.logout a {
+    padding-left:0;padding-right:0;margin-right:20px;overflow:hidden;
+}
+.navbar .nav>li>a{padding-top:0;padding-bottom:0;text-shadow: none;color:#B2F1FE;padding-left:45px;padding-right:10px;}
+.navbar .nav .menu>a{background-position: 10px!important;background-position: 10px;}
+.navbar .brand{width:200px}
+.adv-logo{background-position: 0 20px;background:url("../images/icon/logo1gai.png") no-repeat;top: 18px;}
+}
+@media screen and (min-width: 1660px){
+.navbar .nav>li>a{padding-top:0;padding-bottom:0;text-shadow: none;color:#B2F1FE;padding-left:58px;}
+}
+@media screen and (max-width: 1660px) and (min-width:1530px){
+		.navbar .pull-right>.dropdown>a {
+    padding-left:0;padding-right:0;margin-right:20px;
+    width:60px;
+    overflow:hidden;
+    overflow: hidden; white-space: nowrap;text-overflow: ellipsis;*zoom:1
+}
+.navbar .pull-right>.logout a {
+    padding-left:0;padding-right:0;margin-right:20px;overflow:hidden;
+}
+.navbar .nav>li>a{padding-top:0;padding-bottom:0;text-shadow: none;color:#B2F1FE;padding-left:58px;}
+}

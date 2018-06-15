@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.sys.ISysFileParamDao">
+	<sql id="sysFileParamSql">
+		DISTINCT a.id as a_id,
+		a.amount as a_amount,
+		a.flag as a_flag,
+		a.enable as a_enable,
+		a.create_date as a_create_date,
+		a.update_date as a_update_date,
+		a.del_flag as a_del_flag
+	</sql>
+  	<sql id="typeField">
+		t.id AS t_id,
+		t.ad_type_name AS t_name,
+		t.is_flag as t_is_flag,
+		t.ad_type_id as t_type_id,
+		t.status as t_status,
+		t.is_move as t_is_move,
+		t.is_position as t_is_position
+	</sql>
+	<sql id="createusersql">
+		c.id AS c_id,
+		c.login_name as c_login_name,
+		c.name as c_name
+	</sql>
+	<sql id="updateusersql">
+		u.id AS u_c_id,
+		u.login_name as u_c_login_name,
+		u.name as u_c_name
+	</sql>
+	<select id="findAll" resultMap="pageResult" parameterType="SysFileParam">
+		select 
+		 <include refid="sysFileParamSql"/>,
+	    <include refid="typeField" />,
+	    <include refid="createusersql" />,
+	    <include refid="updateusersql" />
+		from sys_file_param a
+		left join ad_type t on a.ad_type_id = t.id and t.del_flag=#{delFlag}
+		left join sys_user c on a.create_by = c.id and c.del_flag=#{delFlag}
+		left join sys_user u on u.update_by = u.id and u.del_flag=#{delFlag}
+		where a.del_flag=#{delFlag}
+		<if test="createBy !=null and createBy.loginName != null and createBy.loginName !=''">
+			and c.login_name like CONCAT('%', #{createBy.loginName}, '%')
+		</if>
+		<if test="updateBy !=null and updateBy.loginName != null and updateBy.loginName !=''">
+			and u.login_name like CONCAT('%', #{updateBy.loginName}, '%')
+		</if>
+	   <if test="enable != null and  enable != ''">
+	   		and a.enable = #{enable}
+	   </if>
+	   <if test="flag != null and  flag != ''">
+	   		and a.flag = #{flag}
+	   </if>
+	    <if test="adType != null and adType.id != null and adType.id !=''">
+	   		and t.id=#{adType.id}
+	   </if>
+	   	<if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        	</if>
+	</select>
+	
+	<select id="getParamList" resultMap="pageResult1" parameterType="map">
+		select 
+		 <include refid="sysFileParamSql"/>,
+	    <include refid="typeField" />
+		from sys_file_param a
+		left join ad_type t on a.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where a.del_flag=#{delFlag}
+	   <if test="flag != null and  flag != ''">	
+	   		and a.flag = #{flag}
+	   </if>
+	    <if test="typeId != null and typeId !=''">
+	   		and t.id=#{typeId}
+	   </if>
+	   
+	</select>
+ 	<resultMap type="com.gospell.aas.entity.sys.SysFileParam" id="pageResult">
+	  	<id property="id" column="a_id" />
+	  	<result property="amount" column="a_amount"/>
+	  	<result property="flag" column="a_flag"/>
+	  	 <result property="enable" column="a_enable"/>
+	  	<result property="createDate" column="a_create_date"/>
+	  	<result property="updateDate" column="a_update_date"/>
+	  	<result property="delFlag" column="a_del_flag"/>
+	  	<association property="adType" resultMap="typeResult"/>
+	  	<association property="createBy" resultMap="userResult"/>
+	  	<association property="updateBy" resultMap="userResult" columnPrefix="u_"/>
+    </resultMap>
+    
+    <resultMap type="com.gospell.aas.entity.sys.SysFileParam" id="pageResult1">
+	  	<id property="id" column="a_id" />
+	  	<result property="amount" column="a_amount"/>
+	  	<result property="flag" column="a_flag"/>
+	  	 <result property="enable" column="a_enable"/>
+	  	<result property="createDate" column="a_create_date"/>
+	  	<result property="updateDate" column="a_update_date"/>
+	  	<result property="delFlag" column="a_del_flag"/>
+	  	<association property="adType" resultMap="typeResult"/>
+    </resultMap>
+ 	<resultMap type="AdType" id="typeResult">
+	  	<id property="id" column="t_id" />
+	  	<result property="typeId" column="t_type_id"/>
+	  	<result property="typeName" column="t_name"/>
+	  	<result property="isFlag" column="t_is_flag"/>
+	  	<result property="status" column="t_status"/>
+	  	<result property="isMove" column="t_is_move"/>
+	  	<result property="isPosition" column="t_is_position"/>
+    </resultMap>
+	<resultMap type="User" id="userResult">
+	  	<id property="id" column="c_id" />
+	  	<result property="name" column="c_name"/>
+	  	<result property="loginName" column="c_login_name"/>
+	   
+    </resultMap>
+ 
+</mapper> 

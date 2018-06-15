@@ -1,0 +1,1 @@
+ alter table ad_controller ADD ad_preview_vedio_path  varchar(1000) DEFAULT NULL COMMENT '视频预览路径';

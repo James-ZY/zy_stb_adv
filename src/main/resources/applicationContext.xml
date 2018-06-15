@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task" 
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+    default-lazy-init="true">
+
+    <description>Spring公共配置</description>
+
+    <!-- Activates various annotations to be detected in bean classes(隐式地向 Spring 容器注册) -->
+    <context:annotation-config />
+    
+    <!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
+    <context:component-scan base-package="com.gospell.aas">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+    </context:component-scan>
+   <!-- flyway配置 -->
+    <bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
+        <property name="dataSource" ref="dataSource" />
+        <property name="table" value="ALIE_SCHEMA_VERSION"/>
+        <property name="locations" value="classpath:dbmigration/common,dbmigration/zh_CN,dbmigration/en_US" />
+        <property name="baselineOnMigrate" value="true" />
+    </bean>
+    <!-- MyBatis配置 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" depends-on="flyway">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
+        <property name="typeAliasesPackage" value="com.gospell.aas.entity" />
+        <property name="typeAliasesSuperType" value="com.gospell.aas.common.persistence.BaseEntity"/>
+        <!-- 显式指定Mapper文件位置 -->
+        <property name="mapperLocations" value="classpath:/mybatis/*/*.xml" />
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+    </bean>
+    <!-- 扫描basePackage下所有以@MyBatisRepository注解的接口-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 如果使 用了一个 以上的 DataSource ,那 么自动 装配可 能会失效 。使用 sqlSessionFactoryBeanName来设置正确的 bean名 称。 -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <property name="basePackage" value="com.gospell.aas" />
+        <property name="annotationClass" value="com.gospell.aas.common.persistence.anotation.MyBatisRepository"/>
+    </bean>
+    
+    <!-- 定义Hibernate Session工厂 -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"  depends-on="flyway"> 
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.gospell.aas"/><!-- 如果多个，用“,”分隔 -->
+        <property name="hibernateProperties">
+            <props>
+                <!-- <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop> -->
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+                <prop key="net.sf.ehcache.configurationResourceName">${hibernate.ehcache.configFile}</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <!-- 配置hibernate的属性 如果使用log4jdbc这个就不起作用 -->
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.show_sql}</prop>
+            </props>
+        </property>
+        <property name="namingStrategy">
+            <bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+        </property>
+    </bean>
+       
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">  
+        <property name="sessionFactory" ref="sessionFactory" />  
+    </bean>
+       
+    <!-- 事务管理器配置, Hibernate4事务 -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">  
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <!-- 使用annotation定义事务,spring容器缺省事务管理器：以加载顺序，首先加载的作为缺省 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+    
+  
+
+    <!-- JSR303 hibernate validator定义 -->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+    
+    <!-- 缓存配置 -->
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:${ehcache.configFile}" />
+    </bean>
+
+    <!-- 读取jdbc.properties配置文件 -->
+    <context:property-placeholder location="classpath:application.properties" />
+
+    <!-- 数据源配置, 使用 Druid 数据库连接池  -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"> 
+	    <!-- 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass  -->
+	    <property name="driverClassName" value="${jdbc.driverClassName}" />
+	    
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		
+		<!-- 配置初始化大小、最小、最大  -->
+		<property name="initialSize" value="${jdbc.pool.initialSize}" />
+		<property name="minIdle" value="${jdbc.pool.minIdle}" /> 
+		<property name="maxActive" value="${jdbc.pool.maxActive}" />
+		
+		<!-- 配置获取连接等待超时的时间  -->
+		<property name="maxWait" value="${jdbc.pool.maxWait}" />
+		
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒  -->
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.pool.timeBetweenEvictionRunsMillis}" />
+		
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒  -->
+		<property name="minEvictableIdleTimeMillis" value="${jdbc.pool.minEvictableIdleTimeMillis}" />
+		
+		<property name="validationQuery" value="select 1" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		
+		<!-- 配置监控统计拦截的filters -->
+	    <property name="filters" value="stat" /> 
+	</bean>
+
+    <!-- Loads shiro configuration -->
+    <import resource="classpath*:spring/applicationContext-shiro.xml" />
+
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="10" />
+		<property name="waitForTasksToCompleteOnShutdown" value="true" />
+	</bean>
+ 
+	
+	
+	<!-- i18n国际化-->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <!-- 国际化信息所在的文件名，messages是properties文件的通用名，如messages_en_US.properties -->
+        <property name="basename" value="classpath:i18n/messages" />
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!-- 如果在国际化资源文件中找不到对应key的信息，就用这个key作为名称  -->
+        <property name="useCodeAsDefaultMessage" value="true" />
+    </bean>
+    <!-- #国际化:en_US/zh_CN -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="defaultLocale" value="${defaultLocale}" />
+        <property name="cookieName" value="${myCookie}" />
+        <!-- 设置最大有效时间，如果是-1，则不存储，浏览器关闭后即失效，默认为Integer.MAX_INT-->
+        <property name="cookieMaxAge" value="100000" />
+    </bean>
+ 	<!-- 调用定时器 -->
+ 	<import resource="classpath*:quartz/applicationContext-task.xml" /> 
+ 	    <!-- <import resource="classpath*:ftp/apache-ftpServer.xml"/>   -->
+ 	<bean id="ftpServer" class="com.gospell.aas.common.ftp.FtpService"></bean>
+  	<bean id="nettyClientRun" class="com.gospell.aas.webservice.netty.client.NettyClientRun"></bean>
+  	<bean id="nettyServerRun" class="com.gospell.aas.webservice.netty.client.NettyServerRun"></bean>
+ 	<bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" />
+
+</beans>

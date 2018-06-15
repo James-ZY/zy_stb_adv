@@ -1,0 +1,22 @@
+html,body{height:100%;width: 100%;font-family:"微软雅黑"!important;}
+body{/* background-color:  #F0F9FD  #3BBFB4 #05A6B3; */background-color: #383E4C}
+.top-totle-icon{position: absolute;left: 12px;top: 10px;height: 16px;width:16px;background: url(../images/icon/icon-menu.png);}
+#menu{width: 220px;overflow: hidden;}
+.menutree-content{position: absolute;top:36px;overflow:hidden;background: url(../images/icon/leftline.gif) repeat-y right;/* border-left:1px solid #B7D5DF; */border-left: 1px solid #383E4C;    border-top: 1px solid #2E353F;}
+.menu-top-title{/* background-color:#3F92D7; */width:100%;height:36px;background-color:#383E4C;}
+.menu-top-title span{display:block;height:100%;width:100%;font-size:16px;line-height:36px;color:#fff;text-indent: 35px;}
+.accordion-group{margin-bottom:0;border:0;/* border-bottom:1px solid #B9CAD3; */border-bottom:1px solid #2E353F;-webkit-border-radius: 0;-moz-border-radius: 0;border-radius: 0; }
+.accordion-heading{/* background-color: #D4E7F0; */background-color: #383E4C;background: none;-webkit-border-radius: 0;-moz-border-radius: 0;border-radius: 0;width: 178px;filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#383E4C', endColorstr='#383E4C', GradientType=0);}
+.accordion-heading .accordion-toggle{font-family: '微软雅黑';}
+.accordion-inner{background-color: #F0F9FD;padding-left:0;padding-right:0;width: 220px;background: url(../images/icon/leftline.gif) repeat-y right;border-top: 1px solid #2E353F;}
+.accordion-group a{font-family: '微软雅黑';/* color:#333 */color: #23ADD2;}
+.nav-list>li>a, .nav-list .nav-header{text-shadow: 0 0px 0 rgba(255,255,255,0.5);}
+.nav-list{padding:0;}
+.nav-list li{position: relative;}
+.nav-list li a{padding-left:30px;text-indent: 20px;}
+.nav-list li a:hover{color:#fff;background-color:#3EAFE0}
+.nav-list>.active a:hover{background-color: transparent;}
+.nav-list li .active-icon{display:none} 
+.nav-list>.active{background:url(../images/icon/libg.png) no-repeat;}
+.nav-list>.active a{color:#fff}
+.nav-list>.active .active-icon {display: block;background: url(../images/icon/sj.png) no-repeat !important; width: 6px;height: 11px;position: absolute;z-index: 10000;top: 5.5px;right: -1px;}

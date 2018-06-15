@@ -1,0 +1,1 @@
+alter TABLE ad_sell ADD status INT(4) not NULL DEFAULT 1;

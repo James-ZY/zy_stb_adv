@@ -1,0 +1,6 @@
+INSERT INTO `sys_dict`  VALUES ('b70c6f5934fe43a39a180a7d32006339', '长条广告', '长条广告', 'adv_type_long_banner', '长条广告', '10', 'admin', '2018-03-07 16:42:03', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('65353dfefcdf432eb6b8c3bf1ef69aef', 'Long Banner Picture', 'Long Banner Picture', 'adv_type_long_banner', 'Long Banner Picture', '10', 'admin', '2018-03-07 16:43:21', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('0209a12c6b454121a541b9531fa31e85', '开机图片总时长设置', 'CU_BPTT', 'sys_param_manage', '系统参数设置', '40', 'admin', '2018-03-08 15:09:44', 'admin', '2018-03-08 15:17:26', NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('8c7537e3b31243b8892b35b05d8fbb01', 'Boot_Picture_Total_Time', 'CU_BPTT', 'sys_param_manage', '系统参数设置', '40', 'admin', '2018-03-08 15:17:19', NULL, NULL, NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('90adf201c0674b6f9024a87a23ac9695', '开机单图片时长设置', 'CU_BPTS', 'sys_param_manage', '系统参数设置', '50', 'admin', '2018-03-08 15:18:25', NULL, NULL, NULL, '0', '0');
+INSERT INTO `sys_dict`  VALUES ('90f0b76cf9b94471a3dcf6b22d9f65d0', 'Boot_Picture_Time_Set', 'CU_BPTS', 'sys_param_manage', '系统参数设置', '50', 'admin', '2018-03-08 15:19:19', NULL, NULL, NULL, '0', '1');

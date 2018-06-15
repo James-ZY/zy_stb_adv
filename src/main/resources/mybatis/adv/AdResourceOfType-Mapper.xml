@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdResourceOfTypeDao">
+	<sql id="resourceSql">
+		DISTINCT a.id as a_id,
+		a.file_min_size as a_file_min_size,
+		a.file_max_size as a_file_max_size,
+		a.width_min as a_width_min,
+		a.width_max as a_width_max,
+		a.high_min as a_high_min,
+		a.high_max as a_high_max,
+		a.frame_min as a_frame_min,
+		a.frame_max as a_frame_max,
+		a.rate_min as a_rate_min,
+		a.rate_max as a_rate_max,
+		a.flag as a_flag,
+		a.roll_flag as a_rollFlag,
+		a.format as a_format,
+		a.enable as a_enable,
+		a.create_date as a_create_date,
+		a.update_date as a_update_date,
+		a.del_flag as a_del_flag
+	</sql>
+  	<sql id="typeField">
+		t.id AS t_id,
+		t.ad_type_name AS t_name,
+		t.is_flag as t_is_flag,
+		t.ad_type_id as t_type_id,
+		t.status as t_status,
+		t.is_move as t_is_move,
+		t.is_position as t_is_position
+	</sql>
+	<sql id="createusersql">
+		c.id AS c_id,
+		c.login_name as c_login_name,
+		c.name as c_name
+	</sql>
+	<sql id="updateusersql">
+		u.id AS u_c_id,
+		u.login_name as u_c_login_name,
+		u.name as u_c_name
+	</sql>
+	<select id="findAll" resultMap="pageResult" parameterType="AdResourceOfType">
+		select 
+		 <include refid="resourceSql"/>,
+	    <include refid="typeField" />,
+	    <include refid="createusersql" />,
+	    <include refid="updateusersql" />
+		from ad_resoure_type a
+		left join ad_type t on a.ad_type_id = t.id and t.del_flag=#{delFlag}
+		left join sys_user c on a.create_by = c.id and c.del_flag=#{delFlag}
+		left join sys_user u on u.update_by = u.id and u.del_flag=#{delFlag}
+		where a.del_flag=#{delFlag}
+		<if test="createBy !=null and createBy.loginName != null and createBy.loginName !=''">
+			and c.login_name like CONCAT('%', #{createBy.loginName}, '%')
+		</if>
+		<if test="updateBy !=null and updateBy.loginName != null and updateBy.loginName !=''">
+			and u.login_name like CONCAT('%', #{updateBy.loginName}, '%')
+		</if>
+	   <if test="enable != null">
+	   		and a.enable = ${enable}
+	   </if>
+	   <if test="flag != null">
+	   		and a.flag = ${flag}
+	   </if>
+	    <if test="adType != null and adType.id != null and adType.id !=''">
+	   		and t.id=#{adType.id}
+	   </if>
+	   	<if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        	</if>
+	</select>
+	
+	<select id="findByTypeId" resultMap="pageResult" parameterType="map">
+		select 
+		 <include refid="resourceSql"/>,
+	    <include refid="typeField" />
+		from ad_resoure_type a
+		left join ad_type t on a.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where a.del_flag=#{delFlag}
+	   <if test="flag != null">
+	   		and a.flag = #{flag}
+	   </if>
+	    <if test="typeId != null and typeId !=''">
+	   		and t.id=#{typeId}
+	   </if>
+	   <if test="rollFlag != null and rollFlag !=''">
+	   		and a.roll_flag=#{rollFlag}
+	   </if>
+	   
+	</select>
+ 	<resultMap type="AdResourceOfType" id="pageResult">
+	  	<id property="id" column="a_id" />
+	  	<result property="fileMinSize" column="a_file_min_size"/>
+	  	<result property="fileMaxSize" column="a_file_max_size"/>
+	  	<result property="widthMin" column="a_width_min"/>
+	  	<result property="widthMax" column="a_width_max"/>
+	  	<result property="highMin" column="a_high_min"/>
+	  	<result property="highMax" column="a_high_max"/>
+	  	<result property="frameMin" column="a_frame_min"/>
+	  	<result property="frameMax" column="a_frame_max"/>
+	  	<result property="rateMin" column="a_rate_min"/>
+	  	<result property="rateMax" column="a_rate_max"/>
+	  	<result property="flag" column="a_flag"/>
+	  	<result property="rollFlag" column="a_rollFlag"/>
+	  	<result property="format" column="a_format"/>
+	  	 <result property="enable" column="a_enable"/>
+	  	<result property="createDate" column="a_create_date"/>
+	  	<result property="updateDate" column="a_update_date"/>
+	  	<result property="delFlag" column="a_del_flag"/>
+	  	<association property="adType" resultMap="typeResult"/>
+	  	<association property="createBy" resultMap="userResult"/>
+	  	<association property="updateBy" resultMap="userResult" columnPrefix="u_"/>
+    </resultMap>
+ 	<resultMap type="AdType" id="typeResult">
+	  	<id property="id" column="t_id" />
+	  	<result property="typeId" column="t_type_id"/>
+	  	<result property="typeName" column="t_name"/>
+	  	<result property="isFlag" column="t_is_flag"/>
+	  	<result property="status" column="t_status"/>
+	  	<result property="isMove" column="t_is_move"/>
+	  	<result property="isPosition" column="t_is_position"/>
+    </resultMap>
+	<resultMap type="User" id="userResult">
+	  	<id property="id" column="c_id" />
+	  	<result property="name" column="c_name"/>
+	  	<result property="loginName" column="c_login_name"/>
+	   
+    </resultMap>
+ 
+</mapper> 

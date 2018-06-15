@@ -1,0 +1,1099 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdelementDao">
+
+	<sql id="adelementField">
+		DISTINCT a.id As a_id,
+		a.ad_name as a_ad_name,
+		a.start_date as a_start_date,
+		a.end_date as a_end_date,
+		a.ad_add_text as a_ad_add_text,
+		a.ad_id as a_ad_id,
+		a.ad_flag as a_ad_flag,
+		a.ad_status as a_ad_status,
+		a.ad_format as a_ad_format,
+		a.show_way as a_show_way,
+		a.claim_date as a_claim_date,
+		a.audit_date as a_audit_date,
+		a.remarks as a_remarks,
+		a.ad_play_time as a_ad_play_time,
+	 	a.ad_is_sd  as a_ad_is_sd,
+	 	a.ad_is_hd  as a_ad_is_hd,
+	 	a.sd_show_param as a_sd_show_param,
+	 	a.hd_show_param as a_hd_show_param,
+	 	a.velocity as a_velocity
+	</sql>
+
+	<sql id="typeField">
+		t.id AS t_id,
+		t.ad_type_name AS t_name,
+		t.is_flag as t_is_flag,
+		t.ad_type_id as t_type_id,
+		t.status as t_status,
+		t.is_move as t_is_move,
+		t.is_position as t_is_position
+	</sql>
+	<!-- 广告子类型 -->
+	<sql id="childTypeField">
+		s.id AS s_t_id,
+		s.ad_type_name AS s_t_name,
+		s.is_flag as s_t_is_flag,
+		s.ad_type_id as s_t_type_id,
+		s.status as s_t_status,
+		s.is_move as s_t_is_move,
+		s.is_position as s_t_is_position
+	</sql>
+
+	<sql id="advertiserField">
+		k.id AS k_id,
+		k.advertiser_id AS k_advertiser_id,
+		k.name as k_name
+	</sql>
+	<sql id="usersql">
+		u.id AS u_id,
+		u.login_name as u_login_name,
+		u.name as u_name
+	</sql>
+
+	<sql id="adComboField">
+		c.id AS c_id,
+		c.ad_combo_id AS c_ad_combo_id,
+		c.ad_combo_name as c_ad_combo_name,
+		c.ad_is_flag as c_ad_is_flag,
+		c.start_hour as c_start_hour,
+		c.end_hour as c_end_hour,
+		c.start_minutes as c_start_minutes,
+		c.start_second as c_start_second,
+		c.end_minutes as c_end_minutes,
+		c.end_second as c_end_second,
+		c.week as c_week,
+		c.show_time as c_show_time,
+		c.show_count as c_show_count,
+		c.status as c_status
+	</sql>
+
+	<sql id="adControlField">
+		p.id AS p_id,
+		p.file_path AS p_file_path,
+		p.file_image_path as p_file_image_path,
+		p.ad_width as p_ad_width,
+		p.ad_height as p_ad_height,
+		p.play_order as p_play_order,
+		p.file_size as p_file_size,
+		p.file_format as p_file_format,
+		p.resource_type as p_resource_type,
+		p.ad_status as p_ad_status,
+		p.duration as p_duration,
+		p.ad_reason as p_ad_ad_reason,
+		p.flag as p_flag
+	</sql>
+
+	<sql id="hdAdControlField">
+		d.id AS d_id,
+		d.file_path AS d_file_path,
+		d.file_image_path as d_file_image_path,
+		d.ad_width as d_ad_width,
+		d.ad_height as d_ad_height,
+		d.play_order as d_play_order,
+		d.file_size as d_file_size,
+		d.file_format as d_file_format,
+		d.resource_type as d_resource_type,
+		d.ad_status as d_ad_status,
+		d.duration as d_duration,
+		d.ad_reason as d_ad_ad_reason,
+		d.flag as d_flag
+	</sql>
+
+
+	<sql id="sdPositionField">
+		m.id AS m_id,
+		m.position_id AS m_position_id,
+		m.position_name as m_position_name,
+		m.is_flag as m_is_flag,
+		m.begin_point_x as m_begin_point_x,
+		m.begin_point_y as m_begin_point_y,
+		m.end_point_x m_end_point_x,
+		m.end_point_y as m_end_point_y,
+		m.velocity as m_velocity,
+		m.status as m_status
+	</sql>
+
+	<sql id="hdPositionField">
+		h.id AS h_m_id,
+		h.position_id AS h_m_position_id,
+		h.position_name as h_m_position_name,
+		h.is_flag as h_m_is_flag,
+		h.begin_point_x as h_m_begin_point_x,
+		h.begin_point_y as h_m_begin_point_y,
+		h.end_point_x as h_m_end_point_x,
+		h.end_point_y as h_m_end_point_y,
+		h.velocity as h_m_velocity,
+		h.status as h_m_status
+	</sql>
+	<!-- 判断内存限制field -->
+	<sql id="selAdelementField">
+    		DISTINCT a.id AS a_id,
+			a.ad_name AS a_ad_name,
+			a.start_date AS a_start_date,
+			a.end_date AS end_date,
+			a.ad_status AS a_ad_status,
+			c.start_hour AS c_start_hour,
+			c.start_minutes AS c_start_minutes,
+			c.start_second AS c_start_second,
+			c.end_hour AS c_end_hour,
+			c.end_minutes AS c_end_minutes,
+			c.end_second AS c_end_second,
+	        (c.start_hour*3600+c.start_minutes*60+c.start_second) as c_startTime,
+	        (c.end_hour*3600+c.end_minutes*60+c.end_second) as c_endTime,
+            ch.ad_service_id as service_id,
+            ch.is_main_channel as is_main_channel,
+            ch.is_video_channel as is_video_channel,
+            ac.file_format as file_format,
+			ac.file_size AS file_size
+	</sql>
+	<!-- 查询 -->
+	<select id="findAdelementByIdList" resultMap="idResult" parameterType="map">
+		select
+		<include refid="adelementField" />
+		FROM
+		ad_element a
+		where
+		a.ad_id in
+		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		and a.del_flag=#{delFlag}
+	</select>
+	<!-- 查询 -->
+	<select id="findList" resultMap="pageResult" parameterType="Adelement">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="sdPositionField" />,
+		<include refid="hdPositionField" />,
+		<include refid="advertiserField"/>,
+		<include refid="usersql"/>
+		FROM
+		ad_element a
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag=#{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_postion m on a.ad_position_id = m.id and m.del_flag=#{delFlag}
+		left join ad_postion h on a.ad_hd_position_id = h.id and h.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag=#{delFlag}
+		left join ad_combo_channel ac on c.id = ac.ad_combo_id
+		left join ad_channel cc on ac.ad_channel_id = cc.id and cc.del_flag=#{delFlag}
+		left join ad_network n on  cc.ad_network_id = n.id and n.del_flag=#{delFlag}
+		left join ad_combo_network an on c.id = an.ad_combo_id
+		left join ad_network nn on an.ad_network_id = nn.id and nn.del_flag=#{delFlag}
+		left join sys_user u on a.audit_user_id = u.id and u.del_flag=#{delFlag}
+		where
+		a.del_flag=#{delFlag}
+		<if test="adCombo != null and adCombo.id != null and adCombo.id != ''">
+			and c.id=#{adCombo.id}
+		</if>
+		<if test="adCombo != null and adCombo.networkId != null and adCombo.networkId != ''">
+			and (n.id=#{adCombo.networkId} or nn.id=#{adCombo.networkId})
+		</if>
+		<if test="adCombo != null and adCombo.channleName != null and adCombo.channleName != ''">
+			and cc.ad_channel_name  like CONCAT('%', #{adCombo.channleName}, '%')
+		</if>
+
+		<if test="adCombo != null and adCombo.channelId != null and adCombo.channelId != ''">
+			and cc.ad_channel_id  like CONCAT('%', #{adCombo.channelId}, '%')
+		</if>
+		<if test="adCombo != null and adCombo.comboName != null and adCombo.comboName !=''">
+			and c.ad_combo_name  like CONCAT('%', #{adCombo.comboName}, '%')
+		</if>
+		<if test="adCombo != null and adCombo.adType != null and adCombo.adType.id != null and adCombo.adType.id != '' ">
+			and t.id = #{adCombo.adType.id }
+		</if>
+		<if test="advertiser != null and advertiser.id != null and advertiser.id !=''">
+			and k.id = #{advertiser.id}
+		</if>
+		<if test="resolution != null">
+			and a.ad_resolution = #{resolution}
+		</if>
+		<if test="status != null">
+			and a.ad_status = #{status}
+		</if>
+
+		<if test="status ==null and statusList != null ">
+			and a.ad_status in
+
+			<foreach item="item" index="index" collection="statusList"
+					 open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="adName != null and adName !=''">
+			and a.ad_name  like CONCAT('%', #{adName}, '%')
+		</if>
+		<if test="isValid != null">
+			and a.end_date  <![CDATA[>=]]> DATE_FORMAT(NOW(),'%Y-%m-%d')
+		</if>
+		<choose>
+			<when test="startDate != null and endDate != null">
+				and DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+				and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			</when>
+			<when test="startDate != null and endDate == null">
+				and DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			</when>
+			<when test="startDate == null and endDate != null">
+				and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			</when>
+		</choose>
+		<if test="page.orderBy !=null and page.orderBy !=''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+
+	<!-- 查询 -->
+	<select id="findAuditList" resultMap="pageAuditResult" parameterType="Adelement">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="advertiserField"/>,
+		<include refid="usersql"/>
+		FROM
+		ad_element a
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag=#{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag=#{delFlag}
+		left join sys_user u on a.audit_user_id = u.id and u.del_flag=#{delFlag}
+		left join sys_office o on u.office_id = o.id and o.del_flag=#{delFlag}
+		where
+		a.del_flag=#{delFlag}
+		<choose>
+			<when  test="auditUser != null and auditUser.id !=null and auditUser.id !=''">
+				<choose>
+					<when test="status == null">
+						<if test="statusList != null and statusList.size()>0">
+							and (( a.ad_status in
+							<foreach item="item" index="index" collection="statusList"
+									 open="(" separator="," close=")">
+								'${item}'
+							</foreach>
+							and u.id = #{auditUser.id}
+							) or a.ad_status = 0)
+						</if>
+					</when>
+					<otherwise>
+						<if test="statusList != null and statusList.size()>0">
+							and   a.ad_status in
+							<foreach item="item" index="index" collection="statusList"
+									 open="(" separator="," close=")">
+								'${item}'
+							</foreach>
+							and u.id = #{auditUser.id}
+
+						</if>
+
+						<if test="statusList == null or statusList.size()==0">
+							and a.ad_status = 0
+						</if>
+
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				and   a.ad_status in
+				<foreach item="item" index="index" collection="statusList"
+						 open="(" separator="," close=")">
+					'${item}'
+				</foreach>
+			</otherwise>
+
+		</choose>
+		<if test="adCombo != null and adCombo.comboName != null and adCombo.comboName !=''">
+			and c.ad_combo_name  like CONCAT('%', #{adCombo.comboName}, '%')
+		</if>
+		<if test="adCombo != null and adCombo.adType != null and adCombo.adType.id != null and adCombo.adType.id != '' ">
+			and t.id = #{adCombo.adType.id }
+		</if>
+		<if test="advertiser != null and advertiser.id != null and advertiser.id !=''">
+			and k.id = #{advertiser.id}
+		</if>
+
+		<if test="resolution != null">
+			and a.ad_resolution = #{resolution}
+		</if>
+		<if test="adName != null and adName !=''">
+			and a.ad_name  like CONCAT('%', #{adName}, '%')
+		</if>
+
+		<if test="adId != null and adId !=''">
+			and a.ad_id  like CONCAT(#{adId}, '%')
+		</if>
+
+		<if test="page.orderBy !=null and page.orderBy !=''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	<!-- 查询 -->
+	<select id="findAuditStatisticList" resultMap="pageAuditResult" parameterType="Adelement">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="advertiserField"/>,
+		<include refid="usersql"/>
+		FROM
+		ad_element a
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag=#{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag=#{delFlag}
+		left join sys_user u on a.audit_user_id = u.id and u.del_flag=#{delFlag}
+
+		where
+		a.del_flag=#{delFlag}
+
+		<if test="statusList != null">
+			and a.ad_status in
+
+			<foreach item="item" index="index" collection="statusList"
+					 open="(" separator="," close=")">
+				'${item}'
+			</foreach>
+		</if>
+
+		<if test="adCombo != null and adCombo.comboName != null and adCombo.comboName !=''">
+			and c.ad_combo_name  like CONCAT('%', #{adCombo.comboName}, '%')
+		</if>
+		<if test="adCombo != null and adCombo.adType != null and adCombo.adType.id != null and adCombo.adType.id != '' ">
+			and t.id = #{adCombo.adType.id }
+		</if>
+		<if test="advertiser != null and advertiser.id != null and advertiser.id !=''">
+			and k.id = #{advertiser.id}
+		</if>
+
+
+		<if test="adName != null and adName !=''">
+			and a.ad_name  like CONCAT('%', #{adName}, '%')
+		</if>
+		<if test="resolution != null and resolution ==0">
+			and a.ad_is_sd = 1
+		</if>
+		<if test="resolution != null and resolution ==1">
+			and a.ad_is_hd = 1
+		</if>
+		<if test="adId != null and adId !=''">
+			and a.ad_id  like CONCAT(#{adId}, '%')
+		</if>
+		<if test="auditUser != null and auditUser.name !=null and auditUser.name !=''">
+			and u.name like CONCAT(#{auditUser.name}, '%')
+		</if>
+		<if test="auditUser != null and auditUser.loginName !=null and auditUser.loginName !=''">
+			and u.login_name  like CONCAT(#{auditUser.loginName}, '%')
+		</if>
+		<if test="page.orderBy !=null and page.orderBy !=''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
+	<!-- 广告筛选 -->
+	<select id="findAdelementByAdName" resultType="Adelement" parameterType="Adelement">
+		select
+		<include refid="adelementField"/>
+		from ad_element a
+		where
+		a.del_flag =#{delFlag}
+		and a.ad_name=#{adName}
+	</select>
+
+	<!-- 修改 -->
+	<update id="update" parameterType="Adelement">
+		UPDATE ad_element a
+		SET
+		ad_status = #{status},
+		<if test="remarks != null">
+			remarks = #{remarks},
+		</if>
+		<if test="auditUser != null and auditUser.id !=null and auditUser.id !=''">
+			audit_user_id = #{auditUser.id},
+		</if>
+		<if test="auditDate != null">
+			audit_date = #{auditDate},
+		</if>
+		<if test="claimDate != null">
+			claim_date = #{claimDate},
+		</if>
+		update_date =now(),
+		update_by =#{updateBy.id}
+		where del_flag= #{delFlag}
+		and id =#{id}
+	</update>
+
+	<update id="updateIsPut" parameterType="map">
+		update ad_element c
+		set c.ad_status = #{status},
+		update_date =now(),
+		update_by =#{updateBy.id}
+		where c.id in
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<update id="updateStatus" parameterType="Adelement">
+		update ad_element c
+		set c.ad_status = #{status},
+		update_date =now()
+		where c.id =#{id}
+	</update>
+	<!-- 把正在投放的广告修改为投放结束 -->
+	<update id="updatePutEnd" parameterType="map">
+		update ad_element c
+		set c.ad_status = #{endStatus}
+		where  
+			c.del_flag = #{delFlag}
+		and 
+			DATE_FORMAT(c.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and
+		 c.ad_status = #{showStatus}
+	</update>
+	<!--  -->
+	<update id="closeDown" parameterType="map">
+		update ad_element c
+		set c.ad_status = #{endStatus},
+		c.original_end_date=#{originalEndDate},
+		<!-- 		c.end_date=#{endDate},
+         -->		c.update_date =#{update},
+		c.update_by =#{userId}
+		where
+		c.del_flag = #{delFlag}
+		and
+		c.id =#{id}
+	</update>
+
+	<select id="getAdelementNotChannel" parameterType="map" resultMap="adelementResult">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="advertiserField"/>,
+		<include refid="adControlField"/>,
+		<include refid="hdAdControlField"/>
+		from ad_element a
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
+		left join ad_combo_network cn on c.id = cn.ad_combo_id
+		left join ad_network n on cn.ad_network_id = n.id and n.del_flag= #{delFlag}
+		left join ad_control_adelement ca on a.id=ca.ad_adv_id
+		left join ad_controller p on ca.ad_control_id = p.id and p.del_flag= #{delFlag}
+		left join ad_hd_control_adelement cd on a.id=cd.ad_adv_id
+		left join ad_controller d on cd.ad_control_id = d.id and d.del_flag= #{delFlag}
+		where
+		a.del_flag= #{delFlag}
+		and
+		c.ad_is_flag= #{isFlag}
+		and
+		<!--  a.ad_status = #{status}-->
+		a.ad_status in
+		<foreach item="item" index="index" collection="statusList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		and
+		DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and
+		DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		<if test="_parameter.containsKey('comboId')">
+			and c.id = #{comboId}
+		</if>
+		<if test="typeIds != null and typeIds.size()>0">
+			and c.ad_type_id in
+			<foreach item="item" index="index" collection="typeIds" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		and
+		n.ad_network_id=#{networkId}
+
+	</select>
+
+	<select id="getAdelementChannel" parameterType="map" resultMap="channelResult">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="sdPositionField" />,
+		<include refid="hdPositionField" />,
+		<include refid="advertiserField"/>,
+		<include refid="adControlField"/>,
+		<include refid="hdAdControlField"/>
+		from ad_element a
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_postion m on a.ad_position_id = m.id and m.del_flag=#{delFlag}
+		left join ad_postion h on a.ad_hd_position_id = h.id and h.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
+		left join ad_combo_channel ac on c.id = ac.ad_combo_id
+		left join ad_channel ch on ac.ad_channel_id =ch.id and ch.del_flag=#{delFlag}
+		left join ad_network n on ch.ad_network_id = n.id and n.del_flag=#{delFlag}
+		left join ad_control_adelement ca on a.id=ca.ad_adv_id
+		left join ad_controller p on ca.ad_control_id = p.id and p.del_flag= #{delFlag}
+		left join ad_hd_control_adelement cd on a.id=cd.ad_adv_id
+		left join ad_controller d on cd.ad_control_id = d.id and d.del_flag= #{delFlag}
+		where
+		a.del_flag= #{delFlag}
+		and
+		c.ad_is_flag= #{isFlag}
+		and
+		<!--  a.ad_status = #{status}-->
+		a.ad_status in
+		<foreach item="item" index="index" collection="statusList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		and
+		DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and
+		DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		<if test="_parameter.containsKey('comboId')">
+			and c.id = #{comboId}
+		</if>
+		and
+		n.ad_network_id=#{networkId}
+
+	</select>
+
+	<select id="getPutFailToClientNotChannel" parameterType="map" resultMap="adelementResult">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="advertiserField"/>,
+		<include refid="adControlField"/>,
+		<include refid="hdAdControlField"/>
+		from ad_adv_network ma
+		left join ad_element a on ma.adv_id = a.ad_id and a.del_flag=#{delFlag}
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
+		left join ad_combo_network cn on c.id = cn.ad_combo_id
+		left join ad_network n on cn.ad_network_id = n.id and n.del_flag= #{delFlag}
+		left join ad_control_adelement ca on a.id=ca.ad_adv_id
+		left join ad_controller p on ca.ad_control_id = p.id and p.del_flag= #{delFlag}
+		left join ad_hd_control_adelement cd on a.id=cd.ad_adv_id
+		left join ad_controller d on cd.ad_control_id = d.id and d.del_flag= #{delFlag}
+		where
+		ma.ad_status = #{status}
+		and
+		n.ad_network_id=#{clientId}
+		and
+		c.ad_is_flag= #{isFlag}
+		and
+		ma.client_id=#{clientId}
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(now(), '%Y-%m-%d')
+
+
+	</select>
+
+	<select id="getPutFailToClientChannel" parameterType="map" resultMap="channelResult">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="sdPositionField" />,
+		<include refid="hdPositionField" />,
+		<include refid="advertiserField"/>,
+		<include refid="adControlField"/>,
+		<include refid="hdAdControlField"/>
+		from ad_adv_network ma
+		left join ad_element a on ma.adv_id = a.ad_id and a.del_flag=#{delFlag}
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_postion m on a.ad_position_id = m.id and m.del_flag=#{delFlag}
+		left join ad_postion h on a.ad_hd_position_id = h.id and h.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
+		left join ad_combo_channel ac on c.id = ac.ad_combo_id
+		left join ad_channel ch on ac.ad_channel_id =ch.id and ch.del_flag=#{delFlag}
+		left join ad_network n on ch.ad_network_id = n.id and n.del_flag=#{delFlag}
+		left join ad_control_adelement ca on a.id=ca.ad_adv_id
+		left join ad_controller p on ca.ad_control_id = p.id and p.del_flag= #{delFlag}
+		left join ad_hd_control_adelement cd on a.id=cd.ad_adv_id
+		left join ad_controller d on cd.ad_control_id = d.id and d.del_flag= #{delFlag}
+		where
+		ma.ad_status = #{status}
+		and
+		n.ad_network_id=#{clientId}
+		and
+		c.ad_is_flag= #{isFlag}
+		and
+		ma.client_id=#{clientId}
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(now(), '%Y-%m-%d')
+	</select>
+	<select id="getSingelAdelementNotChannel" parameterType="map" resultMap="adelementResult">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="advertiserField"/>,
+		<include refid="adControlField"/>,
+		<include refid="hdAdControlField"/>
+		from ad_element a
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
+		left join ad_combo_network cn on c.id = cn.ad_combo_id
+		left join ad_network n on cn.ad_network_id = n.id and n.del_flag= #{delFlag}
+		left join ad_control_adelement ca on a.id=ca.ad_adv_id
+		left join ad_controller p on ca.ad_control_id = p.id and p.del_flag= #{delFlag}
+		left join ad_hd_control_adelement cd on a.id=cd.ad_adv_id
+		left join ad_controller d on cd.ad_control_id = d.id and d.del_flag= #{delFlag}
+		where
+		a.del_flag = #{delFlag}
+		and
+		c.ad_is_flag= #{isFlag}
+		and
+		a.id = #{id}
+
+
+	</select>
+	<select id="getSingelAdelementChannel" parameterType="map" resultMap="channelResult">
+		select
+		<include refid="adelementField" />,
+		<include refid="adComboField" />,
+		<include refid="typeField" />,
+		<include refid="childTypeField" />,
+		<include refid="sdPositionField" />,
+		<include refid="hdPositionField" />,
+		<include refid="advertiserField"/>,
+		<include refid="adControlField"/>,
+		<include refid="hdAdControlField"/>
+		from ad_element a
+		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
+		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
+		left join ad_postion m on a.ad_position_id = m.id and m.del_flag=#{delFlag}
+		left join ad_postion h on a.ad_hd_position_id = h.id and h.del_flag=#{delFlag}
+		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
+		left join ad_combo_channel ac on c.id = ac.ad_combo_id
+		left join ad_channel ch on ac.ad_channel_id =ch.id and ch.del_flag=#{delFlag}
+		left join ad_network n on ch.ad_network_id = n.id and n.del_flag=#{delFlag}
+		left join ad_control_adelement ca on a.id=ca.ad_adv_id
+		left join ad_controller p on ca.ad_control_id = p.id and p.del_flag= #{delFlag}
+		left join ad_hd_control_adelement cd on a.id=cd.ad_adv_id
+		left join ad_controller d on cd.ad_control_id = d.id and d.del_flag= #{delFlag}
+		where
+		a.del_flag = #{delFlag}
+		and
+		c.ad_is_flag= #{isFlag}
+		and
+		a.id = #{id}
+	</select>
+
+	<select id="checkIsAdvRepeat" resultType="Integer" parameterType="map">
+
+		select count(DISTINCT a.id) from ad_element a
+		left join ad_combo c on a.ad_combo_id  = c.id and c.del_flag=#{delFlag}
+		left join ad_advertiser av on a.advertiser_id = av.id and av.del_flag = #{delFlag}
+		where a.del_flag=#{delFlag}
+		and
+		(
+		(DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)
+		<if test="_parameter.containsKey('childAdType')">
+			and a.ad_child_type_id =#{childAdType}
+		</if>
+		 		and a.ad_status !=7
+		<if test="advId != null and advId !=''">
+			and av.id =#{advId}
+		</if>
+		<if test="comboId != null and comboId !=''">
+			and c.id =#{comboId}
+		</if>
+		<if test="_parameter.containsKey('id')">
+			and a.id !=#{id}
+		</if>
+	</select>
+
+	<select id="findAdelementByAdCategory" resultType="Integer" parameterType="map">
+	
+		select count(DISTINCT a.id) as a_count from ad_element a
+		left join ad_category ca on a.ad_category_id = ca.id and ca.del_flag=#{delFlag}
+		where   ca.id = #{categoryId}
+	</select>
+	<!-- 获取与频道无关的同时间广告 -->
+	<select id="findNetworkAdelements" resultMap="adelementNCMap" parameterType="map">
+		SELECT
+		<include refid="selAdelementField" />
+		from ad_element a
+		LEFT JOIN ad_combo c on a.ad_combo_id = c.id and c.del_flag = #{delFlag}
+		<if test="type != null and type == 'HD'">
+			LEFT JOIN ad_control_adelement aca on aca.ad_adv_id = a.id
+		</if>
+		<if test="type != null and type == 'SD'">
+			LEFT JOIN ad_hd_control_adelement aca on aca.ad_adv_id = a.id
+		</if>
+		LEFT JOIN ad_controller ac on ac.id = aca.ad_control_id
+		LEFT JOIN ad_combo_network acn on c.id = acn.ad_combo_id
+		LEFT JOIN ad_channel ch on ch.ad_network_id = acn.ad_network_id
+		where a.del_flag = #{delFlag} and a.ad_status BETWEEN 2 and 3
+		<if test="sendMode != null and sendMode != ''">
+			and c.send_mode = #{sendMode}
+		</if>
+		AND c.ad_is_flag = 0 and aca.ad_control_id  <![CDATA[<>]]> ''
+		<if test="adType != null and adType == 'main'">
+			AND c.ad_type_id in (1,9)
+			and ch.is_main_channel = 1
+		</if>
+		<if test="adType != null and adType == 'video'">
+			AND c.ad_type_id = 6
+			and ch.is_video_channel = 1
+		</if>
+		<if test="adType != null and adType == 'other'">
+			AND c.ad_type_id not in (1,6,9)
+		</if>
+		and  acn.ad_network_id = #{netWorkList}
+		<!-- 		<foreach collection="netWorkList" item="item" index="index"  open="(" separator="," close=")">
+                    '${item}'
+                </foreach> -->
+		and(
+		(DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)
+	</select>
+
+	<!-- 获取与频道相关的同时间广告 -->
+	<select id="findChannelAdelements" resultMap="adelementNCMap" parameterType="map">
+		SELECT
+		<include refid="selAdelementField" />
+		from ad_element a
+		LEFT JOIN ad_combo c on a.ad_combo_id = c.id and c.del_flag = #{delFlag}
+		LEFT JOIN ad_type t on c.ad_type_id = t.id
+		<if test="type != null and type == 'HD'">
+			LEFT JOIN ad_control_adelement aca on aca.ad_adv_id = a.id
+		</if>
+		<if test="type != null and type == 'SD'">
+			LEFT JOIN ad_hd_control_adelement aca on aca.ad_adv_id = a.id
+		</if>
+		LEFT JOIN ad_controller ac on ac.id = aca.ad_control_id
+		LEFT JOIN ad_combo_channel acc on c.id = acc.ad_combo_id
+		LEFT JOIN ad_channel ch on ch.id = acc.ad_channel_id
+		where a.del_flag = #{delFlag} and a.ad_status BETWEEN 2 and 3
+		<if test="sendMode != null and sendMode != ''">
+			and c.send_mode = #{sendMode}
+		</if>
+		AND c.ad_is_flag = 0 and aca.ad_control_id  <![CDATA[<>]]> ''
+		<if test="adType != null and adType == 'main'">
+			AND c.ad_type_id in (1,9)
+			and ch.is_main_channel = 1
+		</if>
+		<if test="adType != null and adType == 'video'">
+			AND c.ad_type_id = 6
+			and ch.is_video_channel = 1
+		</if>
+		<if test="adType != null and adType == 'other'">
+			AND c.ad_type_id not in (1,6,9)
+		</if>
+		and t.is_flag = 1 and a.ad_status BETWEEN 2 and 3
+		and  ch.id in
+		<foreach collection="channelList" item="item" index="index"  open="(" separator="," close=")">
+			'${item}'
+		</foreach>
+		and(
+		(DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(a.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)
+		and (
+		((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[<=]]> #{startTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[>=]]> #{endTime} )
+		or ((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[>=]]> #{startTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[<=]]>#{endTime})
+		or ((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[>=]]> #{startTime} and  (c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[<=]]> #{endTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[<=]]>#{endTime})
+		or ((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[<=]]> #{startTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[>=]]> #{startTime} and (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[<=]]>#{endTime})
+		)
+	</select>
+
+	<select id="findStatusById" resultType="Integer" parameterType="Adelement">
+		select a.ad_status from ad_element a where id = #{id}
+	</select>
+
+	<resultMap type="AdPosition" id="positionResult">
+		<id property="id" column="m_id" />
+		<result property="pointId" column="m_position_id"/>
+		<result property="positionName" column="m_position_name"/>
+		<result property="beginPointX" column="m_begin_point_x"/>
+		<result property="beginPointY" column="m_begin_point_y"/>
+		<result property="endPointX" column="m_end_point_x"/>
+		<result property="endPointY" column="m_end_point_y"/>
+		<result property="velocity" column="m_velocity"/>
+		<result property="isFlag" column="m_is_flag"/>
+		<result property="status" column="m_status"/>
+	</resultMap>
+
+	<resultMap type="AdType" id="typeResult">
+		<id property="id" column="t_id" />
+		<result property="typeId" column="t_type_id"/>
+		<result property="typeName" column="t_name"/>
+		<result property="isFlag" column="t_is_flag"/>
+		<result property="status" column="t_status"/>
+		<result property="isMove" column="t_is_move"/>
+		<result property="isPosition" column="t_is_position"/>
+	</resultMap>
+
+	<resultMap type="AdCombo" id="comboResult">
+		<id property="id" column="c_id" />
+		<result property="adcomboId" column="c_ad_combo_id"/>
+		<result property="comboName" column="c_ad_combo_name"/>
+		<result property="isFlag" column="c_ad_is_flag"/>
+		<result column="c_start_hour" property="startHour"/>
+		<result column="c_end_hour" property="endHour"/>
+		<result column="c_start_minutes" property="startMinutes"/>
+		<result column="c_start_second" property="startSecond"/>
+		<result column="c_end_second" property="endSecond"/>
+		<result column="c_end_minutes" property="endMinutes"/>
+		<result property="week" column="c_week"/>
+		<result property="showTime" column="c_show_time"/>
+		<result property="showCount" column="c_show_count"/>
+		<result property="status" column="c_status"/>
+		<association property="adType" resultMap="typeResult"/>
+	</resultMap>
+
+
+	<resultMap type="AdControll" id="controlResult">
+		<id property="id" column="p_id" />
+		<result property="filePath" column="p_file_path"/>
+		<result property="fileImagePath" column="p_file_image_path"/>
+		<result property="width" column="p_ad_width"/>
+		<result property="height" column="p_ad_height"/>
+		<result property="playOrder" column="p_play_order"/>
+		<result property="fileSize" column="p_file_size"/>
+		<result property="fileFormat" column="p_file_format"/>
+		<result property="resourceType" column="p_resource_type"/>
+		<result property="status" column="p_ad_status"/>
+		<result property="duration" column="p_duration"/>
+		<result property="reason" column="p_ad_ad_reason"/>
+		<result property="flag" column="p_flag"/>
+	</resultMap>
+
+	<resultMap type="AdControll" id="hdControlResult">
+		<id property="id" column="d_id" />
+		<result property="filePath" column="d_file_path"/>
+		<result property="fileImagePath" column="d_file_image_path"/>
+		<result property="width" column="d_ad_width"/>
+		<result property="height" column="d_ad_height"/>
+		<result property="playOrder" column="d_play_order"/>
+		<result property="fileSize" column="d_file_size"/>
+		<result property="fileFormat" column="d_file_format"/>
+		<result property="resourceType" column="d_resource_type"/>
+		<result property="status" column="d_ad_status"/>
+		<result property="duration" column="d_duration"/>
+		<result property="reason" column="d_ad_ad_reason"/>
+		<result property="flag" column="d_flag"/>
+	</resultMap>
+
+	<resultMap type="Advertiser" id="advertiserResult">
+		<id property="id" column="k_id" />
+		<result property="advertiserId" column="k_advertiser_id"/>
+		<result property="name" column="k_name"/>
+
+	</resultMap>
+
+
+	<resultMap type="Adelement" id="pageResult">
+		<id property="id" column="a_id" />
+		<result property="adName" column="a_ad_name"/>
+		<result property="startDate" column="a_start_date"/>
+		<result property="endDate" column="a_end_date"/>
+		<result property="addText" column="a_ad_add_text"/>
+		<result property="adId" column="a_ad_id"/>
+		<result property="isFlag" column="a_ad_flag"/>
+		<result property="status" column="a_ad_status"/>
+		<result property="format" column="a_ad_format"/>
+		<result property="showWay" column="a_show_way"/>
+		<result property="remarks" column="a_remarks"/>
+		<result property="claimDate" column="a_claim_date"/>
+		<result property="auditDate" column="a_audit_date"/>
+		<result property="playTime" column="a_ad_play_time"/>
+		<result property="isSd" column="a_ad_is_sd"/>
+		<result property="isHd" column="a_ad_is_hd"/>
+		<result property="sdShowParam" column="a_sd_show_param"/>
+		<result property="hdShowParam" column="a_hd_show_param"/>
+		<result property="velocity" column="a_velocity"/>
+		<association property="adCombo" resultMap="comboResult"/>
+		<association property="position" resultMap="positionResult"/>
+		<association property="advertiser" resultMap="advertiserResult"></association>
+		<association property="hdPosition" resultMap="positionResult" columnPrefix="h_"/>
+		<association property="childAdType" resultMap="typeResult" columnPrefix="s_"/>
+		<association property="auditUser" resultMap="userResult"/>
+	</resultMap>
+
+	<resultMap type="Adelement" id="pageAuditResult">
+		<id property="id" column="a_id" />
+		<result property="adName" column="a_ad_name"/>
+		<result property="startDate" column="a_start_date"/>
+		<result property="endDate" column="a_end_date"/>
+		<result property="addText" column="a_ad_add_text"/>
+		<result property="adId" column="a_ad_id"/>
+		<result property="isFlag" column="a_ad_flag"/>
+		<result property="status" column="a_ad_status"/>
+		<result property="format" column="a_ad_format"/>
+		<result property="showWay" column="a_show_way"/>
+		<result property="remarks" column="a_remarks"/>
+		<result property="claimDate" column="a_claim_date"/>
+		<result property="auditDate" column="a_audit_date"/>
+		<result property="playTime" column="a_ad_play_time"/>
+		<result property="isSd" column="a_ad_is_sd"/>
+		<result property="isHd" column="a_ad_is_hd"/>
+		<result property="sdShowParam" column="a_sd_show_param"/>
+		<result property="hdShowParam" column="a_hd_show_param"/>
+		<result property="velocity" column="a_velocity"/>
+		<association property="adCombo" resultMap="comboResult"/>
+		<association property="advertiser" resultMap="advertiserResult"></association>
+		<association property="childAdType" resultMap="typeResult" columnPrefix="s_"/>
+		<association property="auditUser" resultMap="userResult"/>
+		<collection property="controllerList" resultMap="controlResult" ofType="AdControll"></collection>
+		<collection property="hdControllerList" resultMap="hdControlResult" ofType="AdControll"></collection>
+	</resultMap>
+	<resultMap type="User" id="userResult">
+		<id property="id" column="u_id" />
+		<result property="name" column="u_name"/>
+		<result property="loginName" column="u_login_name"/>
+
+	</resultMap>
+	<resultMap type="Adelement" id="idResult">
+		<id property="id" column="a_id" />
+		<result property="adName" column="a_ad_name"/>
+		<result property="startDate" column="a_start_date"/>
+		<result property="endDate" column="a_end_date"/>
+		<result property="addText" column="a_ad_add_text"/>
+		<result property="adId" column="a_ad_id"/>
+		<result property="isFlag" column="a_ad_flag"/>
+		<result property="status" column="a_ad_status"/>
+		<result property="format" column="a_ad_format"/>
+		<result property="showWay" column="a_show_way"/>
+		<result property="remarks" column="a_remarks"/>
+		<result property="claimDate" column="a_claim_date"/>
+		<result property="auditDate" column="a_audit_date"/>
+		<result property="playTime" column="a_ad_play_time"/>
+		<result property="isSd" column="a_ad_is_sd"/>
+		<result property="isHd" column="a_ad_is_hd"/>
+		<result property="sdShowParam" column="a_sd_show_param"/>
+		<result property="hdShowParam" column="a_hd_show_param"/>
+		<result property="velocity" column="a_velocity"/>
+	</resultMap>
+
+	<resultMap type="com.gospell.aas.dto.adv.AdelementNCDTO" id="adelementNCMap">
+		<result property="adId" column="a_id" />
+		<result property="adName" column="a_ad_name"/>
+		<result property="startDate" column="a_start_date"/>
+		<result property="endDate" column="a_end_date"/>
+		<result property="status" column="a_ad_status"/>
+		<result property="startHour" column="c_start_hour"/>
+		<result property="endHour" column="c_end_hour"/>
+		<result property="startMinutes" column="c_start_minutes"/>
+		<result property="startSecond" column="c_start_second"/>
+		<result property="endSecond" column="c_end_second"/>
+		<result property="endMinutes" column="c_end_minutes"/>
+		<result property="startTime" column="c_startTime"/>
+		<result property="endTime" column="c_endTime"/>
+		<result property="serviceId" column="service_id"/>
+		<result property="isMainChannel" column="is_main_channel"/>
+		<result property="isVideoChannel" column="is_video_channel"/>
+		<result property="fileFormat" column="file_format"/>
+		<result property="fileSize" column="file_size"/>
+	</resultMap>
+	<resultMap type="Adelement" id="adelementResult">
+		<id property="id" column="a_id" />
+		<result property="adName" column="a_ad_name"/>
+		<result property="startDate" column="a_start_date"/>
+		<result property="endDate" column="a_end_date"/>
+		<result property="addText" column="a_ad_add_text"/>
+		<result property="adId" column="a_ad_id"/>
+		<result property="isFlag" column="a_ad_flag"/>
+		<result property="status" column="a_ad_status"/>
+		<result property="format" column="a_ad_format"/>
+		<result property="remarks" column="a_remarks"/>
+		<result property="showWay" column="a_show_way"/>
+		<result property="claimDate" column="a_claim_date"/>
+		<result property="auditDate" column="a_audit_date"/>
+		<result property="playTime" column="a_ad_play_time"/>
+		<result property="isSd" column="a_ad_is_sd"/>
+		<result property="isHd" column="a_ad_is_hd"/>
+		<result property="sdShowParam" column="a_sd_show_param"/>
+		<result property="hdShowParam" column="a_hd_show_param"/>
+		<result property="velocity" column="a_velocity"/>
+		<association property="adCombo" resultMap="comboResult"/>
+		<association property="advertiser" resultMap="advertiserResult"></association>
+		<association property="childAdType" resultMap="typeResult" columnPrefix="s_"/>
+		<collection property="controllerList" resultMap="controlResult" ofType="AdControll"></collection>
+		<collection property="hdControllerList" resultMap="hdControlResult" ofType="AdControll"></collection>
+	</resultMap>
+
+	<resultMap type="Adelement" id="channelResult">
+		<id property="id" column="a_id" />
+		<result property="adName" column="a_ad_name"/>
+		<result property="startDate" column="a_start_date"/>
+		<result property="endDate" column="a_end_date"/>
+		<result property="addText" column="a_ad_add_text"/>
+		<result property="adId" column="a_ad_id"/>
+		<result property="isFlag" column="a_ad_flag"/>
+		<result property="status" column="a_ad_status"/>
+		<result property="format" column="a_ad_format"/>
+		<result property="remarks" column="a_remarks"/>
+		<result property="showWay" column="a_show_way"/>
+		<result property="claimDate" column="a_claim_date"/>
+		<result property="auditDate" column="a_audit_date"/>
+		<result property="playTime" column="a_ad_play_time"/>
+		<result property="isSd" column="a_ad_is_sd"/>
+		<result property="isHd" column="a_ad_is_hd"/>
+		<result property="sdShowParam" column="a_sd_show_param"/>
+		<result property="hdShowParam" column="a_hd_show_param"/>
+		<result property="velocity" column="a_velocity"/>
+		<association property="adCombo" resultMap="comboResult"/>
+		<association property="position" resultMap="positionResult"/>
+		<association property="advertiser" resultMap="advertiserResult"></association>
+		<association property="hdPosition" resultMap="positionResult" columnPrefix="h_"/>
+		<association property="childAdType" resultMap="typeResult" columnPrefix="s_"/>
+		<collection property="controllerList" resultMap="controlResult" ofType="AdControll"></collection>
+		<collection property="hdControllerList" resultMap="hdControlResult" ofType="AdControll"></collection>
+	</resultMap>
+
+</mapper> 

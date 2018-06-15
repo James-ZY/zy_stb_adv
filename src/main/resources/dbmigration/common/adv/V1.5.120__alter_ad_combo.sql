@@ -1,0 +1,1 @@
+alter TABLE ad_combo ADD interval_time INT(11);

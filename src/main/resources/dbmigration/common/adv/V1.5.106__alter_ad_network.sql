@@ -1,0 +1,1 @@
+alter TABLE ad_network ADD  ad_play_status INT(4) not NULL DEFAULT 1;

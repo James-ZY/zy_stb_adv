@@ -1,0 +1,10 @@
+INSERT INTO `sys_dict` VALUES ('05c105cd63a440eab768fcbef95848c4', '无效', '0', 'help_status', '软件使用说明书无效', '20', 'admin', '2017-03-14 14:47:51', 'admin', '2017-03-14 14:47:57', null, '0', '0');
+INSERT INTO `sys_dict` VALUES ('393f12b94628414eabf0cff365e58f67', 'invalid', '0', 'help_status', 'help doc. invalid status', '20', 'admin', '2017-03-14 14:47:15', null, null, null, '0', '1');
+INSERT INTO `sys_dict` VALUES ('e47910642812407e8edf9bd0fa80f6b9', '有效', '1', 'help_status', '软件使用说明书是否有效', '10', 'admin', '2017-03-14 14:46:21', 'admin', '2017-03-14 14:47:19', null, '0', '0');
+INSERT INTO `sys_dict` VALUES ('dc0a2e683be142d7a627f99285fdb130', 'Effective', '1', 'help_status', 'help doc.  isvalid', '10', 'admin', '2017-03-14 14:45:46', null, null, null, '0', '1');
+INSERT INTO `sys_dict` VALUES ('36c190a9b188472981b03ab2477203eb', '软件使用说明书', '0', 'help_flag', '软件使用说明书标签', '10', 'admin', '2017-03-14 14:44:27', null, null, null, '0', '0');
+INSERT INTO `sys_dict` VALUES ('d7eec0ac8fcf4ba7898820ddb76b3489', 'Software user manual', '0', 'help_flag', 'Software user manual English.', '20', 'admin', '2017-03-14 14:43:59', null, null, null, '0', '1');
+INSERT INTO `sys_dict` VALUES ('6fe285db3fd8469b96713b05e3136a45', '关于帮助', '关于帮助', 'menu_about_help', '菜单关于帮助', '10', 'admin', '2017-03-14 14:55:01', null, null, null, '0', '0');
+INSERT INTO `sys_dict` VALUES ('9855b307c5a94f7e96e90acf71dcbade', 'About help', 'About help', 'menu_about_help', 'about help .', '10', 'admin', '2017-03-14 14:54:34', 'admin', '2017-03-14 14:55:54', null, '0', '1');
+INSERT INTO `sys_dict` VALUES ('88f3cde409dd4e7eb6e1d2a089a5b6a8', '系统文档管理', '系统文档管理', 'menu_sys_doc_manage', '菜单系统文档管理', '10', 'admin', '2017-03-14 14:56:17', null, null, null, '0', '0');
+INSERT INTO `sys_dict` VALUES ('4732a46cfa5047e4b7a39a196abd7d16', 'System Doc. Manage', 'System Doc. Manage', 'menu_sys_doc_manage', 'menu System doc. manage', '10', 'admin', '2017-03-14 14:57:18', null, null, null, '0', '1');

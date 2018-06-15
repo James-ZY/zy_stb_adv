@@ -1,0 +1,2 @@
+INSERT INTO `sys_dict`  VALUES ('20b9deb04646497d81f9c666999d9330', 'Default Advertising Manage', 'Default Advertising Manage', 'menu_default_ad', '默认图片设置', '10', 'admin', '2017-12-17 11:11:19', 'admin', '2017-12-17 11:30:47', NULL, '0', '1');
+INSERT INTO `sys_dict`  VALUES ('7a00bdf552f641b9b82df906ba37ca84', '默认图片管理', '默认图片管理', 'menu_default_ad', '默认图片设置', '10', 'admin', '2017-12-17 11:13:03', 'admin', '2017-12-17 11:30:42', NULL, '0', '0');

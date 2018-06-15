@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdTypeDao">
+	 <sql id="typeField">
+	 	DISTINCT t.id,
+	 	t.ad_type_name,
+	 	t.ad_type_id,
+	 	t.is_flag,t.status,t.is_move,t.is_position
+	 </sql>
+	 <resultMap type="AdType" id="typeMap">
+	 	<id property="id" column="id" />
+	  	<result property="typeName" column="ad_type_name"/>
+	    <result property="typeId" column="ad_type_id"/>
+	    <result property="status" column="status"/>
+	    <result property="isMove" column="is_move"/>
+	    <result property="isPosition" column="is_position"/>
+	    <result property="remarks" column="remarks"/>
+	 </resultMap>
+ 
+	
+		<!-- find Station by Id -->
+	<select id="find" parameterType="AdType" resultMap="typeMap">
+		SELECT
+		<include refid="typeField"/>
+		from ad_type t
+		where t.del_flag=#{delFlag}
+		and t.id=#{id}
+	 </select>
+	 
+	 <select id="findById" parameterType="String" resultType="AdType">
+		SELECT
+		<include refid="typeField"/>
+		from ad_type t
+		where  t.id=#{id} 
+	 </select>
+	 
+	  <select id="findByParentIdAndTypeId" parameterType="map" resultType="AdType">
+		SELECT 
+		<include refid="typeField"/>
+		from ad_type t 
+		where t.parent_id =#{parentId}
+		and t.del_flag=#{delFlag}
+		and t.ad_type_id=#{typeId}
+	 </select>
+ 
+</mapper> 

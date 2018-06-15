@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IChannelDao">
+    
+    <sql id="channelSql">
+    	DISTINCT ca.id as ca_id,
+    	ca.ad_channel_name as ca_channel_name
+    </sql>
+    
+      <sql id="channelSql1">
+    	DISTINCT ca.id as ca_id,
+    	ca.ad_channel_id as ca_ad_channel_id,
+    	ca.ad_channel_name as ca_channel_name
+    </sql>
+    
+    <sql id="combosql">
+    	ac.ad_combo_id as ac_ad_combo_id
+    </sql>
+    
+    <sql id="channelPageSql">
+    	DISTINCT ca.id as ca_id,
+    	ca.ad_channel_id as ca_ad_channel_id,
+    	ca.ad_channel_name as ca_channel_name,
+    	ca.ad_channel_type as ca_ad_channel_type,
+    	ca.ad_service_id as ca_ad_service_id,
+    	ca.ad_service_name as ca_ad_service_name
+    </sql>
+    
+    <sql id="networkSql">
+		n.id as n_id,
+		n.ad_network_id as n_ad_network_id,
+		n.ad_netwrok_name as n_network_name,
+		n.ad_status as n_ad_status,
+		n.ad_cpu as n_cpu,
+		n.ad_mermory as n_mermory,
+		n.ad_port as n_port,
+		n.ad_way_encryption as n_way_encryption,
+		n.ad_secret_key as n_secret_key,
+		n.ad_ip as n_ip
+	</sql>
+    
+ 	<sql id="channelBycombo">
+ 		DISTINCT c.id as channel_id,
+ 		co.start_hour as c_start_hour,
+		co.end_hour as c_end_hour,
+		co.start_minutes as c_start_minutes,
+		co.start_second as c_start_second,
+		co.end_minutes as c_end_minutes,
+		co.end_second as c_end_second,
+		co.valid_start_time as c_valid_start_time,
+		co.valid_end_time as c_valid_end_time,
+	 	n.id as network_id,
+	 	n.ad_netwrok_name as net_work_name,
+		c.ad_channel_name as channel_name,
+		t.id as t_id,
+		co.id as combo_id 
+ 	</sql>
+     <select id="findAll" resultMap="pageMap" parameterType="AdChannel">
+		select 
+			<include refid="channelPageSql"/>,
+			<include refid="networkSql"/>
+		from ad_channel ca
+		left join ad_network n on  ca.ad_network_id = n.id 	and n.del_flag =#{delFlag}
+		left join ad_type_channel tc on ca.id = tc.ad_channel_id 
+		left join ad_type t on tc.ad_type_id = t.id and t.del_flag =#{delFlag}
+		where  ca.del_flag =#{delFlag}
+		<if test="adNetWork !=null and adNetWork.id != null and adNetWork.id !=''">
+        		 and n.id = #{adNetWork.id}
+        </if>
+		<if test="adNetWork !=null and adNetWork.networkId != null and adNetWork.networkId !=''">
+        		 and n.ad_network_id like CONCAT('%', #{adNetWork.networkId}, '%')
+        </if>
+        <if test="adNetWork !=null and adNetWork.networkName != null and adNetWork.networkName !=''">
+        		 and n.ad_netwrok_name like CONCAT('%', #{adNetWork.networkName}, '%')
+        </if>
+		<if test="channelName !=null  and channelName !=''">
+        		and ca.ad_channel_name like CONCAT('%', #{channelName}, '%')
+        </if>
+        <if test="channelId !=null and channelId !=''">
+        		and ca.ad_channel_id like CONCAT( #{channelId}, '%')
+        </if>
+        <if test="serviceName !=null  and serviceName !=''">
+        		and ca.ad_service_name like CONCAT('%', #{serviceName}, '%')
+        </if>
+        <if test="serviceId !=null and serviceId !=''">
+        		and ca.ad_service_id like CONCAT( #{serviceId}, '%')
+        </if>
+        <if test="type !=null and type !=''">
+        		and t.id =#{type}
+        </if>
+        
+		<if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        </if>
+	 	
+
+	</select>
+	<select id="getChannelType" resultType="String">
+		select  DISTINCT ad_channel_type from ad_channel c 
+		where c.ad_network_id =#{id}
+		and del_flag ='0'	 
+		order by ad_channel_type
+	</select>
+	<resultMap id="pageMap" type="AdChannel">
+      	<id column="ca_id" property="id"/>
+      	<result column="ca_ad_channel_id" property="channelId"/>
+      	<result column="ca_channel_name" property="channelName"/>
+      	<result column="ca_ad_channel_type" property="channelType"/>
+      	<result column="ca_ad_service_id" property="serviceId"/>
+      	<result column="ca_ad_service_name" property="serviceName"/>
+      	<association property="adNetWork" resultMap="networkBytypeMap"/>
+    </resultMap>
+    <resultMap id="networkBytypeMap" type="AdNetwork">
+     	<id column="n_id" property="id"/>
+     	<result column="n_ad_network_id" property="networkId"/>
+     	<result column="n_network_name" property="networkName"/>
+     	<result column="n_ad_status" property="status"/>
+     	<result column="n_cpu" property="cpu"/>
+     	<result column="n_mermory" property="memory"/>
+     	<result column="n_port" property="port"/>
+     	<result column="n_way_encryption" property="wayEncryption"/>
+     	<result column="n_secret_key" property="secretKey"/>
+     	<result column="n_ip" property="ip"/>
+    </resultMap>
+	<resultMap id="channelByComboMap" type="AdChannel">
+      	<id column="ca_id" property="id"/>
+      	<result column="ca_channel_name" property="channelName"/>
+      
+    </resultMap>
+	<resultMap id="channelMap" type="com.gospell.aas.dto.adv.AdChannelDTO">
+      	<result column="network_name" property="networkName"/>
+      	<result column="channel_id" property="channelId"/>
+      	<result column="channel_name" property="channelName"/>
+      	<result column="channel_type" property="channelType"/>
+      	<result column="service_id" property="serviceId"/>
+      	<result column="service_name" property="serviceName"/>
+    </resultMap>
+    
+    <resultMap id="channelMap1" type="AdChannel">
+        <id column="ca_id" property="id"/>
+      	<result column="ca_ad_channel_id" property="channelId"/>
+      	<result column="ca_channel_name" property="channelName"/>
+      	<collection property="comboList" resultMap="comboMap"/>
+    </resultMap>
+      <resultMap id="comboMap" type="AdCombo">
+        <id column="ac_ad_combo_id" property="id"/>
+    </resultMap>
+    
+	<select id="getChannel" resultMap="channelMap">
+		select from ad_channel c 
+		left join ad_network n on   c.ad_network_id = n.id
+		where n.id =#{id}
+		and c.del_flag ='0' and n.del_flag ='0'
+		order by ad_channel_type
+	</select>
+	
+	<!-- 根据广告套餐ID（与频道有关）返回频道和发送器ID -->
+	<resultMap id="channelByCombidMap" type="com.gospell.aas.dto.adv.AdChannelForComboDTO">
+	     <id column="channel_id" property="channelId"/>
+	    <result column="combo_id" property="comboId"/>
+      	<result column="network_id" property="networkId"/>
+      	<result column="net_work_name" property="networkName"/>
+
+      	<result column="channel_name" property="channelName"/>
+      	<result column="t_id" property="typeId"/>
+      	 <result column="c_start_hour" property="startHour"/>
+      	<result column="c_end_hour" property="endHour"/>
+      	<result column="c_start_minutes" property="startMinutes"/>
+      	<result column="c_start_second" property="startSecond"/>
+      	<result column="c_end_second" property="endSecond"/>
+      	<result column="c_end_minutes" property="endMinutes"/>
+      	<result column="c_show_time" property="showTime"/>
+      	<result column="c_show_count" property="showCount"/>
+      	<result column="c_week" property="week"/>
+      	<result column="c_del_flag" property="delFlag"/>
+      	<result column="c_is_put" property="isPut"/>
+      	<result column="c_status" property="status"/>
+      	<result column="c_valid_start_time" property="validStartTime"/>
+      	<result column="c_valid_end_time" property="validEndTime"/>
+    </resultMap>
+	<select id="getChannelByComboId" resultMap="channelByCombidMap" parameterType="map">
+		SELECT 
+			<include refid="channelBycombo"/>
+		from ad_channel c
+		left join ad_combo_channel cn on c.id = cn.ad_channel_id 
+		left join ad_combo co on cn.ad_combo_id = co.id and co.del_flag=#{delFlag}
+		left join ad_network n on c.ad_network_id = n.id and n.del_flag=#{delFlag}
+		left join ad_type t on co.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where 
+		 c.del_flag =#{delFlag}
+		and co.id=#{id}
+		
+ 
+	</select>
+			<!-- 根据广告套餐ID（与频道无关）返回发送器ID -->
+	<resultMap id="selectChannelMap" type="com.gospell.aas.dto.adv.AdNetWorkForComboDTO">
+      	<id column="channel_id" property="networkId"/>
+       	<id column="network_id" property="networkId"/>
+    </resultMap>
+	<select id="getSelectChByComboId" resultMap="selectChannelMap">
+		SELECT c.id as channel_id,n.id as network_id  from ad_channel c
+		left join ad_combo_channel cc on c.id = cc.ad_channel_id
+		left join ad_network n on c.ad_network_id = n.id
+		left join ad_combo co on cc.ad_combo_id = co.id
+		where co.id=#{id}
+		and c.del_flag ='0'
+ 
+	</select>
+	
+	<select id="getChannelByNetworkIdAndTypeId" resultMap="channelMap"  parameterType="map">
+		select n.ad_netwrok_name as network_name,c.id as channel_id ,c.ad_channel_name as channel_name,
+		c.ad_channel_type as channel_type from ad_channel c  
+		left join ad_network n on   c.ad_network_id = n.id and n.del_flag=#{delFlag} 
+		 left join ad_type_channel tc on c.id = tc.ad_channel_id 
+		left join ad_type t on tc.ad_type_id = t.id  and t.del_flag=#{delFlag} 
+		where  
+		 c.del_flag =#{delFlag} 
+		and t.id=#{typeId}
+		and n.id =#{networkId}
+		order by c.ad_channel_type,CAST(c.ad_channel_id AS DECIMAL) asc
+	</select>
+	
+	<select id="getChannelNotRepeat" resultMap="channelByComboMap" parameterType="map">
+		select 
+				<include refid="channelSql"/>
+		from ad_channel ca
+		left join ad_combo_channel ac on ca.id = ac.ad_channel_id
+		left join ad_combo cc on ac.ad_combo_id = cc.id and cc.del_flag=#{delFlag}
+		where 
+		ca.del_flag =#{delFlag}
+		and(  
+			  cc.start_hour  <![CDATA[>]]>  #{endHour}
+				OR
+				(cc.start_hour = #{endHour} and (cc.start_minutes <![CDATA[>]]> #{endMinutes}
+				or (cc.start_minutes =#{endMinutes} and cc.start_second <![CDATA[>]]>#{endSecond})
+					))
+		   OR
+				(cc.end_hour <![CDATA[>]]> #{startHour})
+		   OR
+				(cc.end_hour =#{startHour} AND
+					(cc.end_minutes   <![CDATA[<]]> #{startMinutes} or (cc.end_minutes =#{startMinutes} and cc.end_second   <![CDATA[<]]> #{startSecond})))
+		)
+		and
+				(
+				(DATE_FORMAT(cc.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT('2016-12-06', '%Y-%m-%d')
+					and DATE_FORMAT(cc.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT('2016-12-08', '%Y-%m-%d')
+				) or (DATE_FORMAT(cc.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT('2016-12-06', '%Y-%m-%d')
+					and DATE_FORMAT(cc.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT('2016-12-08', '%Y-%m-%d')
+				)or (DATE_FORMAT(cc.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT('2016-12-06', '%Y-%m-%d')
+					and DATE_FORMAT(cc.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT('2016-12-08', '%Y-%m-%d')
+					and DATE_FORMAT(cc.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT('2016-12-08', '%Y-%m-%d')
+				)or (DATE_FORMAT(cc.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT('2016-12-06', '%Y-%m-%d')
+					and DATE_FORMAT(cc.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT('2016-12-08', '%Y-%m-%d')
+					and DATE_FORMAT(cc.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT('2016-12-06', '%Y-%m-%d')
+				)
+				)
+		and ca.id in
+		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach>  
+ 		and cc.id !=#{comboId}
+	</select>
+	 
+	<select id="getAdChannelByNetWorkId" resultMap="channelMap1"  parameterType="map">
+		select 
+			<include refid="channelSql1"/>,
+			<include refid="combosql"/>
+		from ad_channel ca
+		left join ad_combo_channel ac on ca.id = ac.ad_channel_id
+		where ca.del_flag=#{delFlag}
+		and ca.ad_network_id =#{networkId}
+	</select>
+	
+	<select id="getAdChannelByAdComboId" resultMap="channelByComboMap"  parameterType="map">
+		select 
+			<include refid="channelSql"/>
+		from ad_channel ca
+		left join ad_combo_channel cc on ca.id = cc.ad_channel_id
+		left join ad_combo c on cc.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		where ca.del_flag=#{delFlag}
+		and c.id in 
+		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach>  
+	</select>
+	
+	<select id="getCanDeleteAdChannel" resultMap="channelMap1"  parameterType="map">
+		select 
+			<include refid="channelSql1"/>
+		from ad_channel ca
+		left JOIN ad_combo_channel cc on cc.ad_channel_id = ca.id
+		where  ca.del_flag  =#{delFlag}
+        and   ca.ad_network_id =#{networkId}
+        <if test="channelIds != null">
+			and ca.ad_channel_id in
+		      <foreach collection="channelIds" item="item" index="index"  open="(" separator="," close=")">
+				  '${item}'
+			   </foreach>
+		</if>
+		and  cc.ad_combo_id is NULL
+	</select>
+	
+	<update id="updateChannel" parameterType="map">
+		update ad_channel ac
+		left JOIN ad_combo_channel cc on cc.ad_channel_id = ac.id
+		set ac.del_flag  =#{delFlag}
+		where 
+		ac.ad_network_id =#{networkId}
+		<if test="channelIds != null">
+			and ac.ad_channel_id in
+		      <foreach collection="channelIds" item="item" index="index"  open="(" separator="," close=")">
+				  '${item}'
+			   </foreach>
+		</if>
+		and  cc.ad_combo_id is NULL
+	</update>
+	
+</mapper> 

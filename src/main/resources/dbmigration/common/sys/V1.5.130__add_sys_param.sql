@@ -1,0 +1,1 @@
+INSERT INTO `sys_param` (`id`, `param_type`, `param_key`, `param_value`, `enable`, `create_by`, `create_date`, `update_by`, `update_date`, `remarks`, `del_flag`) VALUES ('93529dfdbcac4e6fa7f8b8bd1507155b', 'ATS', '1', '120', '1', NULL, '2017-12-13 17:58:57', NULL, '2017-12-13 17:58:59', NULL, '0');

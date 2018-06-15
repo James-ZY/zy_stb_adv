@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.sys.IRoleDao">
+    
+    <sql id="roleField">
+    	DISTINCT r.id as r_id,
+    	r.name as r_name
+    </sql>
+	<select id="getUserRoleNum" resultType="Integer">
+		select count(user_id) from sys_user_role c 
+		where c.user_id = #{id}
+			 
+	</select>
+	
+	<select id="getRoleByOfficeId" resultMap="roleMap" parameterType="Office">
+		select 
+		<include refid="roleField"/>
+		from sys_role r
+		left join sys_office o on r.office_id = o.id and o.del_flag=#{delFlag}
+		where r.del_flag=#{delFlag}
+		and 
+		(o.id=#{id} or o.parent_id=#{id})
+	</select>
+	<resultMap type="Role" id="roleMap">
+		<id column="r_id" property="id"/>
+		<result column="r_name" property="name"/>
+	</resultMap>
+	
+ 
+	
+</mapper> 

@@ -1,0 +1,7 @@
+.layui-layer-btn{text-align: center}
+.layui-layer-btn a{padding: 0 25px;}
+.layui-layer-iframe .layui-layer-btn, .layui-layer-page .layui-layer-btn{border-top: 1px solid #eee;}
+.layui-layer-btn{padding: 0 5px 6px}
+.layui-layer-content>div{vertical-align: middle;}
+.layui-layer-content span{display: inline-block;height: 32px;line-height: 32px;}
+.layui-layer-content i{display: inline-block;width: 32px;height: 32px;background: url("alarm-info.png");margin-right: 20px;    vertical-align: bottom;}

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.INetworkDao">
+	<sql id="networkSql">
+		DISTINCT n.id as n_id,
+		n.ad_network_id as n_ad_network_id,
+		n.ad_netwrok_name as n_network_name,
+		n.ad_status as n_ad_status,
+		n.ad_cpu as n_cpu,
+		n.ad_mermory as n_mermory,
+		n.ad_port as n_port,
+		n.ad_way_encryption as n_way_encryption,
+		n.ad_secret_key as n_secret_key,
+		n.ad_ip as n_ip,
+		n.valid_date as n_valid_date,
+		n.is_control_all as n_is_control_all
+	</sql>
+	<sql id="operatorsSql">
+		o.id as o_id,
+		o.ad_operators_id as o_operators_id,
+		o.ad_operators_name as o_operators_name
+	</sql>
+	
+	<sql id="typeSql">
+		t.id as t_id,
+		t.ad_type_id as t_type_id,
+		t.ad_type_name as t_type_name,
+		t.ad_type_description as t_description,
+		t.is_flag as t_is_flag
+	</sql>
+	
+ 
+	<resultMap id="networkBytypeMap" type="AdNetwork">
+     	<id column="n_id" property="id"/>
+     	<result column="n_ad_network_id" property="networkId"/>
+     	<result column="n_network_name" property="networkName"/>
+     	<result column="n_ad_status" property="status"/>
+     	<result column="n_cpu" property="cpu"/>
+     	<result column="n_mermory" property="memory"/>
+     	<result column="n_port" property="port"/>
+     	<result column="n_way_encryption" property="wayEncryption"/>
+     	<result column="n_secret_key" property="secretKey"/>
+     	<result column="n_ip" property="ip"/>
+     	<result column="n_valid_date" property="validDate"/>
+     	<result column="n_is_control_all" property="isControlAllAD"/>
+    </resultMap>
+    <resultMap id="operatorsMap" type="AdOperators">
+     	<id column="o_id" property="id"/>
+     	<result column="o_operators_id" property="operatorsId"/>
+     	<result column="o_operators_name" property="operatorsName"/>
+    </resultMap>
+     <resultMap id="typeMap" type="AdType">
+     	<id column="t_id" property="id"/>
+     	<result column="t_type_id" property="typeId"/>
+     	<result column="t_type_name" property="typeName"/>
+     	<result column="t_description" property="typeDescription"/>
+     	<result column="t_is_flag" property="isFlag"/>
+    </resultMap>
+    <resultMap id="networkAllMap" type="AdNetwork">
+      	<id column="n_id" property="id"/>
+      	<result column="n_ad_network_id" property="networkId"/>
+     	<result column="n_network_name" property="networkName"/>
+       <result column="n_ad_status" property="status"/>
+       	<result column="n_cpu" property="cpu"/>
+     	<result column="n_mermory" property="memory"/>
+     	<result column="n_port" property="port"/>
+     	<result column="n_way_encryption" property="wayEncryption"/>
+     	<result column="n_secret_key" property="secretKey"/>
+     	<result column="n_ip" property="ip"/>
+     	<result column="n_valid_date" property="validDate"/>
+     	<result column="n_is_control_all" property="isControlAllAD"/>
+     	<association property="adOperators" resultMap="operatorsMap"/>
+    </resultMap>
+    
+     <resultMap id="networkAllPageMap" type="AdNetwork">
+      	<id column="n_id" property="id"/>
+      	 <result column="n_ad_network_id" property="networkId"/>
+     	<result column="n_network_name" property="networkName"/>
+     	 <result column="n_ad_status" property="status"/>
+       	<result column="n_cpu" property="cpu"/>
+     	<result column="n_mermory" property="memory"/>
+     	<result column="n_port" property="port"/>
+     	<result column="n_way_encryption" property="wayEncryption"/>
+     	<result column="n_secret_key" property="secretKey"/>
+     	<result column="n_ip" property="ip"/>
+     	<result column="n_valid_date" property="validDate"/>
+     	<result column="n_is_control_all" property="isControlAllAD"/>
+     	<association property="adOperators" resultMap="operatorsMap"/>
+     	<collection property="typeList" resultMap="typeMap"/>
+    </resultMap>
+	 
+	<select id="findNetWorkByTypeAndCombo" resultMap="networkBytypeMap" parameterType="map">
+		select 
+		<include refid="networkSql"/>
+		from ad_network n
+		left join ad_combo_network cn on n.id = cn.ad_network_id
+		left join ad_combo c on cn.ad_combo_id = c.id and c.del_flag=#{delFlag} 
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag} 
+	<!-- 	left join ad_sell s on c.id = s.ad_combo_id and s.del_flag=0
+		LEFT JOIN ad_element e on e.ad_combo_id = c.id and e.del_flag=0  -->
+		<if test="chlidType != null and chlidType != null and advertiserId !=null">
+		left join ad_sell s on c.id = s.ad_combo_id and s.del_flag=0
+		LEFT JOIN ad_element e on e.ad_combo_id = c.id and e.del_flag=0
+		</if>
+		where  n.del_flag=#{delFlag} 
+		and n.ad_status =#{status}
+		and c.is_valid = #{isValid}
+		and t.id=#{typeId}
+		<!-- and s.status = '1'	
+		and e.ad_status != '7' -->	
+		<if test="chlidType != null and chlidType != null and advertiserId !=null">
+		 and (s.advertiser_id !=#{advertiserId} || (e.ad_child_type_id = #{chlidType} and s.advertiser_id =#{advertiserId}  ))  
+		</if>
+		<if test="startDate != null and endDate != null">
+		and 
+		 (
+		(DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)	
+		</if>
+		order by n.ad_netwrok_name 
+		
+	</select>
+	<select id="findAllNetwork" resultMap="networkAllPageMap" parameterType="AdNetwork">
+		select 
+		<include refid="networkSql"/> ,
+		<include refid="operatorsSql"/>,
+		<include refid="typeSql"/>
+		from ad_network n
+		left join ad_operators o on n.id = o.ad_net_work_id and o.del_flag=#{delFlag}
+		left join ad_type_network tn on n.id = tn.ad_network_id 
+		left join ad_type t on tn.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where 
+		n.del_flag =#{delFlag}
+	</select>
+	<select id="findAll" resultMap="networkAllMap" parameterType="AdNetwork">
+		select
+		<include refid="networkSql"/> ,
+		<include refid="operatorsSql"/>
+		 from ad_network n
+		 left join ad_operators o on n.id= o.ad_net_work_id and o.del_flag=#{delFlag}
+		where n.del_flag=#{delFlag}
+		and n.ad_status = #{status}
+	</select>
+	<select id="findAllNetworkByTypeId" resultMap="networkAllMap" parameterType="map">
+		select
+		<include refid="networkSql"/> ,
+		<include refid="operatorsSql"/>
+	from ad_network n
+	left join ad_operators o on n.id= o.ad_net_work_id and
+	o.del_flag=#{delFlag}
+	left join ad_type_network tn on n.id = tn.ad_network_id
+	left join ad_type t on tn.ad_type_id = t.id and t.del_flag=#{delFlag}
+	where n.del_flag=#{delFlag}
+	and n.ad_status = #{status}
+	and t.id =#{typeId}
+		order by n.ad_netwrok_name 
+	</select>
+	
+	
+	<select id="findAllPage" resultMap="networkAllPageMap" parameterType="AdNetwork">
+		select 
+		<include refid="networkSql"/> ,
+		<include refid="operatorsSql"/>,
+		<include refid="typeSql"/>
+		from ad_network n
+		left join ad_operators o on n.id = o.ad_net_work_id and o.del_flag=#{delFlag}
+		left join ad_type_network tn on n.id = tn.ad_network_id 
+		left join ad_type t on tn.ad_type_id = t.id and t.del_flag=#{delFlag}
+		where 
+		n.del_flag =#{delFlag}
+		<if test="adOperators != null and adOperators.operatorsName != null and adOperators.operatorsName !=''">
+			and o.ad_operators_name  like CONCAT('%', #{adOperators.operatorsName}, '%')
+		</if>
+	 	<if test="adOperators != null and adOperators.operatorsId != null and adOperators.operatorsId !=''">
+			and p.ad_operators_id  like CONCAT('%', #{adOperators.operatorsId}, '%')
+		</if>
+		<if test="networkName != null and networkName !=''">
+			and n.ad_netwrok_name like CONCAT('%', #{networkName}, '%')
+		</if>
+		<if test="networkId != null and networkId !=''">
+			and n.ad_network_id like CONCAT('%', #{networkId}, '%')
+		</if>
+		<if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        	</if>
+	</select>
+	
+	<select id="findAllValid" resultMap="networkAllMap" parameterType="AdNetwork">
+		select
+		<include refid="networkSql"/> ,
+		<include refid="operatorsSql"/>
+		 from ad_network n
+		 left join ad_operators o on n.id= o.ad_net_work_id and o.del_flag=#{delFlag}
+		where n.del_flag=#{delFlag}
+		and n.ad_status = #{status}
+	</select>
+	
+	<select id="getAdNetWorkByOpreators" resultMap="networkBytypeMap" parameterType="AdNetwork">
+		select 
+		<include refid="networkSql"/>
+		from ad_network n
+		left join ad_operators o on n.id = o.ad_net_work_id and o.del_flag=#{delFlag}
+		where n.del_flag=#{delFlag}
+		and o.id = #{id}
+	</select>
+	
+	<!-- 根据套餐ID查询与频道相关的广告的在那个广告发送器下 -->
+	<select id="getNetworkByComboAndChannel" resultMap="networkBytypeMap" parameterType="map">
+		select 
+			<include refid="networkSql"/>
+  		 from ad_network n
+		left join  ad_channel ca on n.id = ca.ad_network_id
+		left join ad_combo_channel cc on ca.id = cc.ad_channel_id
+		left join ad_combo c on cc.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		where ca.del_flag=#{delFlag}
+		and  c.id = #{comboId}
+		 
+	</select>
+	
+	<!-- 根据套餐ID查询与频道相关的广告的在那个广告发送器下 -->
+	<select id="getNetworkByComboId" resultMap="networkBytypeMap" parameterType="map">
+		select 
+			<include refid="networkSql"/>
+		 from ad_network n
+		left join ad_combo_network an on n.id = an.ad_network_id 
+		left join ad_combo c on an.ad_combo_id= c.id and c.del_flag=#{delFlag}
+		where n.del_flag =#{delFlag}
+		and c.id =#{comboId}
+		 
+	</select>
+	
+	<!-- 根据广告运营商ID查询是否有广告发送器 -->
+	<select id="getNetworkByOperatorId" resultMap="networkAllMap" parameterType="map">
+		select
+		<include refid="networkSql"/> ,
+		<include refid="operatorsSql"/>
+		 from ad_network n
+		 left join ad_operators o on n.id= o.ad_net_work_id and o.del_flag=#{delFlag}
+		where n.del_flag=#{delFlag}
+		and o.id = #{operatorId}
+		 
+	</select>
+	
+ 
+	
+ 
+</mapper> 

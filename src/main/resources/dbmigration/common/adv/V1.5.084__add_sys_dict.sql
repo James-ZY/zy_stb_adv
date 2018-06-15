@@ -1,0 +1,4 @@
+INSERT INTO `sys_dict` VALUES ('f623318793bf4293ae541fb72484a94e', '合成图片', '1', 'roll_image_select', '添加滚动广告素材的时候选择类型', '20', 'admin', '2017-03-15 10:11:30', 'admin', '2017-03-15 10:11:42', null, '0', '0');
+INSERT INTO `sys_dict` VALUES ('0dc3ed1e78f34a0dbb544232d6f17df3', 'Composite image', '1', 'roll_image_select', 'Select the type of scroll advertisement material', '20', 'admin', '2017-03-15 10:13:49', null, null, null, '0', '1');
+INSERT INTO `sys_dict` VALUES ('7cc4f844b03849f4bda98315ccf45444', '原生图片', '0', 'roll_image_select', '添加滚动广告素材的时候选择类型', '10', 'admin', '2017-03-15 10:10:59', null, null, null, '0', '0');
+INSERT INTO `sys_dict` VALUES ('c771050a460744d2b8dd5b86fdc0110d', 'Native image', '0', 'roll_image_select', 'Select the type of scroll advertisement material', '10', 'admin', '2017-03-15 10:12:17', 'admin', '2017-03-15 10:12:34', null, '0', '1');

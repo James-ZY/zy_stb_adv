@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:websocket="http://www.springframework.org/schema/websocket"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<description>SpringMVC配置</description>
+	<!-- 自动扫描且只扫描@Controller -->
+	<context:component-scan base-package="com.gospell.aas" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<mvc:default-servlet-handler />
+    <!-- 开启注解驱动 -->
+    <!-- 这样可以使用@Controller这些注解 -->
+    <!-- content-negotiation-manager属性就是指定内容协商管理器的bean -->
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
+		<mvc:message-converters register-defaults="true">
+			<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<constructor-arg value="UTF-8" />
+			</bean>
+			<!-- 将Jackson2HttpMessageConverter的默认格式化输出设为true -->
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="supportedMediaTypes">
+                	<list><value>application/json;charset=UTF-8</value></list>
+                </property>
+				<property name="prettyPrint" value="true" />
+				<property name="objectMapper">  
+                    <bean class="com.gospell.aas.common.mapper.JsonMapper"></bean>  
+                </property>
+   			</bean>
+			
+			<!-- 使用XML格式输出数据 -->
+            <bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+                <constructor-arg>
+                    <bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+                        <property name="streamDriver">
+                            <bean class="com.thoughtworks.xstream.io.xml.StaxDriver"/>
+                        </property>
+                        <property name="annotatedClasses">
+                            <list>
+                                <value>com.gospell.aas.common.persistence.BaseEntity</value>
+                            </list>
+                        </property>
+                    </bean>
+                </constructor-arg>
+                <property name="supportedMediaTypes" value="application/xml"></property>
+            </bean>
+		</mvc:message-converters>
+		<!-- 自定义参数转换器 -->
+		<mvc:argument-resolvers>
+            <bean class="com.gospell.aas.common.web.SecureModelAttributeMethodArgumentResolver">
+                <constructor-arg value="false"/>
+            </bean>
+        </mvc:argument-resolvers>
+	</mvc:annotation-driven>
+
+	<!-- REST中根据URL后缀自动判定Content-Type及相应的View -->
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+	    <property name="mediaTypes" >
+	        <map> 
+                <entry key="xml" value="application/xml"/> 
+                <entry key="json" value="application/json"/> 
+            </map>
+	    </property>
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="favorPathExtension" value="true"/>
+	</bean>
+	
+	<!-- 这个现在不需要配置了 -->
+	<!-- spring websocket
+    <websocket:message-broker application-destination-prefix="/app">
+        <websocket:stomp-endpoint path="/ws">
+            <websocket:sockjs/>
+        </websocket:stomp-endpoint>
+        <websocket:simple-broker prefix="/topic"/>
+    </websocket:message-broker>
+    end -->
+
+	<!-- 定义JSP文件的位置 -->
+	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass"  value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL -->
+    <!-- 开启默认处理 -->
+    <!-- 这样静态资源就可以访问了 -->
+	<mvc:default-servlet-handler />
+
+	<!-- 定义无需Controller的url<->view直接映射 -->
+	<!-- 表示当访问主页时自动转发到index控制器 -->
+	<!-- 默认访问跳转到登录页面 -->
+	<mvc:view-controller path="/" view-name="redirect:/login" />
+	
+	 <mvc:interceptors>
+        <!-- 国际化操作拦截器 如果采用基于（请求/Session/Cookie）则必需配置 -->
+        <!-- 默认的参数名为locale，参数为:en_US，zh_CN等，在页面上加一句<a href="?locale=zh_CN">简体中文</a> -->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+    </mvc:interceptors>
+
+	<!-- 将Controller抛出的异常转到特定View, 保持SiteMesh的装饰效果  -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.apache.shiro.authz.UnauthorizedException">error/403</prop>
+				<prop key="java.lang.Throwable">error/500</prop>
+			</props>
+		</property>
+	</bean>
+	
+	 
+	
+    <!-- 上传下载设置 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8" /> <!-- 默认编码 (ISO-8859-1) -->
+        <property name="maxInMemorySize" value="10240" /> <!-- 最大内存大小 (10240) -->
+        <property name="uploadTempDir" value="/upload/" /> <!-- 上传后的目录名 (WebUtils#TEMP_DIR_CONTEXT_ATTRIBUTE) -->
+        <property name="maxUploadSize" value="10485760000" /> <!-- 最大文件大小，-1为无限止(-1) -->
+    </bean>
+
+	<!-- 支持 Shiro对Controller的方法级AOP安全控制 begin -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	<!-- end -->
+	
+	  <!-- 定义aspectj -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+</beans>

@@ -1,0 +1,12 @@
+INSERT INTO `sys_menu`  VALUES ('145', '45', '0,1,58,45,', 'menu_statistics_of_package_release', '/adv/sell/comboReleaseList', '', 'th-list', '60', '1', '0', '', 'admin', '2017-10-11 14:42:07', NULL, NULL, NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('146', '145', '0,1,58,45,145,', 'menu_view', '', '', '', '30', '0', '0', 'combo:statistics:release:view', 'admin', '2017-10-11 14:53:44', NULL, NULL, NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('147', '45', '0,1,58,45,', 'menu_count_analysis_of_package_sales', '/adv/sell/getAdComboSellCount', '', 'th-list', '40', '1', '0', '', 'admin', '2017-10-13 16:06:37', NULL, NULL, NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('148', '147', '0,1,58,45,147,', 'menu_view', '', '', '', '30', '0', '0', 'combo:sell:count:view', 'admin', '2017-10-13 16:14:27', NULL, NULL, NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('149', '66', '0,1,43,66,', 'menu_quick_publish', '/adv/quickAdelement/form', '', '', '15', '1', '0', '', 'admin', '2017-10-23 18:09:20', 'admin', '2017-10-30 16:53:57', NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('150', '149', '0,1,43,66,149,', 'menu_view', '', '', '', '10', '0', '0', 'sys:adv:quick:view', 'admin', '2017-10-23 18:11:03', 'admin', '2017-10-30 16:53:58', NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('151', '149', '0,1,43,66,149,', 'menu_update', '', '', '', '15', '0', '0', 'sys:adv:quick:edit', 'admin', '2017-10-23 18:12:06', 'admin', '2017-10-30 16:53:58', NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('152', '149', '0,1,43,66,149,', 'menu_add', '', '', '', '20', '0', '0', 'sys:adv:quick:edit', 'admin', '2017-10-23 18:13:15', 'admin', '2017-10-30 16:53:58', NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('153', '3', '0,1,2,3,', 'menu_sys_file_param_manage', '/sys/fileParam', '', '', '100', '1', '0', '', 'admin', '2017-10-24 10:19:15', NULL, NULL, NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('154', '153', '0,1,2,3,153,', 'menu_view', '', '', '', '10', '0', '0', 'sys:fileParam:view', 'admin', '2017-10-24 10:20:22', NULL, NULL, NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('155', '153', '0,1,2,3,153,', 'menu_update', '', '', '', '20', '0', '0', 'sys:fileParam:edit', 'admin', '2017-10-24 10:21:34', NULL, NULL, NULL, '0');
+INSERT INTO `sys_menu`  VALUES ('156', '153', '0,1,2,3,153,', 'menu_delete', '', '', '', '30', '0', '0', 'sys:fileParam:edit', 'admin', '2017-10-24 10:22:04', NULL, NULL, NULL, '0');

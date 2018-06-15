@@ -1,0 +1,2 @@
+INSERT INTO `ad_resoure_type`  VALUES ('51a36c2c08094075bb7a6d146cbe2f98', '0.1', '0', '30', '800', '30', '300', '0', '15', '0', '0', '0', 'jpg,png,gif,bmp', '0', '10', '2018-03-07 16:48:32', NULL, 'admin', NULL, NULL, '0', NULL);
+INSERT INTO `ad_resoure_type`  VALUES ('25d380be99d648aab58b9d1071ee3740', '0.1', '0', '30', '800', '30', '300', '0', '15', '0', '0', '1', 'jpg,png,gif,bmp', '0', '10', '2018-03-07 16:49:05', NULL, 'admin', NULL, NULL, '0', NULL);

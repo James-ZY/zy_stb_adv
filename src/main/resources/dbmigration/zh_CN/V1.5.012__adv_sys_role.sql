@@ -1,0 +1,1 @@
+INSERT INTO `sys_role` VALUES ('admin', '1', '超级系统管理员', '1', null, '2015-06-02 18:09:56', 'admin', '2015-10-22 15:31:17', null, '0');

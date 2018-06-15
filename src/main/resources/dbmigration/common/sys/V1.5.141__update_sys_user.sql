@@ -1,0 +1,1 @@
+UPDATE `sys_user` SET  `name`='administrator' WHERE (`id`='admin');

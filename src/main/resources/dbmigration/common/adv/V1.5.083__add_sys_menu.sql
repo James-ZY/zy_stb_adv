@@ -1,0 +1,5 @@
+ INSERT INTO `sys_menu` VALUES ('121', '2', '0,1,2,', 'menu_about_help', '', '', '', '986', '1', '0', '', 'admin', '2017-03-14 14:49:10', 'admin', '2017-03-14 14:53:28', null, '0');
+ INSERT INTO `sys_menu` VALUES ('122', '121', '0,1,2,121,', 'menu_sys_doc_manage', '/sys/help', '', '', '10', '1', '0', '', 'admin', '2017-03-14 14:53:15', 'admin', '2017-03-14 14:53:28', null, '0');
+ INSERT INTO `sys_menu` VALUES ('123', '122', '0,1,2,121,122,', 'menu_delete', '', '', '', '30', '0', '0', 'sys:help:edit', 'admin', '2017-03-14 14:50:27', 'admin', '2017-03-14 14:53:28', null, '0');
+INSERT INTO `sys_menu` VALUES ('124', '122', '0,1,2,121,122,', 'menu_update', '', '', '', '20', '0', '0', 'sys:help:edit', 'admin', '2017-03-14 14:49:58', 'admin', '2017-03-14 14:53:28', null, '0');
+INSERT INTO `sys_menu` VALUES ('125', '122', '0,1,2,121,122,', 'menu_view', '', '', '', '10', '0', '0', 'sys:help:view', 'admin', '2017-03-14 14:49:34', 'admin', '2017-03-14 14:53:28', null, '0');

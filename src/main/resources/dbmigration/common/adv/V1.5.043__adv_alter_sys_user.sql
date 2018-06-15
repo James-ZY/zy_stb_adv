@@ -1,0 +1,1 @@
+alter table sys_user ADD is_adv_super int(11) NOT NULL Default 0;

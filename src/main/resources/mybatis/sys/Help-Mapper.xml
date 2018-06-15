@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gospell.aas.repository.mybatis.sys.IHelpDao">
+    
+  	<sql id="helpsql">
+  		DISTINCT h.id As h_id,
+		h.del_flag as h_del_flag,
+		h.create_date as h_create_date,
+		h.update_date as h_update_date,
+		h.file_path as h_file_path,
+		h.file_size as h_file_size,
+		h.file_format as h_file_format,
+		h.status as h_status,
+		h.flag as h_flag,
+		h.locale as h_locale
+  	</sql>
+  	<sql id="createUserSql">
+		u.id as u_id,
+		u.login_name as u_login_name,
+		u.name as u_name
+	</sql>
+	
+	<sql id="updateUserSql">
+		s.id as s_id,
+		s.login_name as s_login_name,
+		s.name as s_name
+	</sql>
+	<select id="findAll" resultMap="helpResultMap" parameterType="Help">
+		select   
+			<include refid="helpsql"/>,
+			<include refid="createUserSql"/>,
+			<include refid="updateUserSql"/>
+		from sys_help h
+		left join sys_user u on h.create_by = u.id and u.del_flag=#{delFlag}
+		left join sys_user s on h.update_by = s.id and s.del_flag=#{delFlag}
+		where h.del_flag=#{delFlag}
+		<if test="null != createBy and null != createBy.loginName and '' != createBy.loginName">
+			and u.login_name like CONCAT('%', #{createBy.loginName}, '%')
+		</if>
+		<if test="null != updateBy and null != updateBy.loginName and '' != updateBy.loginName">
+			and s.login_name like CONCAT('%', #{updateBy.loginName}, '%')
+		</if>
+		<if test="null != status">
+				and h.`status`=#{status}
+		</if>
+		<if test="null != flag">
+				and h.flag=#{flag}
+		</if>
+		<if test="null != helpLocale">
+				and h.locale=#{helpLocale}
+		</if>
+		
+		<if test="page.orderBy !=null and page.orderBy !=''">
+        		ORDER BY ${page.orderBy}
+        </if>
+	
+	</select>
+	<select id="findHelpValid" resultMap="helpResultValidMap" parameterType="Help">
+		select   
+			<include refid="helpsql"/> 
+		from sys_help h
+		 
+		where h.del_flag=#{delFlag}
+		 
+		and h.`status`=#{status}
+		 
+		and h.flag=#{flag}
+  
+		and h.locale=#{helpLocale}
+	 
+		 
+	
+	</select>
+	<resultMap type="Help" id="helpResultValidMap">
+		<id column="h_id" property="id"/>
+		<result column="h_del_flag" property="delFlag"/>
+		<result column="h_create_date" property="createDate"/>
+		<result column="h_update_date" property="updateDate"/>
+		<result column="h_file_path" property="filePath"/>
+		<result column="h_file_size" property="fileSize"/>
+		<result column="h_file_format" property="fileFormat"/>
+		<result column="h_status" property="status"/>
+		<result column="h_flag" property="flag"/>
+		<result column="h_locale" property="helpLocale"/>
+	</resultMap>
+	<resultMap type="Help" id="helpResultMap">
+		<id column="h_id" property="id"/>
+		<result column="h_del_flag" property="delFlag"/>
+		<result column="h_create_date" property="createDate"/>
+		<result column="h_update_date" property="updateDate"/>
+		<result column="h_file_path" property="filePath"/>
+		<result column="h_file_size" property="fileSize"/>
+		<result column="h_file_format" property="fileFormat"/>
+		<result column="h_status" property="status"/>
+		<result column="h_flag" property="flag"/>
+		<result column="h_locale" property="helpLocale"/>
+		<association property="createBy" resultMap="userResultMap"/>
+		<association property="updateBy" resultMap="updateUserResultMap" />
+	</resultMap>
+	<resultMap type="User" id="userResultMap">
+		<id column="u_id" property="id"/>
+		<result column="u_login_name" property="loginName"/>
+		<result column="u_name" property="name"/>
+	</resultMap>
+	<resultMap type="User" id="updateUserResultMap">
+		<id column="s_id" property="id"/>
+		<result column="s_login_name" property="loginName"/>
+		<result column="s_name" property="name"/>
+	</resultMap>
+	
+</mapper>

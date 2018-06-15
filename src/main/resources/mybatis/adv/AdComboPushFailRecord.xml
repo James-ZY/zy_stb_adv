@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdComboPushFailRecordDao">
+
+	<sql id="positionSql">
+		DISTINCT p.id as p_id,
+		p.ad_combo_id as p_ad_combo_id,
+		p.ad_status as p_status,
+		p.client_id as p_client_id
+	</sql>
+    
+   <select id="insertEntity" parameterType="java.util.List">
+	
+	  insert into
+	  ad_combo_push_record(id,ad_combo_id,client_id,ad_status,create_date)
+	  values
+	  <foreach collection="list" item="item" index="index"
+	   separator=",">
+	   (#{item.id,jdbcType=VARCHAR},#{item.comboId,jdbcType=VARCHAR},#{item.clientId,jdbcType=VARCHAR},
+	   #{item.status,jdbcType=INTEGER},#{item.createDate,jdbcType=DATE})
+  </foreach>
+ </select>
+
+  <resultMap id="positionMap" type="AdComboPushFailRecord">
+      	<id column="p_id" property="id"/>
+      	<result column="p_ad_combo_id" property="comboId"/>
+      	<result column="p_status" property="status"/>
+      	<result column="p_client_id" property="clientId"/>
+    </resultMap>
+  <select id="selectData" resultMap="positionMap" parameterType="map">
+		select 
+		<include refid="positionSql"/>
+		from ad_combo_push_record p
+		where
+	  	 p.del_flag =#{delFlag}
+	  	 and p.ad_status=#{status}
+		 and p.client_id=#{clientId}
+  </select>
+  
+  <delete id="deleteList">
+  		delete from ad_combo_push_record 
+  		where ad_combo_id in
+  		 <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+  			#{item}  
+ 		</foreach> 
+ 		and ad_status = #{status}
+ 		and client_id = #{clientId} 
+  </delete>
+
+	
+	 
+	
+</mapper> 
