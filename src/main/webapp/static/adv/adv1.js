@@ -33,7 +33,7 @@ $(function() {
     }
     //根据套餐判断选择文件数目
     function setlimit(id){
-        var controlId=parseInt(id);
+        var controlId=parseInt(id.getAdvType());
         if(controlId==1){
             var data = {typeId:controlId};
             var postData = JSON.stringify(data);
@@ -64,7 +64,7 @@ $(function() {
         }
     }
 
-    //根据广告类型获取开机画面广告显示时间
+    //根据广告类型获取开机画面广告/挂角显示时间
     function setBtP(id){
         var controlId=parseInt(id);
         var data = {typeId:controlId};
@@ -577,6 +577,7 @@ $(function() {
             node.find('img[id='+comment+']').parent().addClass("selected");
             node.find('img[id='+comment+']').parent().attr("name","1");
             node.find('img[id='+comment+']').parent().find("input[class='action_button']").css("background",'url("../../static/images/icon/ic_checkbox_ture.png")');
+            node.find('img[id='+comment+']').parent().find("input[class='pcshowTime']").css("display","block");
         });
     }
 
@@ -593,7 +594,8 @@ $(function() {
             },
             end: function () {
                 //关闭刷新素材数据
-                getSelectData(advertiser,adType,'',flag);
+                getSelectData(advertiser,adType,'',"0");
+                getSelectData(advertiser,adType,'',"1");
                 if(adType == 5){
                     var cs = "sd";
                     if(flag == 1){
@@ -610,8 +612,6 @@ $(function() {
         var isNotAdv=$("#isNotAdv").text();
         var advId=$("#advId").text();
         var advertiser_id="";
-        var sdShowParam = $("#sdShowParam").val();
-        var hdShowParam = $("#hdShowParam").val();
         if(isNotAdv=="true"){
             advertiser_id=$("#advertiser_id").find("option:selected").val();
         }else{
@@ -619,6 +619,8 @@ $(function() {
                 advertiser_id=advId;
             }
         }
+        var sdShowParam = $("#sdShowParam").val();
+        var hdShowParam = $("#hdShowParam").val();
         var rollFlag = "1";
         if(ClassId!=""&&advertiser_id!=""){
             if(ClassId == "5"){
@@ -627,18 +629,39 @@ $(function() {
                     if(sdFx == "2" || sdFx =="3"){
                         rollFlag = "2";
                     }
+                    if(sdFx ==0){
+                        $("#sdFx").val(0).select2();
+                    }else if(sdFx ==1){
+                        $("#sdFx").val(1).select2();
+                    }else if(sdFx ==2){
+                        $("#sdFx").val(2).select2();
+                    }else if(sdFx ==3){
+                        $("#sdFx").val(3).select2();
+                    }
                 }else{
                     var hdFx = $("#hdFx").val();
                     if(hdFx == "2" || hdFx =="3"){
                         rollFlag = "2";
                     }
+                    if(hdFx ==0){
+                        $("#hdFx").val(0).select2();
+                    }else if(hdFx ==1){
+                        $("#hdFx").val(1).select2();
+                    }else if(hdFx ==2){
+                        $("#hdFx").val(2).select2();
+                    }else if(hdFx ==3){
+                        $("#hdFx").val(3).select2();
+                    }
                 }
             }
             var version;
+            var spl = true;
             if(resolution == "0"){
                 version = $("#sdversion").val();
+                spl = $("#path").val().split(",").length;
             }else{
                 version = $("#hdversion").val();
+                spl = $("#hdPath").val().split(",").length;
             }
             if(null != version){
                 version = version.join(",");
@@ -662,9 +685,9 @@ $(function() {
                     var html='';
                     var appendHtml='';
                     if(resolution=="0"){
-                        $('.advStandard_list_Content').html('');
+                        show_dom.find('.advStandard_list_Content').html('');
                     }else{
-                        $('.advHd_list_Content').html('');
+                        show_dom.find('.advHd_list_Content').html('');
                     }
                     if(ClassId=="1" || ClassId=="2" || ClassId=="4" || ClassId=="5"){
 
@@ -701,15 +724,19 @@ $(function() {
                                 '<input class="action_button" type="button" id='+itemId+' for='+size+'>';
                             if(ClassId=="1"){
                                 if((comment["time"] !=null && comment["time"]!= "") || comment["time"]==0){
-                                    html+='<input type="number" class="pcshowTime" min="1" style="display:block;" max="'+bpTS+'" value="'+comment["time"]+'"></div></li>';
+                                    html+='<input type="number" id="pct'+comment["id"]+'" class="pcshowTime" min="1" style="display:block;" max="'+bpTS+'" value="'+comment["time"]+'"></div></li>';
                                 }else{
-                                    html+='<input type="number" class="pcshowTime" style="display:none;" min="1" max="'+bpTS+'" value="'+bpTS+'"></div></li>';
+                                    html+='<input type="number" id="pct'+comment["id"]+'" class="pcshowTime" style="display:none;" min="1" max="'+bpTS+'" value="'+bpTS+'"></div></li>';
                                 }
                             }else if(ClassId=="2" || ClassId=="4" || ClassId=="5"){
+                                var min = 0;
+                                if(spl > 1){
+                                    min = $("#psTs").val();
+                                }
                                 if((comment["time"] !=null && comment["time"]!= "") || comment["time"]==0){
-                                    html+='<input type="number" class="pcshowTime" style="display:block;" min="0"  max="600" value="'+comment["time"]+'"></div></li>';
+                                    html+='<input type="number" id="pct'+comment["id"]+'" class="pcshowTime" style="display:block;" min="'+min+'"  max="600" value="'+comment["time"]+'"></div></li>';
                                 }else{
-                                    html+='<input type="number" class="pcshowTime" style="display:none;" min="0" max="600" value="0"></div></li>';
+                                    html+='<input type="number" id="pct'+comment["id"]+'" class="pcshowTime" style="display:none;" min="'+min+'" max="600" value="0"></div></li>';
                                 }
                             }else{
                                 html+='<label for='+itemId+'></label></div></li>';
@@ -722,24 +749,25 @@ $(function() {
                     if(ClassId=="1" || ClassId=="2" || ClassId=="4" || ClassId=="5"){
 
                         if(resolution=="0"){
-                            html+='<div class="jqitem2 item1"><li class="item add_item"  name="0"></li></div>';
+                            html+='<div class="jqitem2 item1"><li class="item add_item" for="'+resolution+'"  name="0"></li></div>';
                         }else{
-                            html+='<div class="jqitem3 item1"><li class="item add_item"  name="0"></li></div>';
+                            html+='<div class="jqitem3 item1"><li class="item add_item" for="'+resolution+'"  name="0"></li></div>';
                         }
                         html+='</div>';
                     }else{
-                        html+='<li class="item add_item"  name="0"></li>';
+                        html+='<li class="item add_item" for="'+resolution+'"  name="0"></li>';
                     }
 
                     if(resolution=="0"){
                         appendHtml='<li class="title"><p>'+accipiter.getLang_(messageLang,"adv.standard")+'</p>';
                         if(ClassId =="5"){
                             appendHtml +='<label>'+accipiter.getLang("selectAll")+':</label><input id="sdSelAll" type="button" name="0" class="selAll"/>' +
-                                '<label>'+accipiter.getLang_(messageLang,"batch.set")+':</label><input type="number" class="tiemSet" min="'+min+'"/>' +
+                                '<label>'+accipiter.getLang_(messageLang,"batch.set")+':</label><input type="number" id="sdTimeSet" class="timeSet" min="'+min+'"/>' +
                                 '<label>'+accipiter.getLang_(messageLang,"selectd.time")+':</label><input id="sdSelTime" type="text" readonly="readonly"/>' +
                                 '<label>'+accipiter.getLang_(messageLang,"remaining.time")+':</label><input id="sdRemTime" type="text" readonly="readonly"/>';
                         }
-                        appendHtml +='</li>'+html;                        show_dom.find('.advStandard_list_Content').html('');
+                        appendHtml +='</li>'+html;
+                        show_dom.find('.advStandard_list_Content').html('');
                         show_dom.find('.advStandard_list_Content').html(appendHtml);
                         if(ClassId=="1" || ClassId=="2" || ClassId=="4" || ClassId=="5"){
                             $(".list_content .item").css("margin","0px");
@@ -755,11 +783,12 @@ $(function() {
                         appendHtml='<li class="title"><p>'+accipiter.getLang_(messageLang,"adv.hd")+'</p>';
                         if(ClassId =="5") {
                             appendHtml += '<label>'+accipiter.getLang("selectAll")+':</label><input id="hdSelAll" type="button" name="0" class="selAll"/>' +
-                                '<label>' + accipiter.getLang_(messageLang, "batch.set") + ':</label><input type="number" class="tiemSet" min="0"/>' +
+                                '<label>' + accipiter.getLang_(messageLang, "batch.set") + ':</label><input type="number" id="hdTimeSet" class="timeSet" min="'+min+'"/>' +
                                 '<label>' + accipiter.getLang_(messageLang, "selectd.time") + ':</label><input id="hdSelTime" type="text" readonly="readonly"/>' +
                                 '<label>' + accipiter.getLang_(messageLang, "remaining.time") + ':</label><input id="hdRemTime" type="text" readonly="readonly"/>';
                         }
-                        appendHtml +='</li>'+html;                        show_dom.find('.advHd_list_Content').html('');
+                        appendHtml +='</li>'+html;
+                        show_dom.find('.advHd_list_Content').html('');
                         show_dom.find('.advHd_list_Content').html(appendHtml);
                         if(ClassId=="1" || ClassId=="2" || ClassId=="4" || ClassId=="5"){
                             $(".list_content .item").css("margin","0px");
@@ -775,16 +804,15 @@ $(function() {
                     //绑定上传素材弹窗
                     $(".add_item").off("click").on("click",function(){
                         getSelectedResources();
-                        var node = $(this).parent().parent().parent();
-                        if(node.attr("class").indexOf("advStandard_list_Content")==-1){
-                            resolution = "1";
-                        }else{
-                            resolution = "0";
-                        }
+                        resolution = $(this).attr("for");
                         var advId = $("#advertiser_id").val();
                         uploadLayer(ClassId,advId,resolution);
                     });
                     $(".pcshowTime ").off('keyup').on('keyup', function (event) {
+                        var min = $("#psTs").val();
+                        if(parseInt($(this).val())<parseInt(min)){
+                            $(this).val(min);
+                        }
                         var adTypeId = $("#adTypeId").val();
                         if(adTypeId == 5){
                             var node = $(this).parent().parent().parent().parent().parent();
@@ -795,9 +823,9 @@ $(function() {
                             }
                         }
                     });
-                    $(".tiemSet").off('keyup').on('keyup', function (event) {
+                    $(".timeSet").off('keyup').on('keyup', function (event) {
                         var min = $("#psTs").val();
-                        if($(this).val()<min){
+                        if(parseInt($(this).val())<parseInt(min)){
                             return false;
                         }
                         plSet($(this));
@@ -808,10 +836,9 @@ $(function() {
                             checkSet("sd");
                         }
                     });
-
-                    $(".tiemSet").change(function(){
+                    $(".timeSet").change(function(){
                         var min = $("#psTs").val();
-                        if($(this).val()<min){
+                        if(parseInt($(this).val())<parseInt(min)){
                             return false;
                         }
                         plSet($(this));
@@ -1087,7 +1114,7 @@ $(function() {
     function getSelectedID(node){
         var dom=node.find(".selected").find("img");
         var dom1;
-        if(adClassId==1 || adClassId==2 || adClassId==4  || adClassId==5){
+        if(adClassId==1 || adClassId==2 || adClassId==4 || adClassId==5){
             dom1=node.find(".selected").find("input[type='number']");
         }
         var count=node.find(".selected").find("img").length;
@@ -1100,7 +1127,7 @@ $(function() {
         }else{
             for(var i=0;i<count;i++){
                 imgId+=dom[i].getAttribute("id")+',';
-                if(adClassId==1 || adClassId==2 || adClassId==4  || adClassId==5){
+                if(adClassId==1 || adClassId==2 || adClassId==4 || adClassId==5){
                     if(dom1[i].value ==null || dom1[i].value ==""){
                         isShow = false;
                     }
@@ -1654,6 +1681,8 @@ $(function() {
         if(pictureTimes ==null || pictureTimes == "" || showTime ==null || showTime == "" || pictureInterval ==null || pictureInterval == ""){
             $("#erron_span").text(accipiter.getLang_(messageLang,"improveAdCombo"));
             return false;
+        }else if(pictureTimes<=0){
+            return false;
         }else{
             $("#erron_span").text("");
         }
@@ -1699,6 +1728,8 @@ $(function() {
         var pictureInterval = $("#pictureInterval").val();//每张图片显示间隔时间
         if(pictureTimes ==null || pictureTimes == "" || showTime ==null || showTime == "" || pictureInterval ==null || pictureInterval == ""){
             $("#erron_span").text(accipiter.getLang_(messageLang,"improveAdCombo"));
+            return false;
+        }else if(pictureTimes<=0){
             return false;
         }else{
             $("#erron_span").text("");
@@ -1761,6 +1792,8 @@ $(function() {
         if(pictureTimes ==null || pictureTimes == "" || showTime ==null || showTime == "" || pictureInterval ==null || pictureInterval == "") {
             $("#erron_span").text(accipiter.getLang_(messageLang,"improveAdCombo"));
             return false;
+        }else if(pictureTimes<=0){
+            return false;
         }else{
             $("#erron_span").text("");
         }
@@ -1771,6 +1804,7 @@ $(function() {
             curV =as;
             e.val(as);
         }
+
         e.parent().parent().find(".item.selected").find("input[type='number']").each(function() {
             $(this).attr("max",curV);
             $(this).val(curV);
@@ -1785,7 +1819,11 @@ $(function() {
             selAllFun(node);//全选
             return false;
         }
-        if(nodeClass.indexOf("tiemSet") != -1){
+        if(nodeClass.indexOf("timeSet") != -1){
+            var min = $("#psTs").val();
+            if(parseInt(node.val())<parseInt(min)){
+                return false;
+            }
             plSet(node);//批量设置时间
             return false;
         }
@@ -1800,11 +1838,11 @@ $(function() {
         var max=10;
         var def=10;
         var min = $("#psTs").val();
-        var adTypeId = $("#adTypeId").val();
         /* parent.find(".item.selected").find("input[class='action_button']").each(function() {
          var sss = parseInt($(this).attr("for"));
          sel = parseInt(sel)+parseInt(sss);
          });*/
+        var adTypeId = $("#adTypeId").val();
 
         if(adTypeId == "1"){
             maxset =  $("#bpTS").val();
@@ -1835,6 +1873,8 @@ $(function() {
             if(pictureTimes ==null || pictureTimes == "" || maxset ==null || maxset == "" || pictureInterval ==null || pictureInterval == ""){
                 $("#erron_span").text(accipiter.getLang_(messageLang,"improveAdCombo"));
                 return false;
+            }else if(pictureTimes<=0) {
+                return false;
             }else{
                 $("#erron_span").text("");
             }
@@ -1848,7 +1888,7 @@ $(function() {
                 }
             });
             selTime = selTime -parseInt(pictureInterval);
-            max = (maxset - parseInt(selTime))/parseInt(pictureTimes)-parseInt(pictureInterval);
+            max = Math.floor((maxset - parseInt(selTime))/parseInt(pictureTimes)-parseInt(pictureInterval));
             if( max> 0){
                 if(def>max){
                     def=max;
@@ -1856,6 +1896,9 @@ $(function() {
                 $("#erron_span").text("");
             }else{
                 $("#erron_span").text(accipiter.getLang_(messageLang,"outTimeSet"));
+                return false;
+            }
+            if(def<min){
                 return false;
             }
             node.parent().find("input[type='number']").attr("max",max);
@@ -2115,4 +2158,4 @@ $(function() {
         $(".control_info").css("display","none");
     });
 
-});
+})

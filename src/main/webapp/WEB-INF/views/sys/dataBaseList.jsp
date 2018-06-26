@@ -8,7 +8,22 @@
 	<title><spring:message code='database.manage' /></title>
 	<meta name="decorator" content="default"/>
     <link rel="stylesheet" href="${ctxStatic}/common/nav-tabs.css">
-    <script src="${ctxStatic}/common/language.js"></script>
+	<style type="text/css">.sort{color:#0663A2;cursor:pointer;}
+	.uplodFile{margin:10px 0;position: relative;height: 30px;margin-left: 25px;}
+	.down-model{position: relative;height: 30px;}
+	.uplodFile span{display: block;position: absolute;height: 100%;width:40%;top: 0;left: 2px;border: 1px solid gainsboro;border-radius: 4px;line-height: 30px;font-size: 16px;overflow: hidden;}
+	.uplodFile #uploadFile{display: block;position: absolute;height: 100%;width:40%;top: 0;left: 2px;opacity: 0;filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);}
+	.uplodFile #btnImportSubmit{position: absolute;left:50%;}
+	.upload_file{width:350px;height:100px;margin-bottom:10px;}
+	.down-model a{    position: absolute;line-height:30px;width: 100%;left: 0;text-align: left;text-indent: 25px;}
+	.appendHtml{display:none;top:-100000px;}
+	</style>
+	<link rel="stylesheet" href="${ctx}/static/fileUpLoad/fileUpLoadcss/skinBase.css">
+	<script src="${ctx}/static/scripts/common/common.js"></script>
+	<script src="${ctxStatic}/dropzone/dropzone.min.js"></script>
+	<script src="${ctx}/static/fileUpLoad/js/sqlUploadFile.js"></script>
+	<script src="${ctxStatic}/layer/layer.js"></script>
+	<script src="${ctxStatic}/common/language.js"></script>
 	<script type="text/javascript">
 		function page(n,s){
 			$("#pageNo").val(n);
@@ -34,6 +49,35 @@
                 $("#searchForm").attr("action","${ctx}/sys/database/runJobNow");
                 $("#searchForm").submit();
             });
+            function getY(e){
+                var e = event || window.event;
+                return e.pageY ||e.clientY+document.body.scrollTop;
+            }
+            $("#btnImport").click(function(){
+                var topHeight=getY($(this))+20;
+                if($(this).attr("name")=="0"){
+                    $(this).attr("name","1");
+                    $(".FileImport").attr("name","1");
+                    var upLoadUrl="${ctx}/sys/database/import";
+                    var modelUrl="${ctx}/sys/database/import/template";
+                    $(".FileImport").css("top",topHeight);
+                    $(".FileImport").FileImport({"uploadUrl":upLoadUrl,"modelUrl":modelUrl});
+                }else{
+                    if($(".FileImport").attr("name")=="0"){
+                        var upLoadUrl="${ctx}/sys/database/import";
+                        var modelUrl="${ctx}/sys/database/import/template";
+                        $(".FileImport").css("top",topHeight);
+                        $(".FileImport").FileImport({"uploadUrl":upLoadUrl,"modelUrl":modelUrl});
+                        $(".FileImport").attr("name","1");
+                    }else{
+                        $(this).attr("name","0");
+                        $(".FileImport").html("");
+                        $(".FileImport").css("top","-1000px");
+                        $(".FileImport").attr("name")=="0";
+                    }
+                }
+
+            });
 		});
 	</script>
 </head>
@@ -49,6 +93,21 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/sys/database/"><spring:message code='database.list' /></a></li>
 	</ul>
+	<div class="hide appendHtml"></div>
+	<div id="importBox" class="hide">
+		<form id="importForm" action="${ctx}/sys/database/import" method="post" enctype="multipart/form-data"
+			  style="padding-left:20px;text-align:center;" class="form-search" onsubmit="loading(accipiter.getLang('loading'));"><br/>
+			<div class="uplodFile">
+				<span id="FlieName"><spring:message code='click.upload'/></span>
+				<input id="uploadFile" name="file" type="file"/>
+				<input id="btnImportSubmit" class="btn btn-primary" type="submit" value="<spring:message code='import.operators'/>" />
+			</div>
+			<div class="down-model">
+				<a href="${ctx}/sys/database/import/template"><spring:message code='download.operators.template' /></a>
+			</div>
+		</form>
+	</div>
+	<div class="FileImport" name="0"></div>
 	<form:form id="searchForm" modelAttribute="dataBaseRecord" action="${ctx}/sys/database/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
@@ -66,13 +125,16 @@
 			</div>
 			<div class="query-item">
 			<input id="btnSubmit" class="btn btn-primary" type="submit" value="<spring:message code='query' />"/>
-			<input id="runJobNow" class="btn btn-primary" type="button" value="<spring:message code='runJobNow' />"/>
 			</div>
 			<div class="query-item">
-			   	<shiro:hasPermission name="sys:database:export">
-				<input id="btnExport" class="btn btn-primary" type="button" value="<spring:message code='export' />"/>
+				<input id="runJobNow" class="btn btn-primary" type="button" value="<spring:message code='runJobNow' />"/>
+			</div>
+			<div class="query-item">
+				<shiro:hasPermission name="sys:database:import">
+					<input id="btnImport" class="btn btn-primary" name="0" type="button" value="<spring:message code='import' />"/>
+					<form:hidden path="uploadMessage"/>
 				</shiro:hasPermission>
-			</div> 
+			</div>
 			 
 		</div>
 	</form:form>

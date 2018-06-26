@@ -647,14 +647,14 @@
 				<div class="control-group">
 					<label class="control-label"><spring:message code='combo.showtime' />:</label>
 					<div class="controls">
-						<form:input path="adCombo.showTime" id="showTime" htmlEscape="false" maxlength="50" class="required digits showTime"/>
+						<form:input path="adCombo.showTime" id="showTime" htmlEscape="false" maxlength="50" class="required digits showTime" min="1"/>
 					    <span id="time-prompt " style="color:green;"><spring:message code='adv.prompt' /></span>
 					</div>
 				</div>
 					<div class="control-group">
 					<label class="control-label"><spring:message code='combo.intervaltime' />:</label>
 					<div class="controls">
-						<form:input path="adCombo.intervalTime" id="intervalTime" htmlEscape="false" maxlength="50" class="required digits intervalTime"/>
+						<form:input path="adCombo.intervalTime" id="intervalTime" htmlEscape="false" maxlength="50" class="required digits intervalTime" />
 					    <span id="time-prompt1 " style="color:green;"><spring:message code='adv.prompt1' /></span>
 					</div>			
 				</div>
@@ -670,13 +670,13 @@
 				<div class="control-group">
 					<label class="control-label"><spring:message code='combo.pictureTimes' />:</label>
 					<div class="controls">
-						<form:input path="adCombo.pictureTimes" id="pictureTimes" htmlEscape="false" type="number" maxlength="50" class="required digits"/>
+						<form:input path="adCombo.pictureTimes" id="pictureTimes" htmlEscape="false" type="number" maxlength="50" min="1" class="required digits"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label"><spring:message code='combo.pictureInterval' />:</label>
 					<div class="controls">
-						<form:input path="adCombo.pictureInterval" id="pictureInterval" htmlEscape="false" type="number" maxlength="50" class="required digits"/>
+						<form:input path="adCombo.pictureInterval" id="pictureInterval" htmlEscape="false" type="number" maxlength="50" min="0" class="required digits"/>
 						<span id="time-prompt2 " style="color:green;"><spring:message code='adv.prompt2' /></span>
 					</div>
 				</div>

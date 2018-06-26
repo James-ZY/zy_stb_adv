@@ -50,6 +50,9 @@ public abstract class DataEntity<T> extends BaseEntity<T> implements Serializabl
 	protected Date createDateEnd;
 	protected Date updateDateStart;
 	protected Date updateDateEnd;
+
+	public static final String ADV_YES_STATUS="1";//是
+	public static final String ADV_NO_STATUS="0";//否
 	
 	public DataEntity() {
 		super();

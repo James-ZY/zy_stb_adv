@@ -97,7 +97,18 @@
 	<tags:message content="${message}"/>
 	<div class="tab_content">
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<thead><tr><th><spring:message code='grade' /><%-- </th><th><spring:message code='department' /> --%></th><th class="sort loginName"><spring:message code='login.name' /></th><th class="sort name"><spring:message code='user.name' /></th><th><spring:message code='telephone' /></th><th><spring:message code='mobilephone' /></th><th><spring:message code='role' /></th><shiro:hasPermission name="sys:user:edit"><th><spring:message code='operation' /></th></shiro:hasPermission></tr></thead>
+		<thead>
+		<tr>
+			<th><spring:message code='grade'/><%-- </th><th><spring:message code='department' /> --%></th>
+			<th class="sort loginName"><spring:message code='login.name'/></th>
+			<th class="sort name"><spring:message code='user.name'/></th>
+			<th><spring:message code='telephone'/></th>
+			<th><spring:message code='mobilephone'/></th>
+			<th><spring:message code='role'/></th>
+			<shiro:hasPermission name="sys:user:edit">
+				<th><spring:message code='operation'/></th>
+			</shiro:hasPermission></tr>
+		</thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="user">
 			<tr>

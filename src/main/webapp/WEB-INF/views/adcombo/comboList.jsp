@@ -29,6 +29,31 @@
 	    }
 		
 		$(document).ready(function(){
+            // 表格排序
+            var orderBy = $("#orderBy").val().split(",")[2].split(" ");
+            $("#contentTable th.sort").each(function(){
+                if ($(this).hasClass(orderBy[0])){
+                    orderBy[1] = orderBy[1]&&orderBy[1].toUpperCase()=="DESC"?"down":"up";
+                    $(this).html($(this).html()+" <i class=\"icon icon-arrow-"+orderBy[1]+"\"></i>");
+                }
+            });
+            $("#contentTable th.sort").click(function(){
+                var order = $(this).attr("class").split(" ")[1];
+                var sort = $("#orderBy").val().split(",")[2].split(" ");
+                sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
+                $("#orderBy").val(order+" "+sort);
+				/*for(var i=0; i<order.length; i++){
+				 if (order[i] == "sort"){order = order[i+1]; break;}
+				 }
+				 if (order == sort[0]){
+				 sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
+				 $("#orderBy").val(order+" "+sort);
+				 }else{
+				 $("#orderBy").val(order+" DESC");
+				 }*/
+                page();
+            });
+
 			$("#btnExport").click(function(){
 				var info = accipiter.getLang("export.combo.Data");
 				 
@@ -119,7 +144,7 @@
 							<form:options items="${fns:getDictList('adv_type_flag')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
 				</div>
-					<div class="query-item">
+				<div class="query-item">
 					<label><spring:message code='type.isExpired' />：</label>
 					<form:select path="isExpired" class="selectlength">
 							<option value=""><spring:message code="userform.select"/></option>
@@ -143,11 +168,11 @@
 		<thead><tr>
 		<%-- <th><spring:message code='combo.id' /></th> --%>
 		<th><spring:message code='combo.name' /></th>
-		<th><spring:message code='adv.type'/></th>
+		<th class="sort t.id"><spring:message code='adv.type'/></th>
 		<th class="td-fore1"><spring:message code='type.isflag'/></th>
 		<th class="td-fore1"><spring:message code='operators.area'/></th>
-		<th class="td-fore1"><spring:message code='combo.startdate'/></th>
-		<th class="td-fore1"><spring:message code='combo.enddate'/></th>
+		<th class="sort c.valid_start_time td-fore1"><spring:message code='combo.startdate'/></th>
+		<th class="sort c.valid_end_time td-fore1"><spring:message code='combo.enddate'/></th>
 		<th class="td-control"><spring:message code='combo.playstart'/><i class="td-open"></i></th>
 		<th class="td-fore2"><spring:message code='combo.playend'/></th>
 		<th class="td-fore2"><spring:message code='combo.status' /></th>

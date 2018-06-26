@@ -257,7 +257,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		for (int i = 0; i < list1.size(); i++) {
 			System.out.println(list1.get(i));
 		}
-		
+
 	}
 	
 }

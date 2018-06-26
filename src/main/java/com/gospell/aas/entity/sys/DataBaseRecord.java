@@ -2,6 +2,7 @@ package com.gospell.aas.entity.sys;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -32,6 +33,9 @@ public class DataBaseRecord extends IdEntity<DataBaseRecord> {
 	/** 记录路径 */
 	private String recordPath;
 
+	@Transient
+	private String uploadMessage;// 上传信息
+
 	public DataBaseRecord() {
 		super();
 	}
@@ -56,4 +60,15 @@ public class DataBaseRecord extends IdEntity<DataBaseRecord> {
 	public void setRecordPath(String recordPath) {
 		this.recordPath = recordPath;
 	}
+
+	@Transient
+	public String getUploadMessage() {
+		return uploadMessage;
+	}
+
+	@Transient
+	public void setUploadMessage(String uploadMessage) {
+		this.uploadMessage = uploadMessage;
+	}
+
 }

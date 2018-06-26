@@ -767,14 +767,14 @@
 				<div class="control-group">
 					<label class="control-label"><spring:message code='combo.showtime' />:</label>
 					<div class="controls">
-						<form:input path="showTime"  htmlEscape="false" maxlength="50" class="required digits showTime"/>
+						<form:input path="showTime"  htmlEscape="false" maxlength="50" min="1" class="required digits showTime"/>
 					    <span id="time-prompt " style="color:green;"><spring:message code='adv.prompt' /></span>
 					</div>
 				</div>
 					<div class="control-group">
 					<label class="control-label"><spring:message code='combo.intervaltime' />:</label>
 					<div class="controls">
-						<form:input path="intervalTime" type="number" htmlEscape="false" maxlength="50" class="required digits intervalTime"/>
+						<form:input path="intervalTime" type="number" htmlEscape="false" maxlength="50" min="0" class="required digits intervalTime"/>
 					    <span id="time-prompt1 " style="color:green;"><spring:message code='adv.prompt1' /></span>
 					</div>
 				</div>
@@ -790,13 +790,13 @@
 				<div class="control-group">
 					<label class="control-label"><spring:message code='combo.pictureTimes' />:</label>
 					<div class="controls">
-						<form:input path="pictureTimes" type="number" htmlEscape="false" maxlength="50" class="required digits"/>
+						<form:input path="pictureTimes" type="number" htmlEscape="false" maxlength="50" min="1" class="required digits"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label"><spring:message code='combo.pictureInterval' />:</label>
 					<div class="controls">
-						<form:input path="pictureInterval" type="number" htmlEscape="false" maxlength="50" class="required digits"/>
+						<form:input path="pictureInterval" type="number" htmlEscape="false" maxlength="50" min="0" class="required digits"/>
 						<span id="time-prompt2 " style="color:green;"><spring:message code='adv.prompt2' /></span>
 					</div>
 				</div>
@@ -905,14 +905,16 @@
 	        		var intervalTime=parseInt($('.intervalTime').val());
 	        	    var showTime=parseInt($('.showTime').val());
 	        		var totalSecond=(endHour-startHour)*3600+(endMinute-startMinute)*60+endSecond-startSecond;
-	        		var Second=showCount*showTime;
+                    if(isNaN(startHour) || isNaN(startMinute) || isNaN(startSecond) || isNaN(endHour) || isNaN(endMinute) || isNaN(endSecond) || isNaN(intervalTime) || isNaN(showTime)){
+                        return false;
+                    }
 	        		var showCount = Math.floor( (totalSecond+intervalTime)/(showTime+intervalTime));
 	        		if(showCount==0){
 	        			showCount=1;
 	        		}
-	        		$('#showCount').val(showCount);
 	        		if(startHour!=NaN && startMinute!=NaN && startSecond!=NaN && endHour!=NaN && endMinute!=NaN && endSecond!=NaN && showCount!=NaN && showTime!=NaN){
-	        			if(showTime>totalSecond){
+                        $('#showCount').val(showCount);
+                        if(showTime>totalSecond){
 	        				 $("#btnSubmit").attr({"disabled":true});
 	        				 var text = accipiter.getLang("diplayTimeOutPlayTime");
 	        				 $("#time-beyond").text(text);

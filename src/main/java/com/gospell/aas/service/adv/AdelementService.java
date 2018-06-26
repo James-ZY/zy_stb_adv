@@ -143,7 +143,17 @@ public class AdelementService extends BaseService {
 		}
 
 		if (org.apache.commons.lang3.StringUtils.isEmpty(page.getOrderBy())) {
-			page.setOrderBy("a.ad_status ASC,t.id asc");
+			page.setOrderBy("a.start_date desc,a.end_date desc");
+		}else{
+			String order = page.getOrderBy();
+			String[] orders = order.split(",")[0].split(" ");
+			if(orders[0].contains("a.start_date")){
+               order = "a.start_date "+orders[1]+",a.end_date "+orders[1] + ",c.start_hour "+orders[1]+",c.start_minutes "+orders[1]+",c.start_second "+orders[1];
+			}
+			if(orders[0].contains("a.end_date")){
+				order = "a.end_date "+orders[1]+",a.start_date "+orders[1] + ",c.start_hour "+orders[1]+",c.start_minutes "+orders[1]+",c.start_second "+orders[1];
+			}
+			page.setOrderBy(order);
 		}
 		entity.setPage(page);
 		List<Adelement> list = mybatisDao.findList(entity);

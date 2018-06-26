@@ -117,10 +117,11 @@ public class AdSellService extends BaseService {
 		}else{
 			return page;
 		}
-		page.setOrderBy("t.id asc,s.end_date asc,u.login_name");
+		if (StringUtils.isEmpty(page.getOrderBy())) {
+			page.setOrderBy("s.end_date desc,t.id asc,u.login_name");
+		}
 		entity.setPage(page);
 		List<AdSell> list = mybatisDao.findAll(entity);
-		
 	 
 		if(list != null &&list.size() >0){
 			List<AdSell> noPastlist = Lists.newArrayList();

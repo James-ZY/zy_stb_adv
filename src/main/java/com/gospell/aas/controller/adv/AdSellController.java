@@ -152,16 +152,20 @@ public class AdSellController extends BaseController {
 		String logInfo=logService.getLogInfo(entity.getId(), 0, getMessage("adv.sell"), name);
 	 
 		try {
+			Boolean b = thisService.judgeAdTypeIsRepeat(entity);
+			if(b) {
 				comboService.clear();
 				thisService.clear();
 				thisService.save(entity);
 				logService.save(request, logInfo, null);
-				logger.info(UserUtils.getUser().getLoginName()+"保存或者修改套餐销售记录："+entity.getAdCombo().getComboName()+"成功");
+				logger.info(UserUtils.getUser().getLoginName() + "保存或者修改套餐销售记录：" + entity.getAdCombo().getComboName() + "成功");
 				addMessage(redirectAttributes, "msg.save.success");
 				return "redirect:/adv/sell/?repage";
-  
-			
-			
+			}else{
+				thisService.clear();
+				addMessage(redirectAttributes,  "comid.already.select");
+				return form(entity, request,model,redirectAttributes);
+			}
 		} catch (Exception e) {
 			logService.save(request, logInfo, e);
 			logger.error(UserUtils.getUser().getLoginName()+"保存或者修改套餐销售记录："+entity.getAdCombo().getComboName()+"失败",e.getMessage());
@@ -540,7 +544,7 @@ public class AdSellController extends BaseController {
 	
 	/**
 	 * 统计一段时间内套餐的销售数量
-	 * @param sell
+	 * @param dto
 	 * @param request
 	 * @param response
 	 * @param model

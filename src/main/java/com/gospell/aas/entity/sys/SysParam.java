@@ -52,6 +52,7 @@ public class SysParam extends IdEntity<SysParam> {
 	public static String CORNER_PICTURE_TOTAL_TIME = "CU_CPTT";//挂角图片总时长
 	public static String CORNER_PICTURE_TIME_SET = "CU_CPTS";//挂角单图片时长
 	public static String PICTURE_SHOW_TIME_SET = "CU_PSTS";//图片最少展示时长
+	public static String ROLL_PICTURE_MAX_LENGTH_SET = "CU_RPMLS";//滚动图片最大长度
 	public static String SYS_AREA_TYPE = "CU_SYS_AREA";
 	public static String SYS_AREA_KEY = "SYS_AREA";
 

@@ -192,10 +192,6 @@ public class AdSelfAdelementController extends BaseController {
 	public String adelementPreview(Adelement entity,Model model) {
 		entity = adelementService.get(entity.getId());
 		Integer status = entity.getStatus();
-		if (status == Adelement.ADV_STATUS_SHOW
-				|| status == Adelement.ADV_STATUS_END) {
-			entity.setStatus(Adelement.ADV_STATUS_PASS);
-		}
 		model.addAttribute("adelement", entity);
 		Integer resourceType = AdType.TYPE_STATUS_IMAGE;
 		String adelementDto = "";

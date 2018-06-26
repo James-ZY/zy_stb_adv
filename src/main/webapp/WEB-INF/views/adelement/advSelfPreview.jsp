@@ -256,10 +256,12 @@
 					<label class="control-label"><spring:message code='adv.adtext' />:</label>
 					<div class="controls">
 						<form:textarea path="addText" id="add_text_area" htmlEscape="false" rows="3" maxlength="200" class="input-xlarge required" disabled="true"/>
-				 
 					</div>
 				</div>
 		    </div>
+		</div>
+		<div class="form-actions">
+			<input id="btnCancel" class="btn" type="button" value="<spring:message code='return' />" onclick="history.go(-1)"/>
 		</div>
 	</form:form>
  		<script src="${ctxStatic}/adv/html5media.min.js"></script>

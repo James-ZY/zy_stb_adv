@@ -10,33 +10,41 @@
 	<style type="text/css">.sort{color:#0663A2;cursor:pointer;}</style>
 	<script src="${ctx}/static/scripts/common/common.js"></script>
 	<script src="${ctxStatic}/common/language.js"></script>
+	<style type="text/css">
+		#s2id_statusList{
+			width: auto!important;
+			min-width: 220px!important;
+		}
+	</style>
 	<script type="text/javascript">
-		var roleName = ""; //add by pengr for close  归属机构  tree 
+		var roleName = ""; //add by pengr for close  归属机构  tree
 		$(document).ready(function() {
 			window.parent.document.getElementById("menuFrame").contentWindow.document.getElementById("collapse66").getElementsByTagName("a")[0].parentElement.setAttribute("class","active");			
 			window.parent.document.getElementById("menuFrame").contentWindow.document.getElementById("collapse66").getElementsByTagName("a")[1].parentElement.setAttribute("class","");			
 			// 表格排序
-			var orderBy = $("#orderBy").val().split(" ");		
-			$("#contentTable th.sort").each(function(){
-				if ($(this).hasClass(orderBy[0])){
-					orderBy[1] = orderBy[1]&&orderBy[1].toUpperCase()=="DESC"?"down":"up";
-					$(this).html($(this).html()+" <i class=\"icon icon-arrow-"+orderBy[1]+"\"></i>");
-				}
-			});
-			$("#contentTable th.sort").click(function(){
-				var order = $(this).attr("class").split(" ");
-				var sort = $("#orderBy").val().split(" ");
-				for(var i=0; i<order.length; i++){
-					if (order[i] == "sort"){order = order[i+1]; break;}
-				}
-				if (order == sort[0]){
-					sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
-					$("#orderBy").val(order+" DESC"!=order+" "+sort?"":order+" "+sort);
-				}else{
-					$("#orderBy").val(order+" ASC");
-				}
-				page();
-			});
+            var orderBy = $("#orderBy").val().split(",")[0].split(" ");
+            $("#contentTable th.sort").each(function(){
+                if ($(this).hasClass(orderBy[0])){
+                    orderBy[1] = orderBy[1]&&orderBy[1].toUpperCase()=="DESC"?"down":"up";
+                    $(this).html($(this).html()+" <i class=\"icon icon-arrow-"+orderBy[1]+"\"></i>");
+                }
+            });
+            $("#contentTable th.sort").click(function(){
+                var order = $(this).attr("class").split(" ")[1];
+                var sort = $("#orderBy").val().split(",")[0].split(" ");
+                sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
+                $("#orderBy").val(order+" "+sort);
+                /*for(var i=0; i<order.length; i++){
+                    if (order[i] == "sort"){order = order[i+1]; break;}
+                }
+                if (order == sort[0]){
+                    sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
+                    $("#orderBy").val(order+" "+sort);
+                }else{
+                    $("#orderBy").val(order+" DESC");
+                }*/
+                page();
+            });
 			$("#btnExport").click(function(){
 				top.$.jBox.confirm(accipiter.getLang("exportData"),accipiter.getLang("systemPrompt"),function(v,h,f){
 					if(v=="ok"){
@@ -105,8 +113,7 @@
 				 </div>
 				 <div class="query-item">
 					<label><spring:message code='adv.status' />:</label>
-					<form:select path="status">
-						<option value=""> <spring:message code='userform.select' /></option>
+					<form:select path="statusList" multiple="multiple" style="width:auto;min-width:220px;">
 						<form:options items="${fns:getDictList('adv_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				    </form:select>
 				 </div>
@@ -141,6 +148,13 @@
 					<label><spring:message code='adv.name' />：</label><form:input path="adName"  htmlEscape="false" maxlength="50" class="input-small"/>
 				</div>
 				<div class="query-item">
+					<label><spring:message code='type.isExpired' />：</label>
+					<form:select path="isExpired" class="selectlength" style="width:100px;">
+						<option value=""><spring:message code="userform.select"/></option>
+						<form:options items="${fns:getDictList('adv_type_flag')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					</form:select>
+				</div>
+				<div class="query-item">
 				    <input id="btnSubmit" class="btn btn-primary" type="submit" value="<spring:message code='query' />" onclick="return page();"/>
 				</div>
 			</div>
@@ -152,22 +166,21 @@
 		<thead>
 	 
 		<tr>
- 		<th>ID</th>
-		<th><spring:message code='adv.name' /></th>
+ 		<th class="sort a.ad_id">ID</th>
+		<th class="sort a.ad_name"><spring:message code='adv.name' /></th>
 		<c:if test="${isAdv ==false}">
-					<th class="td-fore1"><spring:message code='adv.user'/></th>
+					<th class="sort k.id td-fore1"><spring:message code='adv.user'/></th>
 		</c:if>
+		<th class="sort c.ad_combo_name td-fore1"><spring:message code='adv.adcombo'/></th>
+		<th class="sort t.id td-fore1"><spring:message code='channel.adv.type'/></th>
+		<th style="width:90px;" class="td-control"><spring:message code='adv.son.type'/><i class="td-open"></i></th>
 
-		 
-		<th class="td-fore1"><spring:message code='adv.adcombo'/></th>
-		<th class="td-fore1"><spring:message code='channel.adv.type'/></th>
-		<th class="td-fore1"><spring:message code='adv.son.type'/></th>
-		<th><spring:message code='adv.playstart' /></th>
-		<th style="width:90px;" class="td-control"><spring:message code='adv.playend' /><i class="td-open"></i></th>
+		<th class="sort a.start_date"><spring:message code='adv.playstart' /></th>
+		<th class="sort a.end_date"><spring:message code='adv.playend' /></th>
+		<th><spring:message code='combo.playstart'/></th>
+		<th><spring:message code='combo.playend'/></th>
+		<th class="sort a.ad_status"><spring:message code='adv.status'/></th>
 		<th class="td-fore2"><spring:message code='adv.isflag' /></th>
-  
-		<th class="td-fore2"><spring:message code='adv.status' /></th>
-
 		<th class="td-fore2"><spring:message code='adv.audit.user' /></th>
 		<th class="td-fore2"><spring:message code='adv.remarks' /></th>
 		<shiro:hasPermission name="sys:adv:edit">
@@ -204,18 +217,17 @@
 				</c:choose>
 				<c:choose>
 						<c:when test="${!empty adelement.childAdType}">
-							<td class="td-fore1">${adelement.childAdType.typeName}</td>
+							<td>${adelement.childAdType.typeName}</td>
 						</c:when>
-						<c:otherwise><td class="td-fore1"></td></c:otherwise>
+						<c:otherwise><td></td></c:otherwise>
 				</c:choose>
 				<td>
 				<fmt:formatDate value="${adelement.startDate}" pattern="yyyy-MM-dd"/>
 				</td>
 				<td><fmt:formatDate value="${adelement.endDate}" pattern="yyyy-MM-dd"/></td>
-				<td class="td-fore2">${fns:getDictLabel(adelement.isFlag,'adv_isflag',"")}</td>
- 
-				<td class="td-fore2">
-				
+				<td>${adelement.adCombo.startTime}</td>
+				<td>${adelement.adCombo.endTime}</td>
+				<td>
 				<c:choose>
 					<c:when test="${1 == adelement.status}">
 						<spring:message code="auditing"/>
@@ -225,7 +237,7 @@
 					</c:otherwise>
 				</c:choose>
 				</td>
-		
+				<td class="td-fore2">${fns:getDictLabel(adelement.isFlag,'adv_isflag',"")}</td>
 				<c:choose>
 						<c:when test="${!empty adelement.auditUser}">
 							<td class="td-fore2">${adelement.auditUser.name}</td>

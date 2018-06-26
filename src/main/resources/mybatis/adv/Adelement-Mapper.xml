@@ -222,12 +222,11 @@
 			and a.ad_status = #{status}
 		</if>
 
-		<if test="status ==null and statusList != null ">
+		<if test="null  != statusList and statusList.size()>0 ">
 			and a.ad_status in
-
 			<foreach item="item" index="index" collection="statusList"
 					 open="(" separator="," close=")">
-				#{item}
+				'${item}'
 			</foreach>
 		</if>
 		<if test="adName != null and adName !=''">
@@ -248,6 +247,14 @@
 				and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 			</when>
 		</choose>
+		<if test="isExpired != null and isExpired != ''">
+			<if test="isExpired ==0">
+				and  DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(now(), '%Y-%m-%d')
+			</if>
+			<if test="isExpired == 1">
+				and DATE_FORMAT(a.end_date, '%Y-%m-%d') <![CDATA[<]]>  DATE_FORMAT(now(), '%Y-%m-%d')
+			</if>
+		</if>
 		<if test="page.orderBy !=null and page.orderBy !=''">
 			ORDER BY ${page.orderBy}
 		</if>
@@ -438,7 +445,7 @@
 		set c.ad_status = #{status},
 		update_date =now(),
 		update_by =#{updateBy.id}
-		where c.id in
+		where c.ad_id in
 		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
 			#{item}
 		</foreach>
@@ -813,7 +820,7 @@
 		<if test="sendMode != null and sendMode != ''">
 			and c.send_mode = #{sendMode}
 		</if>
-		AND c.ad_is_flag = 0 and aca.ad_control_id  <![CDATA[<>]]> ''
+		AND c.ad_is_flag = 1 and aca.ad_control_id  <![CDATA[<>]]> ''
 		<if test="adType != null and adType == 'main'">
 			AND c.ad_type_id in (1,9)
 			and ch.is_main_channel = 1

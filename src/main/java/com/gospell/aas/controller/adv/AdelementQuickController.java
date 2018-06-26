@@ -210,8 +210,8 @@ public class AdelementQuickController extends BaseController {
 		if (null != entity.getEndDate()) {
 			endDate = DateUtils.formatDate(entity.getEndDate(), "yyyy-MM-dd");
 		}
-		entity.setSdMaxNC(1250000);
-		entity.setHdMaxNC(1250000);
+		/*entity.setSdMaxNC(1250000);
+		entity.setHdMaxNC(1250000);*/
 
 		model.addAttribute("startDate", startDate);
 		model.addAttribute("endDate", endDate);
@@ -849,13 +849,6 @@ public class AdelementQuickController extends BaseController {
 					hd = getMessage("yes");
 				}
 			}
-			 thisService.clear();
-			 int status = entity.getStatus();
-				if (status == Adelement.ADV_STATUS_SHOW
-						|| status == Adelement.ADV_STATUS_END) {
-					entity.setStatus(Adelement.ADV_STATUS_PASS);
-				}
-			 
 			model.addAttribute("isSd",sd);
 			model.addAttribute("isHd",hd);
 			return "/statistics/advAuditStatistic/aduitStatisticForm";

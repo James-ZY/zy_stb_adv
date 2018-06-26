@@ -267,6 +267,7 @@ $(function(){
         	var endHour = $("#endHour").val();
         	var endMinutes = $("#endMinutes").val();
         	var endSecond = $("#endSecond").val();
+            var sendMode = $("#sendModeYG").val();
         	var post_data = {
         			"networkIds" : networkIds,
         			"channelIds" : channelIds,
@@ -278,10 +279,11 @@ $(function(){
         			"endHour" : endHour,
         			"endMinutes" : endMinutes,
         			"endDate" : endDate,
-        			"endSecond" : endSecond
+        			"endSecond" : endSecond,
+                    "sendMode" : sendMode
         	}; 
         	var psData = JSON.stringify(post_data);
-        	/*getNCLimit(psData);*/
+        	getNCLimit(psData);
         }
         return selectData;
     }
@@ -961,13 +963,13 @@ $(function(){
 					            			 document.getElementById("enddate_span").innerText ="";
 					            			 this1.attr("name","1");
 					            			 this1.css("background","url('../../static/images/icon/ic_checkbox_ture.png')");
-											 /*getNCLimit(psData);*/
+											 getNCLimit(psData);
 					            		 }else{
 					            			 $("#oldcomboId").val(data.id);
 					            			 document.getElementById("enddate_span").innerText ="";
 					            			 this1.attr("name","1");
 					            			 this1.css("background","url('../../static/images/icon/ic_checkbox_ture.png')");					            			 
-					            			 /*getNCLimit(psData);*/
+					            			 getNCLimit(psData);
 					            		 }
 					            	 }
 					             }
@@ -991,7 +993,7 @@ $(function(){
                                 networkIds = networkIds.substring(0,networkIds.lastIndexOf(",")-1);
                                 var post_data = {"networkIds":networkIds,"typeId":typeId,"startDate":startDate,"endDate":endDate,"sendMode":sendMode};
                                 var psData = JSON.stringify(post_data);
-                                /*getNCLimit(psData);*/
+                                getNCLimit(psData);
                                 document.getElementById("enddate_span").innerText="";
                             }
                         }
@@ -1020,7 +1022,7 @@ $(function(){
                                     "sendMode": sendMode
                                 };
                                 var psData = JSON.stringify(post_data);
-                                /*getNCLimit(psData);*/
+                                getNCLimit(psData);
                                 document.getElementById("enddate_span").innerText = "";
                             }
                         }
@@ -1031,8 +1033,8 @@ $(function(){
 		        			$(this).attr("name","0");
 		        			$(this).css("background","url('../../static/images/icon/ic_checkbox_false.png')");	
 		        		});
-                        /*$("#sdMaxNC").val("");
-                        $("#hdMaxNC").val("");*/
+                        $("#sdMaxNC").val("");
+                        $("#hdMaxNC").val("");
 		        	}
 		        }
 		    });

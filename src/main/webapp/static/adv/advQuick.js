@@ -307,13 +307,15 @@
         		var intervalTime=parseInt($('.intervalTime').val());
         	    var showTime=parseInt($('.showTime').val());
         		var totalSecond=(endHour-startHour)*3600+(endMinute-startMinute)*60+endSecond-startSecond;
+                if(isNaN(startHour) || isNaN(startMinute) || isNaN(startSecond) || isNaN(endHour) || isNaN(endMinute) || isNaN(endSecond) || isNaN(intervalTime) || isNaN(showTime)){
+                    return false;
+                }
         		var showCount = Math.floor( (totalSecond+intervalTime)/(showTime+intervalTime));
         		if(showCount==0){
         			showCount=1;
         		}
-        		$('#showCount').val(showCount);
-        		if(startHour!=NaN && startMinute!=NaN && startSecond!=NaN && endHour!=NaN && endMinute!=NaN && endSecond!=NaN && showCount!=NaN && showTime!=NaN){
-        			if(showTime>totalSecond){
+                    $('#showCount').val(showCount);
+                    if(showTime>totalSecond){
         				 $("#btnSubmit").attr({"disabled":true});
         				 var text = accipiter.getLang("diplayTimeOutPlayTime");
         				 $("#time-beyond").text(text);
@@ -323,8 +325,6 @@
         			}
         		}
         	}
-		}
-		
 	}
 	/* 日期设置变化，清空数据 */
 	function clearChannelData(){

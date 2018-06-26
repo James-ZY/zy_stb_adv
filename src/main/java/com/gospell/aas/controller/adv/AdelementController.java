@@ -98,6 +98,9 @@ public class AdelementController extends BaseController {
 	public String list(Adelement entity, HttpServletRequest request,
 					   HttpServletResponse response, Model model) {
 		try{
+			if(null == entity.getIsExpired()){
+				entity.setIsExpired(Adelement.ADV_NO_STATUS);
+			}
 			Page<Adelement> page = thisService.find(new Page<Adelement>(request,
 					response), entity);
 			model.addAttribute("page", page);
@@ -140,7 +143,7 @@ public class AdelementController extends BaseController {
 	@RequestMapping(value = "/audit/query")
 	public String audit(Adelement entity, HttpServletRequest request,
 						HttpServletResponse response, Model model) {
-		try {
+			try {
 			Page<Adelement> page = thisService.findAudit(new Page<Adelement>(
 					request, response), entity);
 			model.addAttribute("page", page);
@@ -176,7 +179,7 @@ public class AdelementController extends BaseController {
 			model.addAttribute("isNotAdv", true);
 		}
 
-		/*if (StringUtils.isNoneBlank(entity.getId()) && !entity.getAdCombo()
+		if (StringUtils.isNoneBlank(entity.getId()) && !entity.getAdCombo()
 				.getAdType().getId().equals(AdType.Type_SWITCH_ON_VEDIO)) {
 			// 先判断是否超出内存限制
 			AdChannelNCDTO dto1 = thisService.getCurrentNC1(entity.getAdCombo()
@@ -185,9 +188,9 @@ public class AdelementController extends BaseController {
 					entity.getAdCombo().getId());
 			model.addAttribute("sdMaxNC", dto1.getSdMaxNC());
 			model.addAttribute("hdMaxNC", dto1.getHdMaxNC());
-		}*/
-		model.addAttribute("sdMaxNC", 1250000);
-		model.addAttribute("hdMaxNC", 1250000);
+		}
+		/*model.addAttribute("sdMaxNC", 1250000);
+		model.addAttribute("hdMaxNC", 1250000);*/
 		
 /*		if(entity.getAdCombo().getAdType().getId().equals(AdType.Type_OPEN_IMGAE)){
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -525,7 +528,7 @@ public class AdelementController extends BaseController {
 		if (!beanValidator(model, entity)) {
 			return auditform(entity, model);
 		}
-		/*if (!entity.getAdCombo()
+		if (!entity.getAdCombo()
 				.getAdType().getId().equals(AdType.Type_SWITCH_ON_VEDIO) && entity.getStatus().equals(Adelement.ADV_STATUS_PASS)) {
 			// 先判断是否超出内存限制
 			AdChannelNCDTO dto1 = thisService.getCurrentNC1(entity.getAdCombo()
@@ -566,7 +569,7 @@ public class AdelementController extends BaseController {
 				addMessage(redirectAttributes, "outNCRange");
 				return "redirect:/adv/adelement/audit/query/?repage";
 			}
-		}*/
+		}
 		try {
 			entity.setAuditUser(UserUtils.getUser());// 审核人
 			entity.setAuditDate(new Date());

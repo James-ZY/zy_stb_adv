@@ -168,7 +168,7 @@
  
 	 </select>
 	<select id="getIsRepeatAcombo" resultType="String">
-		
+
 		select distinct s.id from ad_sell s
 		left join ad_combo c on s.ad_combo_id = c.id
 		left join ad_advertiser a on s.advertiser_id = a.id
@@ -176,14 +176,14 @@
 		where s.del_flag='0'
 		AND
 		a.id=#{advtersier_id}
-		and 
+		and
 		t.id=#{typeId}
 		and
 		((DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>]]>   DATE_FORMAT(#{endDate}, '%Y-%m-%d'))
 		  or (DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>]]>   DATE_FORMAT(#{startDate}, '%Y-%m-%d')
 		))
-		
-		
+
+
 	</select>
 	
 	<select id="findComboInSell" resultType="String" parameterType="map">

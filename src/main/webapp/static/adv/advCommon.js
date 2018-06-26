@@ -1,7 +1,7 @@
 $(function() {
     var host = accipiter.getRootPath();
     firstLoad();
-	/*firstLoadPosition();*/
+    /*firstLoadPosition();*/
 
     var control_show;
     var selectedlimit=0;//用于限定选择文件的数目
@@ -15,7 +15,7 @@ $(function() {
         var reg =/^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
         return this.optional(element) || (reg.test(value));
     }, accipiter.getLang_(jsLang,"webName"));
-	/*-------上传图片与视频的切换--------*/
+    /*-------上传图片与视频的切换--------*/
     var change_id=parseInt($("#resourceType").attr("value"));
     if(change_id==0){
         $("#adv_image").css("display","block");
@@ -124,10 +124,10 @@ $(function() {
                 $(".linkText").find("a").css("display","none");
             }
             $("#add_text_area").val('');
-			/*ajaxConnect(b);*/
+            /*ajaxConnect(b);*/
         }
     }
-	/*监听文本框正取信息*/
+    /*监听文本框正取信息*/
     $("#add_text_area").off("keyup").on("keyup",function(){
         if($(this).hasClass("domain")){
             if($(this).valid()){
@@ -143,38 +143,38 @@ $(function() {
     function addTextFocus() {
         var a = document.getElementById("adv_isFlag");
         var b = a.options[a.selectedIndex].value;
-		/*ajaxConnect(b);*/
+        /*ajaxConnect(b);*/
     }
     function ajaxConnect(b) {
         document.getElementById("v_addText").innerText = "";
-		/*if (b == 2) {
-		 var addText = eval(document.getElementById("add_text_area")).value;
-		 if (null != addText && "" != addText) {
-		 var o = {"addText" : addText};
-		 var data = JSON.stringify(o);
+        /*if (b == 2) {
+         var addText = eval(document.getElementById("add_text_area")).value;
+         if (null != addText && "" != addText) {
+         var o = {"addText" : addText};
+         var data = JSON.stringify(o);
 
-		 $.ajax({
-		 url : host + "/adv/adelement/chekAddress",
-		 async : false,
-		 type : "POST",
-		 data : data,
-		 contentType : "application/json; charset=utf-8",
-		 dataType : "text",
-		 success : function(data) {
-		 if (data == "false") {
-		 document.getElementById("v_addText").innerText =  accipiter.getLang_(messageLang,"check.addtext.exception");
-		 $("#btnSubmit").attr("disabled",true);
-		 } else {
-		 document.getElementById("v_addText").innerText = "";
-		 $("#btnSubmit").attr("disabled",false);
-		 }
-		 },
-		 error : function(err) {
+         $.ajax({
+         url : host + "/adv/adelement/chekAddress",
+         async : false,
+         type : "POST",
+         data : data,
+         contentType : "application/json; charset=utf-8",
+         dataType : "text",
+         success : function(data) {
+         if (data == "false") {
+         document.getElementById("v_addText").innerText =  accipiter.getLang_(messageLang,"check.addtext.exception");
+         $("#btnSubmit").attr("disabled",true);
+         } else {
+         document.getElementById("v_addText").innerText = "";
+         $("#btnSubmit").attr("disabled",false);
+         }
+         },
+         error : function(err) {
 
-		 }
-		 });
-		 }
-		 }else{*/
+         }
+         });
+         }
+         }else{*/
         $("#btnSubmit").attr("disabled",false);
         //}
 
@@ -229,24 +229,24 @@ $(function() {
                     }else{
                         $("#btnSubmit").attr({"disabled":false});
                         document.getElementById("enddate_span").innerText ="";
-						/*if(adClassId != 6){
-						 var ncData={"startDate":startDate,"endDate":endDate,"comboId":comboId,"typeId":adClassId};
-						 postData=JSON.stringify(ncData);
-						 $.ajax({
-						 type:"post",
-						 async: false,
-						 url:host+"/adv/adelement/getNCLimit1",
-						 data:postData,
-						 contentType:"application/json; charset=UTF-8",
-						 dataType:"json",
-						 success:function(data){
-						 if(data!=null){
-						 $("#sdMaxNC").val(data.sdMaxNC);
-						 $("#hdMaxNC").val(data.hdMaxNC);
-						 }
-						 }
-						 });
-						 }*/
+                        if(adClassId != 6){
+                         var ncData={"startDate":startDate,"endDate":endDate,"comboId":comboId,"typeId":adClassId};
+                         postData=JSON.stringify(ncData);
+                         $.ajax({
+                         type:"post",
+                         async: false,
+                         url:host+"/adv/adelement/getNCLimit1",
+                         data:postData,
+                         contentType:"application/json; charset=UTF-8",
+                         dataType:"json",
+                         success:function(data){
+                         if(data!=null){
+                         $("#sdMaxNC").val(data.sdMaxNC);
+                         $("#hdMaxNC").val(data.hdMaxNC);
+                         }
+                         }
+                         });
+                         }
                     }
 
                 }
@@ -515,7 +515,7 @@ $(function() {
                         hdselect.select2();
                     }
                     $('#adv_position').css("display","block");
-					/*$('#adv_position').css("display","none");*/
+                    /*$('#adv_position').css("display","none");*/
                 }
 
             }
@@ -624,7 +624,7 @@ $(function() {
                 adClassId=data.typeId;
                 var controlTypeId=parseInt(data.typeId.getAdvType());
                 if(controlTypeId ==2 ||controlTypeId ==4 ||controlTypeId ==5){
-					/*		        		  $('#adv_position').css("display","block");*/
+                    /*		        		  $('#adv_position').css("display","block");*/
                 }else{
                     $('#adv_position').css("display","none");
                 }
@@ -669,14 +669,6 @@ $(function() {
             $(".resourcesHd").css("display","none");
             $('.advHd_list_Content').html('');
             showPointAndResources("advStandard","1");
-            var adtype=$("#adTypeId").val();
-            if(adtype == 2 || adtype == 4 || adtype == 5 || adtype == 10){
-                $(".switchResolution").find(".advHd").attr("name","1");
-                $(".switchResolution").find(".advHd").attr("disabled",true);
-                showPointAndResources("advHd","1");
-            }else{
-                $(".switchResolution").find(".advHd").attr("disabled",false);
-            }
         }else{
             $('#adcombo_id_type').css("display","none");
             $('#adcombo_id_chlidType').css("display","none");
@@ -710,6 +702,13 @@ $(function() {
             end: function () {
                 //关闭刷新素材数据
                 getSelectData(advertiser,adType,'',flag);
+                if(adType == 5){
+                    var cs = "sd";
+                    if(flag == 1){
+                        cs = "hd";
+                    }
+                    checkSet(cs);
+                }
             }
         });
     }
@@ -775,6 +774,7 @@ $(function() {
                 setBtP(ClassId);
             }
             var bpTS = $("#bpTS").val();
+            var min = $("#psTs").val();
             var postdata={"id":ClassId,"advId":advertiser_id,"resolution":resolution,"sdShowParam":sdShowParam,"hdShowParam":hdShowParam,"adelementId":adelementId,"rollFlag":rollFlag,"version":version};
             var data = JSON.stringify(postdata);
             $.ajax({
@@ -859,7 +859,7 @@ $(function() {
                         appendHtml='<li class="title"><p>'+accipiter.getLang_(messageLang,"adv.standard")+'</p>';
                         if(ClassId =="5"){
                             appendHtml +='<label>'+accipiter.getLang("selectAll")+':</label><input id="sdSelAll" type="button" name="0" class="selAll"/>' +
-                                '<label>'+accipiter.getLang_(messageLang,"batch.set")+':</label><input type="number" class="tiemSet" min="0"/>' +
+                                '<label>'+accipiter.getLang_(messageLang,"batch.set")+':</label><input type="number" class="tiemSet" min="'+min+'"/>' +
                                 '<label>'+accipiter.getLang_(messageLang,"selectd.time")+':</label><input id="sdSelTime" type="text" readonly="readonly"/>' +
                                 '<label>'+accipiter.getLang_(messageLang,"remaining.time")+':</label><input id="sdRemTime" type="text" readonly="readonly"/>';
                         }
@@ -901,11 +901,17 @@ $(function() {
                     //绑定上传素材弹窗
                     $(".add_item").off("click").on("click",function(){
                         getSelectedResources();
+                        var node = $(this).parent().parent().parent();
+                        if(node.attr("class").indexOf("advStandard_list_Content")==-1){
+                            resolution = "1";
+                        }else{
+                            resolution = "0";
+                        }
                         uploadLayer(ClassId,advertiser_id,resolution);
                     });
                     $(".pcshowTime ").off('keyup').on('keyup', function (event) {
                         var adTypeId = $("#adTypeId").val();
-                        if(adTypeId == 4 || adTypeId == 5){
+                        if(adTypeId == 5){
                             var node = $(this).parent().parent().parent().parent().parent();
                             if(node.attr("class").indexOf("advStandard_list_Content")==-1){
                                 checkSet("hd");
@@ -915,6 +921,23 @@ $(function() {
                         }
                     });
                     $(".tiemSet").off('keyup').on('keyup', function (event) {
+                        var min = $("#psTs").val();
+                        if($(this).val()<min){
+                            return false;
+                        }
+                        plSet($(this));
+                        var node = $(this).parent().parent();
+                        if(node.attr("class").indexOf("advStandard_list_Content")==-1){
+                            checkSet("hd");
+                        }else{
+                            checkSet("sd");
+                        }
+                    });
+                    $(".tiemSet").change(function(){
+                        var min = $("#psTs").val();
+                        if($(this).val()<min){
+                            return false;
+                        }
                         plSet($(this));
                         var node = $(this).parent().parent();
                         if(node.attr("class").indexOf("advStandard_list_Content")==-1){
@@ -1079,15 +1102,15 @@ $(function() {
                 }
             }
             /***控制坐标显示***/
-			/*if(isPosition=="1"){
-			 if(show=="1"){
-			 var data ={"id":adClassId,"resolution":resolution};
-			 getadvPosition(data);
-			 }
-			 }else{
-			 $(".position_point").val("");
-			 $(".hdPosition_point").val("");
-			 }*/
+            /*if(isPosition=="1"){
+             if(show=="1"){
+             var data ={"id":adClassId,"resolution":resolution};
+             getadvPosition(data);
+             }
+             }else{
+             $(".position_point").val("");
+             $(".hdPosition_point").val("");
+             }*/
         }
     }
     /****获取选中的索材id****/
@@ -1195,7 +1218,7 @@ $(function() {
         var isShow=true;
         if(count==0){
             imgId='';
-			/*			$(".control_info").css("display","block");*/
+            /*			$(".control_info").css("display","block");*/
         }else{
             for(var i=0;i<count;i++){
                 imgId+=dom[i].getAttribute("id")+',';
@@ -1241,14 +1264,14 @@ $(function() {
             }
         }else{
             if($(this).attr("class")=="advStandard"){
-				/*        		$("#path").val("");
-				 */        		if(adtype ==5){
+                /*        		$("#path").val("");
+                 */        		if(adtype ==5){
                     $("#sd_gd_fx").css("display","none");
                     $("#move").css("display","block");
                 }
             }else{
-				/*        		$("#hdPath").val("");
-				 */        		if(adtype ==5){
+                /*        		$("#hdPath").val("");
+                 */        		if(adtype ==5){
                     $("#hd_gd_fx").css("display","none");
                     $("#move").css("display","block");
                 }
@@ -1258,7 +1281,7 @@ $(function() {
         showPointAndResources($(this).attr("class"),$(this).attr("name"));
 
     });
-	/*视频资源切换*/
+    /*视频资源切换*/
     $("#upload_adv_vedio .switchResolution").on("click","input",function(){
         var typeId=$("#adcombo_id").find('option:selected').val();
         $("#upload_adv_vedio").find(".switchResolution input").attr("name","0");
@@ -1394,12 +1417,6 @@ $(function() {
             }
 
             echoSellDate(getSellDateSoure());
-            if(adTypeId == 2 || adTypeId == 4 || adTypeId == 5 || adTypeId == 10){
-                $(".switchResolution").find(".advHd").attr("name","1");
-                $(".switchResolution").find(".advHd").attr("disabled",true);
-            }else{
-                $(".switchResolution").find(".advHd").attr("disabled",false);
-            }
         }
         if(adTypeId ==5){
             checkSet("sd");
@@ -1429,18 +1446,18 @@ $(function() {
         $(".advHdContent").css("display","none");
         $(".advStandardContent").css("display","none");
         onchangeByCombo();
-		/*$("#sdMaxNC").val("");
-		 $("#hdMaxNC").val("");*/
+        /*$("#sdMaxNC").val("");
+         $("#hdMaxNC").val("");*/
     });
     $('#adCombo_SellData').change(function(){
         $("#startDate").val("");
         $("#endDate").val("");
-		/* $("#sdMaxNC").val("");
-		 $("#hdMaxNC").val("");*/
+        /* $("#sdMaxNC").val("");
+         $("#hdMaxNC").val("");*/
     });
-	/*$('#add_text_area').blur(function() {
-	 addTextFocus();
-	 });*/
+    /*$('#add_text_area').blur(function() {
+     addTextFocus();
+     });*/
 
     $('#startDate').blur(function() {
         dateValid(0);
@@ -1466,7 +1483,10 @@ $(function() {
         if(sd == 1){
             getSelectedResources();
             showPointAndResources("advStandard","1");
-            checkSet("sd");
+            var adTypeId = $("#adTypeId").val();
+            if(adTypeId == 5){
+                checkSet("sd");
+            }
         }
     });
     $("#hdversion").change(function () {
@@ -1474,7 +1494,10 @@ $(function() {
         if(hd == 1){
             getSelectedResources();
             showPointAndResources("advHd","1");
-            checkSet("hd");
+            var adTypeId = $("#adTypeId").val();
+            if(adTypeId == 5){
+                checkSet("hd");
+            }
         }
     });
 
@@ -1512,7 +1535,6 @@ $(function() {
             $("#hdRemTime").val(remTime);
         }
     }
-
 
     function selAllFun(e) {
         var type =  e.attr("id");
@@ -1555,6 +1577,7 @@ $(function() {
             $(this).parent().parent().find("input[class='pcshowTime']").val("");
             $(this).parent().parent().find("input[class='pcshowTime']").css("display","none");
         });
+        var min = $("#psTs").val();
         parentNode.find(".item :lt("+maxSel+")").find("input[class='action_button']").each(function() {
             if(curv == 0){
                 $(this).parent().parent().parent().parent().parent().find(".uploadfile_error").css("display","none");
@@ -1563,6 +1586,7 @@ $(function() {
                 $(this).parent().parent().find("input[class='action_button']").css("background",'url("../../static/images/icon/ic_checkbox_ture.png")');
                 $(this).parent().parent().find("input[class='pcshowTime']").css("display","block");
                 $(this).parent().parent().find("input[class='pcshowTime']").val(def);
+                $(this).parent().parent().find("input[class='pcshowTime']").attr("min",min);
                 $(this).parent().parent().find("input").get(1).setAttribute("class","pcshowTime selected");
             }else{
                 $(this).parent().parent().parent().parent().parent().parent().parent().find(".uploadfile_error").css("display","none");
@@ -1573,6 +1597,7 @@ $(function() {
                 $(this).parent().parent().find("input[class='action_button']").css("background",'url("../../static/images/icon/ic_checkbox_false.png")');
                 $(this).parent().parent().find("input").get(1).setAttribute("class","pcshowTime");
                 $(this).parent().parent().find("input[class='pcshowTime']").val("");
+                $(this).parent().parent().find("input[class='pcshowTime']").attr("min",0);
                 $(this).parent().parent().find("input[class='pcshowTime']").css("display","none");
             }
         });
@@ -1601,6 +1626,7 @@ $(function() {
             curV =as;
             e.val(as);
         }
+
         e.parent().parent().find(".item.selected").find("input[type='number']").each(function() {
             $(this).attr("max",curV);
             $(this).val(curV);
@@ -1628,10 +1654,10 @@ $(function() {
         var max=10;
         var def=10;
         var min = $("#psTs").val();
-		/* parent.find(".item.selected").find("input[class='action_button']").each(function() {
-		 var sss = parseInt($(this).attr("for"));
-		 sel = parseInt(sel)+parseInt(sss);
-		 });*/
+        /* parent.find(".item.selected").find("input[class='action_button']").each(function() {
+         var sss = parseInt($(this).attr("for"));
+         sel = parseInt(sel)+parseInt(sss);
+         });*/
         var dom=node.attr("class");
         var adTypeId = $("#adTypeId").val();
 
@@ -1766,7 +1792,7 @@ $(function() {
         }else if(dom=="action_button"){
             cur = node.attr("for");
             var control=node.parent().parent().attr("name");//判断当前是否选中，如果只选中一张图片:默认值0（长显）,最小值为0。如果选中多张图片，每张最小值是系统配置的最下时间（默认5）
-            if(adTypeId == 2 || adTypeId == 4 || adTypeId == 5){
+            if(adTypeId == 5){
                 if(count == 0 && control == 0){
                     min = 0;
                     def = 0;
@@ -1783,29 +1809,13 @@ $(function() {
                     parent.find(".item.selected").each(function () {
                         $(this).find("input[type='number']").attr("min",min);
                         if(count == 1){
-                            if($(this).find("input[type='number']").val() <= 0 ){
+                            if($(this).find("input[type='number']").val() <= min ){
                                 $(this).find("input[type='number']").val(def);
                             }
                         }
                     });
                     node.parent().find("input[type='number']").attr("min",min);
                 }
-				/*if(control == 1){
-				 count = count - 1;
-				 }else{
-				 count = count + 1;
-				 }
-				 if(count<=1){
-				 min = 0;
-				 def = 0;
-				 }
-				 parent.find(".item.selected").each(function () {
-				 $(this).find("input[type='number']").attr("min",min);
-				 if(count==1){
-				 $(this).find("input[type='number']").val(def);
-				 }
-				 });
-				 node.parent().find("input[type='number']").attr("min",min);*/
             }
 
             if(control=="0"){

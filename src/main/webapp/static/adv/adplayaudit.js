@@ -268,7 +268,7 @@ $(function(){
             function playStyle(){
                 $('.ad_cp').css({"left":rgLeft,"top":rgTop,"width":range.width,"height":range.height});
                 $('.ad_cp').css("display","block");
-                $('.ad_cp dl').css({"left":psLeft,"top":psTop,"margin":"auto"});
+                $('.ad_cp dl').css({"left":psLeft,"top":psTop,"margin":"auto","position":"absolute"});
                 $('.ad_cp .flipper').attr("src",pathData[0]);
                 i++;
                 time2= setInterval(function(){

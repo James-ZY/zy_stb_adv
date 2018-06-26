@@ -56,6 +56,7 @@
             dictMaxFilesExceeded:accipiter.getLang_(messageLang,"image.maxsize"),
             dictResponseError: accipiter.getLang_(messageLang,"image.upload.fail"),
             dictCancelUpload: accipiter.getLang_(messageLang,"cancle.upload"),
+            dictInvalidFileType:accipiter.getLang_(messageLang,"support.filetype"),
             addRemoveLinks:true,
             autoProcessQueue: false,
             /* uploadMultiple:true,*/

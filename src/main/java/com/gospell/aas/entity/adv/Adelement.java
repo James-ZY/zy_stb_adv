@@ -150,6 +150,9 @@ public class Adelement extends IdEntity<Adelement> {
 	
 	private Integer format;// 格式（1图片 2视频）
 
+	@Transient
+	private String isExpired;
+
 	private List<AdControll> controllerList = Lists.newArrayList();// 广告包含的标清资源文件
 	private List<AdControll> hdControllerList = Lists.newArrayList();// 广告包含的高清资源文件
 
@@ -724,7 +727,16 @@ public class Adelement extends IdEntity<Adelement> {
 	public void setIsHd(Integer isHd) {
 		this.isHd = isHd;
 	}
-	
-	 
-	
+
+	@Transient
+	public String getIsExpired() {
+		return isExpired;
+	}
+
+	@Transient
+	public void setIsExpired(String isExpired) {
+		this.isExpired = isExpired;
+	}
+
+
 }

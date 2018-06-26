@@ -287,6 +287,7 @@
 		          contentType: "application/json; charset=utf-8",  
 		          dataType : "text",
 		          success:function(data){
+                      $("#btnSubmit").attr("disabled",true);
 		        	  	if(data == "false"){
 		        	  		document.getElementById("end").innerText=accipiter.getLang_(messageLang,"comid.already.select");
 		        	  		return false;
@@ -306,6 +307,7 @@
 		        	  		loading(accipiter.getLang("loading"));
 		        	    	 form.submit();
 		        	  	} */
+                      $("#btnSubmit").attr("disabled",false);
 		         		 
 		          },
 				 error: function (err) {     

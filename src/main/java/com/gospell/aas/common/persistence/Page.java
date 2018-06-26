@@ -89,6 +89,8 @@ public class Page<T> {
 			no = CookieUtils.getCookie(request, "pageNo");
 			if (StringUtils.isNumeric(no)){
 				this.setPageNo(Integer.parseInt(no));
+			}else{
+				this.setPageNo(1);
 			}
 		}
 		// 设置页面大小参数（传递repage参数，来记住页码大小）

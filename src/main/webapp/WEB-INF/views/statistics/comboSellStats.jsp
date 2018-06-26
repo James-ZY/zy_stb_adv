@@ -76,6 +76,7 @@
 </form:form>
 <tags:message content="${message}"/>
 <div class="chartContent">
+	<p style="font-size:  24px;text-align:  center;font-weight:  bold;"><spring:message code='advtiser.rate.analyze' /></p>
 	<div id="chart">
 	</div>
 </div>
@@ -109,7 +110,7 @@
 						child_obj.advId = chart_data[i].list[j].advId;
 						child_datas.push(child_obj);
 					}
-					addPieChart(chart_data[i].type+" "+accipiter.getLang_(messageLang,"advtiser.rate.analyze"),accipiter.getLang_(messageLang,"unit.day"),
+					addPieChart(chart_data[i].type,accipiter.getLang_(messageLang,"unit.day"),
 							child_types,accipiter.getLang_(messageLang,"adv.type"),child_datas,"child"+i,callback);
 				}
 				if(chart_data.length==0){

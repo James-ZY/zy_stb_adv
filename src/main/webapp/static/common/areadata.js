@@ -552,14 +552,10 @@ function  checkComboIsConflict(psData) {
                    console.log(0);
                 }else if(count == -1){
                     $("#oldcomboId").val("");
-/*
                     getNCLimit(psData);
-*/
                 }else{
                     $("#oldcomboId").val(data.id);
-/*
                     getNCLimit(psData);
-*/
                 }
             }
         }

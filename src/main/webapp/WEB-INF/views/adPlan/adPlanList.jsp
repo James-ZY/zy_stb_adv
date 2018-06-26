@@ -13,10 +13,8 @@
 	<script type="text/javascript">
 		var roleName = ""; //add by pengr for close  归属机构  tree 
 		$(document).ready(function() {
-			window.parent.document.getElementById("menuFrame").contentWindow.document.getElementById("collapse66").getElementsByTagName("a")[0].parentElement.setAttribute("class","active");			
-			window.parent.document.getElementById("menuFrame").contentWindow.document.getElementById("collapse66").getElementsByTagName("a")[1].parentElement.setAttribute("class","");			
 			// 表格排序
-			var orderBy = $("#orderBy").val().split(" ");		
+            var orderBy = $("#orderBy").val().split(",")[0].split(" ");
 			$("#contentTable th.sort").each(function(){
 				if ($(this).hasClass(orderBy[0])){
 					orderBy[1] = orderBy[1]&&orderBy[1].toUpperCase()=="DESC"?"down":"up";
@@ -24,18 +22,20 @@
 				}
 			});
 			$("#contentTable th.sort").click(function(){
-				var order = $(this).attr("class").split(" ");
-				var sort = $("#orderBy").val().split(" ");
-				for(var i=0; i<order.length; i++){
-					if (order[i] == "sort"){order = order[i+1]; break;}
-				}
-				if (order == sort[0]){
-					sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
-					$("#orderBy").val(order+" DESC"!=order+" "+sort?"":order+" "+sort);
-				}else{
-					$("#orderBy").val(order+" ASC");
-				}
-				page();
+                var order = $(this).attr("class").split(" ")[1];
+                var sort = $("#orderBy").val().split(",")[0].split(" ");
+                sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
+                $("#orderBy").val(order+" "+sort);
+				/*for(var i=0; i<order.length; i++){
+				 if (order[i] == "sort"){order = order[i+1]; break;}
+				 }
+				 if (order == sort[0]){
+				 sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
+				 $("#orderBy").val(order+" "+sort);
+				 }else{
+				 $("#orderBy").val(order+" DESC");
+				 }*/
+                page();
 			});
 		});
 		function page(n,s){
@@ -93,13 +93,13 @@
 						<form:options items="${fns:getAdTypeList()}" itemLabel="typeName" itemValue="id" htmlEscape="false"/>
 					</form:select>
 				</div>
-				<div class="query-item">
+				<%--<div class="query-item">
 					<label><spring:message code='adv.display.type' />:</label>
 					<form:select path="status">
 						<option value=""> <spring:message code='userform.select' /></option>
 						<form:options items="${fns:getAdDisplayType('adv_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
-				</div>
+				</div>--%>
 			</div>
 			<div>
 				
@@ -136,17 +136,22 @@
 		<thead>
 	 
 		<tr>
- 		<th>ID</th>
-		<th><spring:message code='adv.name' /></th>
+		<th class="sort a.ad_id">ID</th>
+		<th class="sort a.ad_name"><spring:message code='adv.name' /></th>
 		<c:if test="${isAdv ==false}">
-					<th class="td-fore1"><spring:message code='adv.user'/></th>
+					<th class="sort k.id td-fore1"><spring:message code='adv.user'/></th>
 		</c:if>
-		<th class="td-fore1"><spring:message code='adv.adcombo'/></th>
-		<th class="td-fore1"><spring:message code='channel.adv.type'/></th>
-		<th class="td-fore1"><spring:message code='adv.son.type'/></th>
+		<th class="sort c.ad_combo_name td-fore1"><spring:message code='adv.adcombo'/></th>
+		<th class="sort t.id td-fore1"><spring:message code='channel.adv.type'/></th>
+		<th style="width:90px;" class="td-control"><spring:message code='adv.son.type'/><i class="td-open"></i></th>
+<%--
 		<th class="td-fore1"><spring:message code='adv.display.type'/></th>
-		<th><spring:message code='adv.playstart' /></th>
-		<th style="width:90px;" class="td-control"><spring:message code='adv.playend' /><i class="td-open"></i></th>
+--%>
+		<th class="sort a.start_date"><spring:message code='adv.playstart' /></th>
+		<th class="sort a.end_date"><spring:message code='adv.playend' /></th>
+		<th><spring:message code='combo.playstart'/></th>
+		<th><spring:message code='combo.playend'/></th>
+		<th class="sort a.ad_status"><spring:message code='adv.status'/></th>
 		<th class="td-fore2"><spring:message code='adv.isflag' /></th>
 		<shiro:hasPermission name="sys:adv:edit">
 		<th style="width:200px;"><spring:message code='operation' /></th>
@@ -182,20 +187,36 @@
 				</c:choose>
 				<c:choose>
 						<c:when test="${!empty adelement.childAdType}">
-							<td class="td-fore1">${adelement.childAdType.typeName}</td>
+							<td>${adelement.childAdType.typeName}</td>
 						</c:when>
-						<c:otherwise><td class="td-fore1"></td></c:otherwise>
+						<c:otherwise><td></td></c:otherwise>
 				</c:choose>
-				<td>暂无</td><!-- TODO 广告显示模式 -->
+<%--
+				<td class="td-fore1"></td><!-- TODO 广告显示模式 -->
+--%>
 				<td>
 				<fmt:formatDate value="${adelement.startDate}" pattern="yyyy-MM-dd"/>
 				</td>
 				<td><fmt:formatDate value="${adelement.endDate}" pattern="yyyy-MM-dd"/></td>
+				<td>${adelement.adCombo.startTime}</td>
+				<td>${adelement.adCombo.endTime}</td>
+				<td>
+					<c:choose>
+						<c:when test="${1 == adelement.status}">
+							<spring:message code="auditing"/>
+						</c:when>
+						<c:otherwise>
+							${fns:getDictLabel(adelement.status, 'adv_status', "")}
+						</c:otherwise>
+					</c:choose>
+				</td>
 				<td class="td-fore2">${fns:getDictLabel(adelement.isFlag,'adv_isflag',"")}</td>
 				<td>
+					<shiro:hasPermission name="sys:adv:edit">
 					<a href="${ctx}/adv/selfAdelement/adelementPreview?id=${adelement.id}"><spring:message code='adv.preview' /></a>
+					</shiro:hasPermission>
 				</td>
-						 
+
 
 				</td>
 			</tr>

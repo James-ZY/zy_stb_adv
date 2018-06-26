@@ -10,7 +10,30 @@
 	<script src="${ctx}/static/scripts/common/common.js"></script>
 	<script src="${ctxStatic}/common/language.js"></script>
 	<script type="text/javascript">
- 
+        $(document).ready(function() {
+            // 表格排序
+            var orderBy = $("#orderBy").val().split(" ");
+            $("#contentTable th.sort").each(function(){
+                if ($(this).hasClass(orderBy[0])){
+                    orderBy[1] = orderBy[1]&&orderBy[1].toUpperCase()=="DESC"?"down":"up";
+                    $(this).html($(this).html()+" <i class=\"icon icon-arrow-"+orderBy[1]+"\"></i>");
+                }
+            });
+            $("#contentTable th.sort").click(function(){
+                var order = $(this).attr("class").split(" ");
+                var sort = $("#orderBy").val().split(" ");
+                for(var i=0; i<order.length; i++){
+                    if (order[i] == "sort"){order = order[i+1]; break;}
+                }
+                if (order == sort[0]){
+                    sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
+                    $("#orderBy").val(order+" "+sort);
+                }else{
+                    $("#orderBy").val(order+" DESC");
+                }
+                page();
+            });
+        });
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
@@ -111,14 +134,14 @@
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead><tr>
 
-		<th><spring:message code='sell.comboname'/>
-		<th><spring:message code='type.name'/>
+		<th><spring:message code='sell.comboname'/></th>
+		<th class="sort t.id"><spring:message code='type.name'/></th>
 		<shiro:hasPermission name="sys:sell:edit">
 			<th><spring:message code='sell.advertiser.id' /></th>
-			<th><spring:message code='sell.advertiser.name' /></th>
+			<th class="sort a.id"><spring:message code='sell.advertiser.name' /></th>
 		</shiro:hasPermission>
-		<th><spring:message code='sell.startDate' /></th>
-		<th class="td-fore1"><spring:message code='sell.endDate'/>
+		<th class="sort s.start_date"><spring:message code='sell.startDate' /></th>
+		<th class="sort s.end_date td-fore1"><spring:message code='sell.endDate'/>
 		<th class="td-fore1">
 		<c:choose>
 					<c:when test="${isAdvtiser == false}">
