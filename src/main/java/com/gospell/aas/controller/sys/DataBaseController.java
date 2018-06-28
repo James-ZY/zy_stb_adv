@@ -5,10 +5,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.POST;
 
-import com.gospell.aas.common.utils.JobMethod;
-import com.gospell.aas.common.utils.UserUtils;
+import com.gospell.aas.common.utils.*;
 import com.gospell.aas.service.quartz.PutEndTask;
 import com.gospell.aas.service.sys.QuartzJobService;
+import net.sf.ehcache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gospell.aas.common.persistence.Page;
-import com.gospell.aas.common.utils.DataBaseManage;
-import com.gospell.aas.common.utils.DateUtils;
 import com.gospell.aas.controller.BaseController;
 import com.gospell.aas.entity.sys.DataBaseRecord;
 import com.gospell.aas.service.sys.DataBaseRecordService;
@@ -47,6 +45,9 @@ public class DataBaseController extends BaseController {
 	private QuartzJobService quartzJobService;
 	@Resource(name = "JobMethod")
 	private JobMethod jobMethod;
+
+	private static CacheManager cacheManager = ((CacheManager) ApplicationContextHelper.getBean("cacheManager"));
+
 
 	@ModelAttribute
 	public DataBaseRecord get(@RequestParam(required = false) String id) {
@@ -80,15 +81,16 @@ public class DataBaseController extends BaseController {
 	
 	@RequiresPermissions("sys:database:edit")
 	@RequestMapping(value = "/backup")
-	public String backup(DataBaseRecord database, HttpServletRequest request, Model model) {
+	public String backup(DataBaseRecord database, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
 		
 		model.addAttribute("database", database);
+		addMessage(redirectAttributes, "msg.backup.success");
 		return "redirect:/sys/database/?repage";
 	}
 	
 	@RequiresPermissions("sys:database:edit")
 	@RequestMapping(value = "/restore")
-	public String restore(DataBaseRecord database, HttpServletRequest request, Model model) {
+	public String restore(DataBaseRecord database, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
 		if (StringUtils.isNotBlank(database.getId())) {
 			database =  dataBaseService.get(database.getId());
 		}
@@ -100,7 +102,17 @@ public class DataBaseController extends BaseController {
 			rPath = path.substring(0, path.lastIndexOf("\\"));		
 		}
 		DataBaseManage.restore(rPath+database.getRecordPath());
-	   model.addAttribute("database", database);
+		UserUtils.removeCache(UserUtils.CACHE_ADCATEGORY_LIST);
+		UserUtils.removeCache(UserUtils.CACHE_ZH_CN_ADCATEGORY_LIST);
+		UserUtils.removeCache(UserUtils.CACHE_EN_US_ADCATEGORY_LIST);
+		UserUtils.removeCache(UserUtils.CACHE_ADDISTRICTCATEGORY_LIST);
+		UserUtils.removeCache(UserUtils.CACHE_ZH_CN_ADDISTRICTCATEGORY_LIST);
+		UserUtils.removeCache(UserUtils.CACHE_EN_US_ADDISTRICTCATEGORY_LIST);
+		UserUtils.removeCache(UserUtils.CACHE_PROGRAM_CATEGORY_LIST);
+		UserUtils.removeCache(UserUtils.CACHE_ZH_CN_PROGRAM_CATEGORY_LIST);
+		UserUtils.removeCache(UserUtils.CACHE_EN_US_PROGRAM_CATEGORY_LIST);
+		model.addAttribute("database", database);
+		addMessage(redirectAttributes, "msg.restore.success");
 		return "redirect:/sys/database/?repage";
 	}
 

@@ -135,15 +135,15 @@ public class AdComboService extends BaseService {
 	public Page<AdCombo> find(Page<AdCombo> page, AdCombo entity) {
 
 		if (StringUtils.isEmpty(page.getOrderBy())) {
-			page.setOrderBy("c.is_valid desc,t.id asc,c.valid_start_time desc");
+			page.setOrderBy("c.valid_start_time desc,c.is_valid desc,t.id asc");
 		}else{
 			String order = page.getOrderBy();
 			String[] orders = order.split(",")[0].split(" ");
 			if(orders[0].contains("c.valid_start_time")){
-				order = "c.is_valid desc,t.id asc"+",c.valid_start_time "+orders[1]+",c.valid_end_time "+orders[1]+ ",c.start_hour "+orders[1]+",c.start_minutes "+orders[1]+",c.start_second "+orders[1];
+				order = "c.valid_start_time "+orders[1]+",c.is_valid desc,t.id asc,c.valid_end_time "+orders[1]+ ",c.start_hour "+orders[1]+",c.start_minutes "+orders[1]+",c.start_second "+orders[1];
 			}
 			if(orders[0].contains("c.valid_end_time")){
-				order = "c.is_valid desc,t.id asc"+",c.valid_end_time "+orders[1]+",c.valid_start_time "+orders[1]+ ",c.start_hour "+orders[1]+",c.start_minutes "+orders[1]+",c.start_second "+orders[1];
+				order = "c.valid_end_time "+orders[1]+",c.is_valid desc,t.id asc,c.valid_start_time "+orders[1]+ ",c.start_hour "+orders[1]+",c.start_minutes "+orders[1]+",c.start_second "+orders[1];
 			}
 			page.setOrderBy(order);
 		}
@@ -154,7 +154,6 @@ public class AdComboService extends BaseService {
 			for (int i = 0; i < list.size(); i++) {
 				AdType adtype = list.get(i).getAdType();
 				AdTypeUtils.getLocaleAdType(adtype);
-
 			}
 		}
 		page.setList(list);

@@ -615,7 +615,7 @@ $(function() {
                 adClassId=data.typeId;
                 var controlTypeId=parseInt(data.typeId.getAdvType());
                 if(controlTypeId ==2 ||controlTypeId ==4 ||controlTypeId ==5){
-                    /*		        		  $('#adv_position').css("display","block");*/
+                    /*	$('#adv_position').css("display","block");*/
                 }else{
                     $('#adv_position').css("display","none");
                 }

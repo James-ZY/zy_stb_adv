@@ -18,7 +18,6 @@
         <script type="text/javascript" src="${ctxStatic}/common/auto_area.js"></script>
 	    <script type="text/javascript" src="${ctxStatic}/adcombojs/auto_channel.js"></script>
 
-
 	<style type="text/css">
     	#upload_adv_image,#upload_adv_vedio{width: 100%; min-height:260px;height: auto;/* overflow: hidden; */padding:0;border-bottom: 0px;}
     	#upload_adv_image .switchResolution,#upload_adv_vedio .switchResolution{width:100%;height:39px;border-bottom:1px solid gainsboro;}

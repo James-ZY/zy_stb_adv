@@ -30,7 +30,7 @@
 		
 		$(document).ready(function(){
             // 表格排序
-            var orderBy = $("#orderBy").val().split(",")[2].split(" ");
+            var orderBy = $("#orderBy").val().split(",")[0].split(" ");
             $("#contentTable th.sort").each(function(){
                 if ($(this).hasClass(orderBy[0])){
                     orderBy[1] = orderBy[1]&&orderBy[1].toUpperCase()=="DESC"?"down":"up";
@@ -39,7 +39,7 @@
             });
             $("#contentTable th.sort").click(function(){
                 var order = $(this).attr("class").split(" ")[1];
-                var sort = $("#orderBy").val().split(",")[2].split(" ");
+                var sort = $("#orderBy").val().split(",")[0].split(" ");
                 sort = (sort[1]&&sort[1].toUpperCase()=="DESC"?"ASC":"DESC");
                 $("#orderBy").val(order+" "+sort);
 				/*for(var i=0; i<order.length; i++){
