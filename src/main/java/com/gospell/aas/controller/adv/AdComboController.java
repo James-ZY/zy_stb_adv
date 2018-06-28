@@ -493,11 +493,12 @@ public class AdComboController extends BaseController {
 		String endDate = (String) map.get("endDate");
 		String startDate = (String) map.get("startDate");
 		String sendMode = (String) map.get("sendMode");
+		String channelIds = (String) map.get("channelIds");
 		List<NetWorkDTO> dtoList = null;
 		try {
 
 			dtoList = channelService.getChannelListByNetWorkAndTypeId(
-					networkId, typeId, startTime, endTime, startDate, endDate,sendMode);
+					networkId, typeId, startTime, endTime, startDate, endDate,sendMode, channelIds);
 		} catch (Exception e) {
 
 			e.printStackTrace();

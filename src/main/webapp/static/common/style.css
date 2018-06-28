@@ -85,5 +85,6 @@ table.aui_border, table.aui_dialog { border: 0; margin: 0; border-collapse: coll
 .data-search .searchList {display: none;background: #F8F8FF;position: absolute;z-index: 100;border:1px solid #d9d9d9;}
 .data-search .searchList em {float: right;font-style: normal;}
 .area_menu {display: block;padding: 2px 3px}
+.channel_menu {display: block;padding: 2px 3px}
 .data-search a:hover{color:#3f9ffc;}
 .selInp{ border-radius: 15px; border-color: #5297cc; border: 1px #5297cc solid;  width: 80px; margin-left: 5px; text-align: center;}

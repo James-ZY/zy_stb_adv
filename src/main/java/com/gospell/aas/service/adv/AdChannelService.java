@@ -471,13 +471,14 @@ public class AdChannelService extends BaseService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<NetWorkDTO> getChannelListByNetWorkAndTypeId(String networkId,String typeId,String startTime,String endTime,String startDate,String endDate,String sendMode) throws Exception {
+	public List<NetWorkDTO> getChannelListByNetWorkAndTypeId(String networkId,String typeId,String startTime,String endTime,String startDate,String endDate,String sendMode,String channelIds) throws Exception {
 		Map<String,Object> queryMap = new HashMap<String,Object>();
 		queryMap.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
 		queryMap.put("typeId", typeId);
 		queryMap.put("networkId", networkId);
 		List<AdChannelDTO> list = channelDao.getChannelByNetworkIdAndTypeId(queryMap);
 		List<NetWorkDTO> allList = Lists.newArrayList();
+		List<AdChannelDTO> allList1 = Lists.newArrayList();
 		List<String> typeList = channelDao.getChannelType(networkId);
 		if (null != list && list.size() > 0) {
 			Map<String,Object> queryMap1 =getChannelByCombo(networkId, typeId, startTime, endTime,startDate,endDate,sendMode);
@@ -504,16 +505,22 @@ public class AdChannelService extends BaseService {
 					
 				}
 			}
+
 			if(allList != null && allList.size() >0){
-				for (int i = 0; i < allList.size(); i++) {
+ 				for (int i = 0; i < allList.size(); i++) {
 					List<AdChannelDTO> channelDtoList = allList.get(i).getChannelList();
 					if(null != channelDtoList && channelDtoList.size() >0){
+						List<AdChannelDTO> sellist = Lists.newArrayList();
+						List<AdChannelDTO> dislist = Lists.newArrayList();
+						List<AdChannelDTO> othlist = Lists.newArrayList();
 						for (int j = 0; j < channelDtoList.size(); j++) {
 							String id = channelDtoList.get(j).getChannelId();
-							if(channelMap.containsKey(id)){
+                            if(null != channelIds && channelIds.contains(id)){
+								sellist.add(channelDtoList.get(j));
+							}else if(channelMap.containsKey(id)){
 								channelDtoList.get(j).setInvalid(false);
 								List<AdcomboUsedDTO> dtol = (List<AdcomboUsedDTO>) queryMap1.get(networkId);
-								List<AdcomboUsedDTO> dto2 = Lists.newArrayList();								
+								List<AdcomboUsedDTO> dto2 = Lists.newArrayList();
 								for (AdcomboUsedDTO adcomboUsedDTO : dtol) {
 									List<String> channelList = adcomboUsedDTO.getChannelList();
 									if(channelList.contains(id)){
@@ -521,12 +528,19 @@ public class AdChannelService extends BaseService {
 									}
 								}
 								channelDtoList.get(j).setAdcomboUsedList(dto2);
+								dislist.add(channelDtoList.get(j));
+							}else{
+								othlist.add(channelDtoList.get(j));
 							}
 						}
+						allList1.addAll(sellist);
+						allList1.addAll(dislist);
+						allList1.addAll(othlist);
+						allList.get(i).setChannelList(allList1);
 					}
 				}
-			}
 
+			}
 		}
 		return allList;
 	}

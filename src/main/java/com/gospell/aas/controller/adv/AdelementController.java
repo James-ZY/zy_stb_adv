@@ -359,7 +359,6 @@ public class AdelementController extends BaseController {
 		if (!beanValidator(model, entity)) {
 			return form(entity, model);
 		}
-		String logInfo=logService.getLogInfo(entity.getId(), 0, getMessage("adv.adId"), entity.getAdId());
 		try {
 			// 表示用户不可以修改这条数据，只能打开预览页面查看一下，这个这个地方直接返回查询页面
 			if (entity.getStatus() != null){
@@ -378,9 +377,6 @@ public class AdelementController extends BaseController {
 
 			Integer ite = thisService.getAdelementCount(null, entity.getAdCombo().getId(), entity.getStartDate(), entity.getEndDate(), entity.getChildAdType().getId(), entity.getId());
 			if(ite>0){
-				logger.info(UserUtils.getUser().getLoginName()
-						+ "添加或者修改广告:" + entity.getAdName() + "失败");
-				logService.save(request, logInfo, null);
 				addMessage(redirectAttributes, "adelement.already.exist");
 				return "redirect:/adv/adelement/?repage";
 			}
@@ -398,12 +394,14 @@ public class AdelementController extends BaseController {
 				entity.setHdPosition(null);
 			}
 			thisService.save(entity);
+			String logInfo=logService.getLogInfo(entity.getId(), 0, getMessage("adv.adId"), entity.getAdId());
 			logService.save(request, logInfo, null);
 			logger.info(UserUtils.getUser().getLoginName()+"保存广告Id："+entity.getId()+"成功");
 			comboService.pushAdcomboToClient(entity.getAdCombo());	//推送套餐
 			addMessage(redirectAttributes, "msg.save.success");
 			return "redirect:/adv/adelement/?repage";
 		} catch (Exception e) {
+			String logInfo=logService.getLogInfo(entity.getId(), 0, getMessage("adv.adId"), entity.getAdId());
 			logService.save(request, logInfo, e);
 			logger.error(UserUtils.getUser().getLoginName()+"保存广告Id："+entity.getId()+"失败",e.getMessage());
 			addMessage(redirectAttributes, "msg.save.fail");

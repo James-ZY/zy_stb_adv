@@ -62,6 +62,7 @@ var __LocalDataCities = {};
 var dataarrary = {};
 
 var searchValue = {};
+var channelSearchValue = {};//频道搜索数据全局变量
 
 $(document).on('click', '.area-duoxuan', function () {
 	initDis();
@@ -706,6 +707,7 @@ function getNetworkByDis(districts,operatorsId,netName){
 }
 
 function getChannelByDis(districts,operatorsId,netName){
+    var dataArr = [];
 	var fsq = "fsq_"+operatorsId;
 	$("#"+fsq).remove();
 	var typeId=$("#adTypeSelect").find("option:selected").val();
@@ -742,9 +744,11 @@ function getChannelByDis(districts,operatorsId,netName){
                    var str1 = JSON.stringify(post_data1);
                    var startDate=getPlayTime().startDate;
                    var endDate=getPlayTime().endDate;
-               	var startTime=getPlayTime().startTime;
-               	var endTime=getPlayTime().endTime;
-                   var post_data2={"networkId":comment["networkId"],"typeId":typeId,startTime:startTime,endTime:endTime,startDate:startDate,endDate:endDate,sendMode:sendMode};
+                   var startTime=getPlayTime().startTime;
+               	   var endTime=getPlayTime().endTime;
+                   var channelIds = $("#channelIds").val();
+
+                      var post_data2={"networkId":comment["networkId"],"typeId":typeId,startTime:startTime,endTime:endTime,startDate:startDate,endDate:endDate,sendMode:sendMode,channelIds:channelIds};
                    var str2 = JSON.stringify(post_data2);
                    var t_str=comment["networkId"];
             	   $.ajax({
@@ -785,6 +789,11 @@ function getChannelByDis(districts,operatorsId,netName){
 	                               		tempHtml='<div id="dv_'+channelId+'" style="position:relative;display:none;width:220px;">'+content+'</div>';
 	                               		html=html+tempHtml+'</li></div>';
 	                               	}
+                                   var temp = {};
+                                   temp.id = comment["channelId"];
+                                   temp.code = comment["adchannelId"];
+                                   temp.name = comment["channelName"];
+                                   dataArr.push(temp);
                                 });
                               html+='</ul></li>';
                              }
@@ -797,6 +806,7 @@ function getChannelByDis(districts,operatorsId,netName){
             	   html+='</ul>';
                  });
            	   html+='</li>';
+                channelSearchValue = dataArr;
                $('.channel_content_ul').append(html);
                var obj=$(".fasongqi_type_btn");
                $('.fasongqi_type_btn:eq(0)').attr("name","1");
@@ -816,6 +826,7 @@ function getChannelByDis(districts,operatorsId,netName){
 			}
 		}
 	});
+    auto_channel.run();
 }
 /*
  * 修改时回显已被选择频道*/

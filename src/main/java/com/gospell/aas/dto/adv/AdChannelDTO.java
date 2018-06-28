@@ -17,6 +17,9 @@ public class AdChannelDTO {
 
 	@JsonProperty("channelType")
 	private String channelType;// 频道类型
+
+	@JsonProperty("adchannelId")
+	private String adchannelId;// 频道编号
 	
 	@JsonProperty("serviceId")
 	private String serviceId;//通道ID
@@ -64,6 +67,14 @@ public class AdChannelDTO {
 
 	public void setChannelType(String channelType) {
 		this.channelType = channelType;
+	}
+
+	public String getAdchannelId() {
+		return adchannelId;
+	}
+
+	public void setAdchannelId(String adchannelId) {
+		this.adchannelId = adchannelId;
 	}
 
 	public String getServiceId() {

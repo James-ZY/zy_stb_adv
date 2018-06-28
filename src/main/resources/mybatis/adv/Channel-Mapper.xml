@@ -134,6 +134,7 @@
       	<result column="channel_id" property="channelId"/>
       	<result column="channel_name" property="channelName"/>
       	<result column="channel_type" property="channelType"/>
+		<result column="adchannel_id" property="adchannelId"/>
       	<result column="service_id" property="serviceId"/>
       	<result column="service_name" property="serviceName"/>
     </resultMap>
@@ -210,7 +211,7 @@
 	</select>
 	
 	<select id="getChannelByNetworkIdAndTypeId" resultMap="channelMap"  parameterType="map">
-		select n.ad_netwrok_name as network_name,c.id as channel_id ,c.ad_channel_name as channel_name,
+		select n.ad_netwrok_name as network_name,c.id as channel_id ,c.ad_channel_id as adchannel_id,c.ad_channel_name as channel_name,
 		c.ad_channel_type as channel_type from ad_channel c  
 		left join ad_network n on   c.ad_network_id = n.id and n.del_flag=#{delFlag} 
 		 left join ad_type_channel tc on c.id = tc.ad_channel_id 

@@ -1,11 +1,14 @@
 /**
  * Created by Administrator on 2016/6/16 0016.
  */
+var channelSearchValue = {};//频道搜索数据全局变量
+
 $(function(){
 	var host=accipiter.getRootPath();
 	var TypeId='';
 	var rem=new Array();//批量选择
-	//频道选择状态：name=0;没有选中，name=1,表示当前已被选中，name=2,表示不可操作;
+
+    //频道选择状态：name=0;没有选中，name=1,表示当前已被选中，name=2,表示不可操作;
 	/*init();*/
 	var isFlag=$("#isFlag").find('option:selected').val(); 
     if(isFlag == "1"){
@@ -20,6 +23,8 @@ $(function(){
 	/*
 	 * 后台回去频道数据*/
     function get_channel(){
+        var dataArr = [];
+
     	var isFlag = $("#isFlag").val();
         var sendMode = "";
         if(isFlag == "0"){
@@ -50,7 +55,8 @@ $(function(){
                     var endDate=getPlayTime().endDate;
                 	var startTime=getPlayTime().startTime;
                 	var endTime=getPlayTime().endTime;
-                    var post_data2={"networkId":comment["networkId"],"typeId":typeId,startTime:startTime,endTime:endTime,startDate:startDate,endDate:endDate,sendMode:sendMode};
+                	var channelIds = $("#channelIds").val();
+                    var post_data2={"networkId":comment["networkId"],"typeId":typeId,startTime:startTime,endTime:endTime,startDate:startDate,endDate:endDate,sendMode:sendMode,channelIds:channelIds};
                     var str2 = JSON.stringify(post_data2);
                     var t_str=comment["networkId"];
              	   $.ajax({
@@ -82,7 +88,7 @@ $(function(){
 	                               		if(comment["adcomboUsedList"].length>0){
 	                               			html+='<div onMouseOver="javascript:show(this,dv_'+channelId+');" onMouseOut="hide(this,dv_'+channelId+');"><li class="channel_list">' +
 	                               			'<input  name="2" class="channel_item channel_disabled" type="button" disabled="disabled" id="c_'+comment["channelId"]+'">' +
-	                               			'<label for="c_'+comment["channelId"]+'">'+comment["channelName"]+'</label>' ;                               			
+	                               			'<label for="c_'+comment["channelId"]+'">'+comment["channelName"]+'</label>' ;
 	                               		}else{
 	                               			html+='<div onMouseOver="javascript:show(this,dv_'+channelId+');" onMouseOut="hide(this,dv_'+channelId+');"><li class="channel_list">' +
 	                               			'<input  name="2" class="channel_item channel_disabled" type="button" disabled="disabled" id="c_'+comment["channelId"]+'">' +
@@ -91,6 +97,11 @@ $(function(){
 	                               		tempHtml='<div id="dv_'+channelId+'" style="position:relative;display:none;width:220px;">'+content+'</div>';
 	                               		html=html+tempHtml+'</li></div>';
 	                               	}
+                                   var temp = {};
+                                   temp.id = comment["channelId"];
+                                   temp.code = comment["adchannelId"];
+                                   temp.name = comment["channelName"];
+                                   dataArr.push(temp);
                                  });
                                html+='</ul></li>';
                               }
@@ -104,6 +115,7 @@ $(function(){
                   });
             	   html+='</li>';
                 });
+                channelSearchValue = dataArr;
                 $('.channel_content_ul').append(html);
                 var obj=$(".fasongqi_type_btn");
                 $('.fasongqi_type_btn:eq(0)').attr("name","1");
@@ -123,6 +135,7 @@ $(function(){
             error:function(){
             }
         });
+        auto_channel.run();
     }
 
     
@@ -439,9 +452,7 @@ $(function(){
         	if(ad_id==""){
         		get_channel();
         		banClick();
-        		if(netWorkType == "quick" ){
-        			setQuickSelectedChannel();
-        		}
+        		setQuickSelectedChannel();
         	}else{
         		get_channel();
         		get_selectedChannel(ad_id);
@@ -492,7 +503,7 @@ $(function(){
         $('.channel_content').css("display","none");
 		$(".setNet-errInfo").text("");
          get_selectData();
-         $('.setNet').attr("name","1");
+         $('.setNet').attr("name","0");
      });
      $('.channel_content .btn_close').click(function(){
          $('.channel_content').css("display","none");

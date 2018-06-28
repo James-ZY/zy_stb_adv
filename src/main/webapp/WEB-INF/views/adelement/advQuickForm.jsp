@@ -16,10 +16,10 @@
     	<script src="${ctxStatic}/common/validDate.js"></script>
     	<script type="text/javascript" src="${ctxStatic}/common/areadata.js"></script>
         <script type="text/javascript" src="${ctxStatic}/common/auto_area.js"></script>
-    	
-    	
-    	
-    	<style type="text/css">
+	    <script type="text/javascript" src="${ctxStatic}/adcombojs/auto_channel.js"></script>
+
+
+	<style type="text/css">
     	#upload_adv_image,#upload_adv_vedio{width: 100%; min-height:260px;height: auto;/* overflow: hidden; */padding:0;border-bottom: 0px;}
     	#upload_adv_image .switchResolution,#upload_adv_vedio .switchResolution{width:100%;height:39px;border-bottom:1px solid gainsboro;}
 
@@ -64,7 +64,7 @@
 			width:110px;
 		}
 		*{margin:0;padding:0;}
-        .channel_content{position:fixed;width: 800px;height: 400px;top:15%;left:50%;margin-left: -400px;border:1px solid gainsboro;border-radius: 6px; font-family: "微软雅黑";background: ghostwhite;display:none}
+        .channel_content{position:fixed;width: 800px;height: 450px;top:15%;left:50%;margin-left: -400px;border:1px solid gainsboro;border-radius: 6px; font-family: "微软雅黑";background: ghostwhite;display:none}
         .channel_content ul{list-style-type: none;overflow-y:auto;}
         .channel_content .channel_content_ul{width: 90%;padding-left: 5%;padding-right: 5%;padding-top: 10px;height: 340px;margin:0;}
         .channel_content_ul .fasongqi_type{list-style-type: none;border-bottom: 1px solid gainsboro;margin-top: 5px;padding-bottom: 5px;}
@@ -833,7 +833,8 @@
 	</form:form>
 	
 	<div class="channel_content">
-	    <ul class="channel_content_ul">
+		<div class="data-search" id="searchRun"><input class="run" name="searchchannel"><div class="searchList run" style="display: none;"></div></div>
+		<ul class="channel_content_ul">
 	    </ul>
 	    <div class="ad_action">
 	        <input class="btn_close" type="button" value="<spring:message code='cancle' />">       
