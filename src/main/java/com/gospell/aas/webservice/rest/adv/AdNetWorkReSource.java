@@ -263,52 +263,78 @@ public class AdNetWorkReSource {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
 		map.put("adNetworkId", network.getId());
-		map.put("adTypeId", AdType.Type_OPEN_IMGAE);
-		map.put("flag", AdDefaultControll.FLAG_SD);
-		List<AdDefaultControll> sdlist = iadControllDao.getControlByTypeId(map);//判断该发送器是否有默认图片设置
-		if( null == sdlist || 0 == sdlist.size()){
-			saveCon(network, AdDefaultControll.FLAG_SD,AdType.Type_OPEN_IMGAE);
-		}
-		map.put("flag", AdDefaultControll.FLAG_HD);
-		List<AdDefaultControll> hdlist = iadControllDao.getControlByTypeId(map);//判断该发送器是否有默认图片设置
-		if(null == hdlist || 0 == sdlist.size()){
-			saveCon(network, AdDefaultControll.FLAG_HD,AdType.Type_OPEN_IMGAE);
-		}
-		map.put("adTypeId", AdType.Type_BROCAST);
-		map.put("flag", AdDefaultControll.FLAG_SD);
-		sdlist = iadControllDao.getControlByTypeId(map);//判断该发送器是否有默认图片设置
-		if( null == sdlist || 0 == sdlist.size()){
-			saveCon(network, AdDefaultControll.FLAG_SD,AdType.Type_BROCAST);
-		}
-		map.put("flag", AdDefaultControll.FLAG_HD);
-		hdlist = iadControllDao.getControlByTypeId(map);//判断该发送器是否有默认图片设置
-		if(null == hdlist || 0 == sdlist.size()){
-			saveCon(network, AdDefaultControll.FLAG_HD,AdType.Type_BROCAST);
-		}
+        //设置默认开机图片
+		checkDefault(map,AdType.Type_OPEN_IMGAE,AdDefaultControll.FLAG_SD,network);
+		checkDefault(map,AdType.Type_OPEN_IMGAE,AdDefaultControll.FLAG_HD,network);
+		//设置默认开机背景图片
+		checkDefault(map,AdType.Type_BROCAST,AdDefaultControll.FLAG_SD,network);
+		checkDefault(map,AdType.Type_BROCAST,AdDefaultControll.FLAG_HD,network);
+		//设置默认换台图片
+		/*checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_SD,network);
+		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_HD,network);*/
+	}
 
+	//判断该发送器是否有默认图片设置
+	private void checkDefault(Map<String,Object> map,String adTypeId,Integer flag,AdNetwork network){
+		map.put("adTypeId", adTypeId);
+		map.put("flag", flag);
+		List<AdDefaultControll> list = iadControllDao.getControlByTypeId(map);
+		if( null == list || 0 == list.size()){
+			saveCon(network,flag,adTypeId);
+		}
 	}
 
 	private void saveCon(AdNetwork network,Integer flag,String typeId){
-		String imgpath = ApplicationContextHelper.getRootRealPath()+"/static/images/defaultkaiji.jpg";
-		String m2vpath = ApplicationContextHelper.getRootRealPath()+"/static/images/defaultkaiji.m2v";
-		String imgpath1 = com.gospell.aas.common.utils.FileUtils.getUploadFileRealPath()+"/upload/advs/admin/m2v/defaultkaiji.jpg";
-		String m2vpath1 = com.gospell.aas.common.utils.FileUtils.getUploadFileRealPath()+"/upload/advs/admin/m2v/defaultkaiji.m2v";
-		com.gospell.aas.common.utils.FileUtils.copyFileCover(imgpath, imgpath1, true);
-		com.gospell.aas.common.utils.FileUtils.copyFileCover(m2vpath, m2vpath1, true);
 		AdDefaultControll model = new AdDefaultControll();
-		model.setAdNetwork(network);
-		model.setAdType(typeService.get(typeId));
-		model.setFilePath("/upload/advs/admin/m2v/defaultkaiji.m2v");
-		model.setFileImagePath("/upload/advs/admin/m2v/defaultkaiji.jpg");
-		model.setWidth(720);
-		model.setHeight(576);
-		model.setPlayOrder(0);
-		model.setFlag(flag);
-		model.setFileSize("38419");
-		model.setResourceType(2);
-		model.setStatus(AdDefaultControll.STATUS_WAIT);
-		model.setDuration(0);
-		model.setFileFormat("m2v");
+		if (typeId.equals(AdType.Type_CHANGE_CHANNEL)) {
+			String imgpath = "";
+			String imgpath1 = "";
+             if(flag.equals(AdDefaultControll.FLAG_SD)){
+				 imgpath = ApplicationContextHelper.getRootRealPath() + "/static/images/homecableSD.bmp";
+				 imgpath1 = com.gospell.aas.common.utils.FileUtils.getUploadFileRealPath() + "/upload/advs/admin/image/homecableSD.bmp";
+				 model.setWidth(220);
+				 model.setHeight(100);
+				 model.setFileSize("64");
+				 model.setFilePath("/upload/advs/admin/image/homecableSD.bmp");
+
+			 }else{
+				 imgpath = ApplicationContextHelper.getRootRealPath() + "/static/images/homecableHD.bmp";
+				 imgpath1 = com.gospell.aas.common.utils.FileUtils.getUploadFileRealPath() + "/upload/advs/admin/image/homecableHD.bmp";
+				 model.setWidth(133);
+				 model.setHeight(180);
+				 model.setFileSize("70");
+				 model.setFilePath("/upload/advs/admin/image/homecableHD.bmp");
+
+			 }
+			com.gospell.aas.common.utils.FileUtils.copyFileCover(imgpath, imgpath1, true);
+			model.setAdNetwork(network);
+			model.setAdType(typeService.get(typeId));
+			model.setPlayOrder(0);
+			model.setFlag(flag);
+			model.setResourceType(1);
+			model.setStatus(AdDefaultControll.STATUS_WAIT);
+			model.setFileFormat("bmp");
+		} else {
+			String imgpath = ApplicationContextHelper.getRootRealPath() + "/static/images/defaultkaiji.jpg";
+			String m2vpath = ApplicationContextHelper.getRootRealPath() + "/static/images/defaultkaiji.m2v";
+			String imgpath1 = com.gospell.aas.common.utils.FileUtils.getUploadFileRealPath() + "/upload/advs/admin/m2v/defaultkaiji.jpg";
+			String m2vpath1 = com.gospell.aas.common.utils.FileUtils.getUploadFileRealPath() + "/upload/advs/admin/m2v/defaultkaiji.m2v";
+			com.gospell.aas.common.utils.FileUtils.copyFileCover(imgpath, imgpath1, true);
+			com.gospell.aas.common.utils.FileUtils.copyFileCover(m2vpath, m2vpath1, true);
+			model.setAdNetwork(network);
+			model.setAdType(typeService.get(typeId));
+			model.setFilePath("/upload/advs/admin/m2v/defaultkaiji.m2v");
+			model.setFileImagePath("/upload/advs/admin/m2v/defaultkaiji.jpg");
+			model.setWidth(720);
+			model.setHeight(576);
+			model.setPlayOrder(0);
+			model.setFlag(flag);
+			model.setFileSize("38419");
+			model.setResourceType(2);
+			model.setStatus(AdDefaultControll.STATUS_WAIT);
+			model.setDuration(0);
+			model.setFileFormat("m2v");
+		}
 		try {
 			controllService.save1(model);
 		} catch (Exception e) {

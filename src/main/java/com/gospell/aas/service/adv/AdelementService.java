@@ -473,9 +473,15 @@ public class AdelementService extends BaseService {
 		String categoryId = entity.getAdCategory().getId();
 		map.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
 		map.put("categoryId", categoryId);
-		Integer count = mybatisDao.findAdelementByAdCategory(map);
-		int total = count + 1;
-		String s1 = Integer.toHexString(total);
+		int count = 1;
+		String sadId = mybatisDao.findAdelementByAdCategory(map);
+        if(StringUtils.isBlank(sadId)){
+        	count =1;
+		}else{
+			String a1 = sadId.substring(4,8);
+			count = Integer.parseInt(a1,16)+1;
+		}
+		String s1 = Integer.toHexString(count);
 		String number = StringUtils.tencentToHex(s1);
 		String adId = StringUtils.tencentToHex(categoryId) + number;
 		entity.setAdId(adId);
@@ -1071,7 +1077,7 @@ public class AdelementService extends BaseService {
 			throws Exception {
 
 		final Adelement a = get(id);
-		if(a.getAdCombo().getAdType().getId().equals(AdType.Type_OPEN_IMGAE)){
+		if(a.getAdCombo().getAdType().getId().equals(AdType.Type_OPEN_IMGAE) || a.getAdCombo().getAdType().getId().equals(AdType.Type_BROCAST)){
 			taskExecutor.execute(new Runnable() {
 
 				@Override

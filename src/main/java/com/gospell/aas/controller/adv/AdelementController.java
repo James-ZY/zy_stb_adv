@@ -617,7 +617,6 @@ public class AdelementController extends BaseController {
 				categoryId = "0001";
 			}
 			entity.setAdCategory(new AdCategory(categoryId));
-			entity.setOldAdCategoryId(categoryId);
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			String comboName = "";
 			String typeName = "";

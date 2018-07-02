@@ -31,7 +31,7 @@ $(function(){
 	var host = accipiter.getRootPath();
 	var control_show=0;/*------控制提交按钮，避免发生冲突----*/
 	var DropzoneControl=0;/*------控制上传控件，避免发生多次触发----*/
-	var adSize=[{"gjsize":"(220-250)*(96-180)","kjsize":"720*576","htsize":"(160-250)*(80-180)","cpsize":"(220-250)*(96-180)","gdsize":"(720-7200)*(36-40)","tssize":"(220-250)*(96-180)","menusize":"(220-250)*(96-180)","bgsize":"720*576"}];
+	var adSize=[{"gjsize":"(220-250)*(96-180)","kjsize":"720*576","htsize":"(100-300)*(100-300)","cpsize":"(220-250)*(96-180)","gdsize":"(720-7200)*(36-40)","tssize":"(220-250)*(96-180)","menusize":"(220-250)*(96-180)","bgsize":"720*576"}];
 	var sizeStyle=[];
 	if($('#id').attr("value")!=""){
 		var control=parseInt($('.select').children("option:selected").val().getAdvType());
@@ -60,6 +60,7 @@ $(function(){
 	    return result;
     }
     function getSize(data){
+    	var typeId = data.id;
 		var postData = JSON.stringify(data);
 		var sizeStyles=[];
 		var fileSize,format,highMax,highMin,widthMax,widthMin,description="";
@@ -80,10 +81,18 @@ $(function(){
 						});
 						format=formatC.join(",") ;
 						if(comment["status"]==0){
-							highMax=comment["highMax"];
-							highMin=comment["highMin"];
-							widthMax=comment["widthMax"];
-							widthMin=comment["widthMin"];
+							if(typeId == "3"){
+                                highMax=300;
+                                highMin=100;
+                                widthMax=300;
+                                widthMin=100;
+                                fileSize = 0.1;
+							}else{
+                                highMax=comment["highMax"];
+                                highMin=comment["highMin"];
+                                widthMax=comment["widthMax"];
+                                widthMin=comment["widthMin"];
+                            }
 							if(comment["isFixed"]==0){
 								description="("+widthMin+"-"+widthMax+")*("+highMin+"-"+highMax+")";
 							}else{
@@ -431,7 +440,7 @@ $(function(){
 				e.html("");
 			    e.dropzone({
 			        url: host+"/file/fileUpload",
-			        maxFiles: 5,
+			        maxFiles: 1,
 			        maxFilesize:size.sizeData[0].fileSize,
 			        acceptedFiles:size.sizeDescription.format,
 			        dictDefaultMessage : accipiter.getLang_(messageLang,"add.image"),

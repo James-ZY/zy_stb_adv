@@ -687,7 +687,7 @@ public class FfmpegUtil {
 private static List<String> getFfmpegCommandM2v(String ffmpegPath, String oldfilepath, String outputPath) {
 	 
 	List<String> command = new ArrayList<String>();
- 
+ // ffmpeg -y -f image2 -r 1 -i .. -q 5 -b:v 200k -r 10
 	command.add("ffmpeg");
 	command.add("-y");
 	command.add("-f");
@@ -702,6 +702,8 @@ private static List<String> getFfmpegCommandM2v(String ffmpegPath, String oldfil
 	command.add("200k");
 	command.add("-r");
 	command.add("10");
+	command.add("-pix_fmt");
+	command.add("yuv420p");
 /*	command.add("-s");
 	//ffmpeg -u -f image2 -r 1 -i /1.jpg -b:v 200k -r 10 -s 720*560 /1.m2v
 	int width=720;

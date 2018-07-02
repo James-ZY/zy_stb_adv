@@ -88,7 +88,7 @@ public interface IAdelementDao extends BaseMybatisDao<Adelement>{
 	 * @param map
 	 * @return
 	 */
-	public Integer findAdelementByAdCategory(Map<String,Object> map);
+	public String findAdelementByAdCategory(Map<String,Object> map);
 	
 	public List<Adelement> findAuditList(Adelement entity);
 	

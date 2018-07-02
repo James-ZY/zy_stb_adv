@@ -243,13 +243,15 @@ public class AdSellController extends BaseController {
 								adelementService.closeDown(adelement.getId(), Adelement.ADV_DELETE_NOW_YES);
 								addMessage(redirectAttributes, "close.down.success");
 								logService.save(request, logInfo1, null);
-								logger.info(UserUtils.getUser().getLoginName()+"停播广告Id："+adelement.getAdId()+"成功");			
-								adelement.setStatus(Adelement.ADV_STATUS_STOP);
-								adelementService.updateStatus(adelement);
-							} else {//其他广告类型变为合同终止状态
-								adelement.setStatus(Adelement.ADV_STATUS_STOP);
-								adelementService.updateStatus(adelement);
+								logger.info(UserUtils.getUser().getLoginName()+"停播广告Id："+adelement.getAdId()+"成功");
 							}
+							//广告类型变为合同终止状态
+							adelement.setStatus(Adelement.ADV_STATUS_STOP);
+							Integer jud = DateUtils.judgeDateSize(adelement.getEndDate(),new Date());
+							if(jud<0){
+								adelement.setEndDate(new Date());
+							}
+							adelementService.updateStatus(adelement);
 						} catch (Exception e) {
 							e.printStackTrace();
 							addMessage(redirectAttributes, "close.down.fail");

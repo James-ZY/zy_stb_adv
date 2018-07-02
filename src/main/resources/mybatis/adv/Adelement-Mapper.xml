@@ -434,6 +434,9 @@
 		<if test="claimDate != null">
 			claim_date = #{claimDate},
 		</if>
+		<if test="endDate != null">
+			end_date = #{endDate},
+		</if>
 		update_date =now(),
 		update_by =#{updateBy.id}
 		where del_flag= #{delFlag}
@@ -744,9 +747,9 @@
 		</if>
 	</select>
 
-	<select id="findAdelementByAdCategory" resultType="Integer" parameterType="map">
+	<select id="findAdelementByAdCategory" resultType="java.lang.String" parameterType="map">
 	
-		select count(DISTINCT a.id) as a_count from ad_element a
+		select max(a.ad_id) adId from ad_element a
 		left join ad_category ca on a.ad_category_id = ca.id and ca.del_flag=#{delFlag}
 		where   ca.id = #{categoryId}
 	</select>
