@@ -40,7 +40,7 @@
     .attention-info{padding: 10px 0;margin-bottom: 10px;border: 1px solid #FFCE42;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;background-color: #DFF0D8;}
 	.attention-info p{text-indent: 25px;margin-bottom:0;}
 	.hidden{display:none};
-	.show{display:block}
+	.show{display:block};
 	</style>
 </head>
 <body>

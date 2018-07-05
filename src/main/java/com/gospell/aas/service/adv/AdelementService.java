@@ -678,7 +678,7 @@ public class AdelementService extends BaseService {
 			AdvNetwork insert = new AdvNetwork();
 			insert.setId(IdGen.uuid());
 			insert.setCreateDate(new Date());
-			insert.setAdvId(entity.getAdId());
+			insert.setAdvId(entity.getId());
 			insert.setClientId(clienIdList.get(i));
 
 			insert.setStatus(status);
@@ -753,7 +753,8 @@ public class AdelementService extends BaseService {
 		} else {
 			dto.setSonAdvType("0");// 广告子类型，现在默认设置为0
 		}
-		dto.setId(adelement.getAdId());
+		dto.setId(adelement.getId());
+		dto.setAdId(adelement.getAdId());
 		// dto.setDesType(String.valueOf(adelement.getShowWay()));
 
 	}
@@ -975,7 +976,7 @@ public class AdelementService extends BaseService {
 		if (null != list && list.size() > 0) {
 			List<String> id_list = Lists.newArrayList();
 			for (int i = 0; i < list.size(); i++) {
-				id_list.add(list.get(i).getId());
+				id_list.add(list.get(i).getAdId());
 			}
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("list", id_list);
@@ -1156,7 +1157,7 @@ public class AdelementService extends BaseService {
 				status = AdvNetwork.DELETE_NOW_CLIENT_ADV_FAIL;// 紧急停播
 			}
 			Map<String, Object> deleteMap = new HashMap<String, Object>();
-			deleteMap.put("advId", a.getAdId());
+			deleteMap.put("advId", a.getId());
 			deleteMap.put("clientItem", clientIds);
 			List<Integer> statusItem = Lists.newArrayList();
 			statusItem.add(AdvNetwork.PUSH_CLIENT_ADV_FAIL);
@@ -1164,7 +1165,7 @@ public class AdelementService extends BaseService {
 			deleteMap.put("statusItem", statusItem);
 			middleTableDao.deleteList1(deleteMap);
 			insertSendFail(clientIds, a, status);
-			Client.getInstance().deleteAdv(a.getAdId(), isDeleteNow, clientIds);
+			Client.getInstance().deleteAdv(a.getId(), isDeleteNow, clientIds);
 
 		}
 

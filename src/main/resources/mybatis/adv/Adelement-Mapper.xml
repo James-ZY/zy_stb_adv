@@ -200,14 +200,14 @@
 			and (n.id=#{adCombo.networkId} or nn.id=#{adCombo.networkId})
 		</if>
 		<if test="adCombo != null and adCombo.channleName != null and adCombo.channleName != ''">
-			and cc.ad_channel_name  like CONCAT('%', #{adCombo.channleName}, '%')
+			and UPPER(cc.ad_channel_name)  like CONCAT('%', UPPER(#{adCombo.channleName}), '%')
 		</if>
 
 		<if test="adCombo != null and adCombo.channelId != null and adCombo.channelId != ''">
 			and cc.ad_channel_id  like CONCAT('%', #{adCombo.channelId}, '%')
 		</if>
 		<if test="adCombo != null and adCombo.comboName != null and adCombo.comboName !=''">
-			and c.ad_combo_name  like CONCAT('%', #{adCombo.comboName}, '%')
+			and UPPER(c.ad_combo_name)  like CONCAT('%', UPPER(#{adCombo.comboName}), '%')
 		</if>
 		<if test="adCombo != null and adCombo.adType != null and adCombo.adType.id != null and adCombo.adType.id != '' ">
 			and t.id = #{adCombo.adType.id }
@@ -230,7 +230,7 @@
 			</foreach>
 		</if>
 		<if test="adName != null and adName !=''">
-			and a.ad_name  like CONCAT('%', #{adName}, '%')
+			and UPPER(a.ad_name)  like CONCAT('%', UPPER(#{adName}), '%')
 		</if>
 		<if test="isValid != null">
 			and a.end_date  <![CDATA[>=]]> DATE_FORMAT(NOW(),'%Y-%m-%d')

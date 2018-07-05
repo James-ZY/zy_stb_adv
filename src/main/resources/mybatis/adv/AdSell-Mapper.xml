@@ -145,7 +145,7 @@
 		</if>
 		<if test="null != adCombo">
 				<if test="null != adCombo.comboName and '' != adCombo.comboName">
-					and c.ad_combo_name  like CONCAT('%', #{adCombo.comboName}, '%')
+					and UPPER(c.ad_combo_name)  like CONCAT('%', UPPER(#{adCombo.comboName}), '%')
 				</if>
 				<if test="adCombo.adType != null">
 					 <if test="adCombo.adType.id != null and adCombo.adType.id !=''">

@@ -998,4 +998,27 @@ $(function(){
     		$("#"+fdv).parent().css("display","block");	 		
     	}
     }
+
+    //频道设置
+    $('.setNet').click(function(){
+        var netWorkType = $("#netWorkType").val();
+        var districtMode = $("#districtMode").val();
+        var isFlag = $("#isFlag").val();
+        var sendMode = "";
+        if(isFlag == "0"){
+            sendMode = $("#sendModeWG").val();
+        }else{
+            sendMode = $("#sendModeYG").val();
+        }
+        if(sendMode == 2 && districtMode == "setComboDis"){
+            var status=$("#status").find("option:selected").val();
+            if(status==2){
+                $('.channel_content').css("display","block");
+            }else{
+                var dv = $("#selArea").val();
+                getOperatorsByDis(dv);
+                setQuickSelectedChannel();
+            }
+        }
+    });
 });

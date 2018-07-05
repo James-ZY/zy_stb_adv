@@ -64,7 +64,6 @@ public class AdNetworkController extends BaseController {
 			model.addAttribute("page", page);
 		} catch (Exception e) {
 			 e.printStackTrace();
-			 
 		}
 
 		return "/network/networkList";

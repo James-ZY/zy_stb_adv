@@ -152,7 +152,9 @@ public class AdComboController extends BaseController {
 		if (StringUtils.isNotBlank(id)) {
 			entity = thisService.get(entity.getId());			
 		}
+/*
 		entity.setTrackMode(1);
+*/
 		model.addAttribute("adCombo", entity);
 
 		String startDate = DateUtil.dateToStr(entity.getValidStartTime(),

@@ -585,7 +585,7 @@ $(function(){
         		 $(".setEndTime").find(".info-messages p").text(accipiter.getLang_(messageLang,"select.endTime"));
              } 
     	 }else{
-             $('.channel_content').css("display","block");  
+             $('.channel_content').css("display","block");
     	 }
      });
      

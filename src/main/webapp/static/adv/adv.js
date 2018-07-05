@@ -229,24 +229,29 @@ $(function() {
                     }else{
                         $("#btnSubmit").attr({"disabled":false});
                         document.getElementById("enddate_span").innerText ="";
-                        if(adClassId != 6){
-                         var ncData={"startDate":startDate,"endDate":endDate,"comboId":comboId,"typeId":adClassId};
-                         postData=JSON.stringify(ncData);
-                         $.ajax({
-                         type:"post",
-                         async: false,
-                         url:host+"/adv/adelement/getNCLimit1",
-                         data:postData,
-                         contentType:"application/json; charset=UTF-8",
-                         dataType:"json",
-                         success:function(data){
-                         if(data!=null){
-                         $("#sdMaxNC").val(data.sdMaxNC);
-                         $("#hdMaxNC").val(data.hdMaxNC);
-                         }
-                         }
-                         });
-                         }
+                        if (adClassId != 6) {
+                            var ncData = {
+                                "startDate": startDate,
+                                "endDate": endDate,
+                                "comboId": comboId,
+                                "typeId": adClassId
+                            };
+                            postData = JSON.stringify(ncData);
+                            $.ajax({
+                                type: "post",
+                                async: false,
+                                url: host + "/adv/adelement/getNCLimit1",
+                                data: postData,
+                                contentType: "application/json; charset=UTF-8",
+                                dataType: "json",
+                                success: function (data) {
+                                    if (data != null) {
+                                        $("#sdMaxNC").val(data.sdMaxNC);
+                                        $("#hdMaxNC").val(data.hdMaxNC);
+                                    }
+                                }
+                            });
+                        }
                     }
 
                 }
@@ -1445,6 +1450,7 @@ $(function() {
             checkSet("sd");
             checkSet("hd");
         }
+        judage_advOne();
     }
     alertShowInfo();
     /***************************点击事件****************************/

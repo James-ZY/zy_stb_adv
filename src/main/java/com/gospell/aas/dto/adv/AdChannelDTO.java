@@ -20,7 +20,7 @@ public class AdChannelDTO {
 
 	@JsonProperty("adchannelId")
 	private String adchannelId;// 频道编号
-	
+
 	@JsonProperty("serviceId")
 	private String serviceId;//通道ID
 	

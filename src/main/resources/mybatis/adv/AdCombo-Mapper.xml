@@ -177,14 +177,14 @@
 			and (n.id=#{networkId} or nn.id=#{networkId})
 		</if>
 		<if test="channleName != null and channleName != ''">
-			and cc.ad_channel_name  like CONCAT('%', #{channleName}, '%')
+			and UPPER(cc.ad_channel_name)  like CONCAT('%', UPPER(#{channleName}), '%')
 		</if>
 		
 		<if test="channelId != null and channelId != ''">
 			and cc.ad_channel_id  like CONCAT('%', #{channelId}, '%')
 		</if>
 		<if test="comboName != null and comboName !=''">
-			and c.ad_combo_name  like CONCAT('%', #{comboName}, '%')
+			and UPPER(c.ad_combo_name)  like CONCAT('%', UPPER(#{comboName}), '%')
 		</if>
 		<if test="status != null">
 			and c.status =#{status}

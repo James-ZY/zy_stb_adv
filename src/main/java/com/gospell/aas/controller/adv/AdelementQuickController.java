@@ -151,9 +151,9 @@ public class AdelementQuickController extends BaseController {
 			}
 
 		}else{
-			AdCombo combo = new AdCombo();
+			/*AdCombo combo = new AdCombo();
 			combo.setTrackMode(1);
-			entity.setAdCombo(combo);
+			entity.setAdCombo(combo);*/
 		}
 		model.addAttribute("adCombo", entity.getAdCombo());
 		AdCategory category =null;

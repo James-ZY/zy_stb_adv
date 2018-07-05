@@ -270,8 +270,8 @@ public class AdNetWorkReSource {
 		checkDefault(map,AdType.Type_BROCAST,AdDefaultControll.FLAG_SD,network);
 		checkDefault(map,AdType.Type_BROCAST,AdDefaultControll.FLAG_HD,network);
 		//设置默认换台图片
-		/*checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_SD,network);
-		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_HD,network);*/
+		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_SD,network);
+		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_HD,network);
 	}
 
 	//判断该发送器是否有默认图片设置

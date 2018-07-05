@@ -62,6 +62,8 @@ public class DataBaseController extends BaseController {
 	@RequestMapping(value = { "list", "" })
 	public String list(DataBaseRecord database, HttpServletRequest request,
 			HttpServletResponse response, Model model) {
+		String[] root = com.gospell.aas.common.utils.FileUtils.fileUploadAdr(request.getSession().getServletContext().getRealPath(""));
+		String realPath = root[0];
 		Page<DataBaseRecord> page = dataBaseService.find(new Page<DataBaseRecord>(
 				request, response), database);
 		if (null != database.getCreateDateStart()) {
@@ -73,8 +75,11 @@ public class DataBaseController extends BaseController {
 					database.getCreateDateEnd(), "yyyy-MM-dd"));
 		}
 		model.addAttribute("page", page);
-		model.addAttribute("message", database.getUploadMessage());
+		if(StringUtils.isNotBlank(database.getUploadMessage())){
+			model.addAttribute("message", database.getUploadMessage());
+		}
 
+		model.addAttribute("realPath", realPath);
 		return "/sys/dataBaseList";
 	}
 

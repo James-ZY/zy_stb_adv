@@ -17,6 +17,12 @@
 	.upload_file{width:350px;height:100px;margin-bottom:10px;}
 	.down-model a{    position: absolute;line-height:30px;width: 100%;left: 0;text-align: left;text-indent: 25px;}
 	.appendHtml{display:none;top:-100000px;}
+	#attention{width:24px;height:24px;display:block;float:right;background:url("${ctxStatic}/images/icon/attention.png") no-repeat;}
+	#attention:hover{cursor: pointer;}
+	.attention-info{padding: 10px 0;margin-bottom: 10px;border: 1px solid #FFCE42;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;background-color: #DFF0D8;}
+	.attention-info p{text-indent: 25px;margin-bottom:0;}
+	.hidden{display:none};
+	.show{display:block};
 	</style>
 	<link rel="stylesheet" href="${ctx}/static/fileUpLoad/fileUpLoadcss/skinBase.css">
 	<script src="${ctx}/static/scripts/common/common.js"></script>
@@ -76,8 +82,24 @@
                         $(".FileImport").attr("name")=="0";
                     }
                 }
-
             });
+            $("#attention").on("click",function(){
+                if($(".attention-info").hasClass("hidden")){
+                    $(".attention-info").removeClass("hidden");
+                    $(".attention-info").addClass("show");
+                    setTimeout(function(){
+                        $(".attention-info").removeClass("show");
+                        $(".attention-info").addClass("hidden");
+                    },10000)
+                }else{
+                    $(".attention-info").removeClass("show");
+                    $(".attention-info").addClass("hidden");
+                }
+            })
+            setTimeout(function(){
+                $(".attention-info").removeClass("show");
+                $(".attention-info").addClass("hidden");
+            },10000);
 		});
 	</script>
 </head>
@@ -135,12 +157,13 @@
 					<form:hidden path="uploadMessage"/>
 				</shiro:hasPermission>
 			</div>
-			 
+			<a id="attention"></a>
 		</div>
 	</form:form>
 	<tags:message content="${message}"/>
 	<div class="tab_content">
-	<table id="contentTable" class="table table-striped table-bordered table-condensed">
+		<div class="attention-info show"><p><spring:message code="database.backup.detail"/>${realPath}</p></div>
+		<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead><tr>
 				<th><spring:message code='database.recordName' /></th>
 				<th><spring:message code='database.recordPath' /></th>

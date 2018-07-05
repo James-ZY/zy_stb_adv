@@ -53,7 +53,7 @@ private static Logger logger = LoggerFactory.getLogger(DataBaseManage.class);
             Runtime rt = Runtime.getRuntime();
  
             // 调用 调用mysql的安装目录的命令
-            String commcand = getMysqlPath()+"/bin/mysqldump -h localhost -u"+Global.getConfig("jdbc.username")+" -p"+Global.getConfig("jdbc.password")+" "+Global.getConfig("jdbc.databaseName");
+            String commcand = getMysqlPath()+"/bin/mysqldump -h localhost -u"+Global.getConfig("jdbc.username")+" -p"+Global.getConfig("jdbc.password")+" -R "+Global.getConfig("jdbc.databaseName");
             Process child = rt.exec(commcand);
             // 设置导出编码为utf-8。这里必须是utf-8
             // 把进程执行中的控制台输出信息写入.sql文件，即生成了备份文件。注：如果不对控制台信息进行读出，则会导致进程堵塞无法运行

@@ -137,18 +137,20 @@ public class AdControllController extends BaseController {
 				addMessage(redirectAttributes, "adcontrol.not.update");
 				logService.save(request, logInfo, new Exception(getMessage("adcontrol.not.update")));
 				logger.error(UserUtils.getUser().getLoginName()+"添加或者修改广告素材Id："+entity.getId()+"失败，失败原因:"+getMessage("adcontrol.not.update"));
-				return "redirect:/adv/control/?repage";
+				/*return "redirect:/adv/control/?repage";*/
+				return form(entity, model, redirectAttributes);
 			}
 			thisService.save(entity);
 			logService.save(request, logInfo, null);
 			logger.info(UserUtils.getUser().getLoginName()+"添加或者修改广告素材Id："+entity.getId()+"成功");
 			addMessage(redirectAttributes, "msg.save.success");
-			return "redirect:/adv/control/?repage";
+			return form(entity, model, redirectAttributes);
 		} catch (Exception e) {
 			logService.save(request, logInfo, e);
 			logger.info(UserUtils.getUser().getLoginName()+"添加或者修改广告素材Id："+entity.getId()+"失败",e.getMessage());
 			addMessage(redirectAttributes, "msg.save.fail");
-			return "redirect:/adv/control/?repage";
+			/*return "redirect:/adv/control/?repage";*/
+			return form(entity, model, redirectAttributes);
 		}
 	}
 

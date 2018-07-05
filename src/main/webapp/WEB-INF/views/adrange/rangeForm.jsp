@@ -68,7 +68,7 @@
                 $("#resizable2").css("width",endX-beginX);
                 $("#resizable2").css("height",endY-beginY);
             });
-			
+
 		$(function() {
 			var a = document.getElementById("flag");
 			var b = a.options[a.selectedIndex].value;

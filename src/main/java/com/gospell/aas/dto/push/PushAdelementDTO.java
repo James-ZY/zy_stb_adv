@@ -8,7 +8,10 @@ public class PushAdelementDTO {
 	private String advName;//广告名称
 	
 	@JsonProperty("id") 
-	private String id;//广告Id
+	private String id;//广告唯一Id
+
+	@JsonProperty("adId")
+	private String adId;//广告Id
 
 	@JsonProperty("advId")
 	private String advId;//广告商ID
@@ -89,6 +92,14 @@ public class PushAdelementDTO {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getAdId() {
+		return adId;
+	}
+
+	public void setAdId(String adId) {
+		this.adId = adId;
 	}
 
 	public String getAdvId() {

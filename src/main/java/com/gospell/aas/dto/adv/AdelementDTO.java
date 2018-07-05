@@ -483,7 +483,7 @@ public class AdelementDTO {
 	public void setHdBgHeight(Integer hdBgHeight) {
 		this.hdBgHeight = hdBgHeight;
 	}
-	
+
 	public static void test(StringBuffer file) {
 		file.append("123");
 	}

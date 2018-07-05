@@ -535,6 +535,8 @@
 		<input id="oldStatus" name="oldStatus" type="hidden" value=${adCombo.status}>
 		<input id="sdId" name="sdId" type="hidden" value=${adCombo.sdRange.id}>
 		<input id="hdId" name="hdId" type="hidden" value=${adCombo.hdRange.id}>
+		<input id="sdTrackId" name="sdTrackId" type="hidden" value=${adCombo.sdTrack.id}>
+		<input id="hdTrackId" name="hdTrackId" type="hidden" value=${adCombo.hdTrack.id}>
 		<form:hidden path="startHour"/>
 		<form:hidden path="startMinutes"/>
 		<form:hidden path="startSecond"/>

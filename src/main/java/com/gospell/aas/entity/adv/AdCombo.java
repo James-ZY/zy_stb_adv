@@ -94,7 +94,7 @@ public class AdCombo extends IdEntity<AdCombo> {
 	private AdTrack hdTrack;//高清轨迹模板
 
 	private AdTrack sdTrack;//标清轨迹模板
-	
+
 	private Integer sendMode; //广告发送模式（1普通 2区域）
 
 	private Integer trackMode; //广告轨迹模式（1普通 2普通）
