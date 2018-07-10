@@ -14,6 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import com.gospell.aas.service.quartz.PutEndTask;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -98,7 +99,8 @@ public class AdNetWorkReSource {
 
 				} else {
 
-					service.saveChannleToNetwork(dto, network);
+					String content = service.saveChannleToNetwork(dto, network);
+					result.setContent(content);
 					result.setStatus(Status.OK.getCode());
 					return result;
 
@@ -123,6 +125,8 @@ public class AdNetWorkReSource {
 				result.setStatus(Status.BLANK_PARAMETER.getCode());
 				return result;
 			} else {
+				PutEndTask ta = new PutEndTask();
+				ta.dataBaseManage();
 				String networkId = dto.getNetworkId();
 				List<String> channelIds = Lists.newArrayList();
 				List<SelectChannelDTO> channelList = new ArrayList<SelectChannelDTO>();
@@ -145,6 +149,7 @@ public class AdNetWorkReSource {
 							List<String> deleteList = service.getCanDeleteAdChannel(network.getId(),channelIds);
 							if(null !=deleteList && deleteList.size()>0){
 								service.deleteChannels(network.getId(), deleteList);
+								service.deleteChannelList(deleteList);
 							}
 							DeleteChannelDTO deletedto = new DeleteChannelDTO();
 							deletedto.setIsDelete(String.valueOf(true));
@@ -270,8 +275,8 @@ public class AdNetWorkReSource {
 		checkDefault(map,AdType.Type_BROCAST,AdDefaultControll.FLAG_SD,network);
 		checkDefault(map,AdType.Type_BROCAST,AdDefaultControll.FLAG_HD,network);
 		//设置默认换台图片
-		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_SD,network);
-		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_HD,network);
+		/*checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_SD,network);
+		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_HD,network);*/
 	}
 
 	//判断该发送器是否有默认图片设置

@@ -182,7 +182,7 @@ public class AdNetworkService extends BaseService {
 	 * 更新广告发送器
 	 *
 	 * @param dto
-	 * @param op
+	 * @param network
 	 */
 	@Transactional(readOnly = false)
 	public void updateAdNetwork(AdNetWorkDTO dto, AdNetwork network) throws Exception{
@@ -209,26 +209,24 @@ public class AdNetworkService extends BaseService {
 	/**
 	 * 保存频道信息
 	 *
-	 * @param entity
+	 * @param dto
 	 * @throws ServiceException
 	 */
 	@Transactional(readOnly = false)
-	public void saveChannleToNetwork(AdvNetWorkChannelDTO dto,
+	public String saveChannleToNetwork(AdvNetWorkChannelDTO dto,
 									 AdNetwork adNetwork) throws ServiceException {
 
 		List<ChannelDTO> dtoList = dto.getChannelList();
 		// 保存节目
 		if (null != dtoList && dtoList.size() > 0) {
-			channelService.saveChannelByNetwork(dtoList, adNetwork);
-		}else{
+			return channelService.saveChannelByNetwork(dtoList, adNetwork);
+		}/*else{
 			Map<String,Object> queryMap = new HashMap<String,Object>();
 			queryMap.put("delFlag", BaseEntity.DEL_FLAG_DELETE);
 			queryMap.put("networkId", adNetwork.getId());
 			channelService.updateChannel(queryMap);
-/*			for (AdChannel channel : adNetwork.getChannelList()) {
-				this.deleteChannelToNetwork(adNetwork.getNetworkId(), channel.getChannelId());
-			}*/
-		}
+		}*/
+		return null;
 
 	}
 
@@ -474,10 +472,8 @@ public class AdNetworkService extends BaseService {
 
 	/**
 	 * 批量删除频道
-	 * 删除之前必须判断当前发送器的频道是否有广告套餐，如果有的话，是不允许删除的
-	 *
 	 * @param networkId
-	 * @param typeId
+	 * @param channelIds
 	 */
 	@Transactional(readOnly = false)
 	public void deleteChannels(String networkId, List<String> channelIds) {
@@ -487,6 +483,19 @@ public class AdNetworkService extends BaseService {
 		queryMap.put("channelIds", channelIds);
 		channelService.updateChannel(queryMap);
 	}
+
+	/**
+	 * 批量删除套餐对应频道数据
+	 * @param channelIds
+	 */
+	@Transactional(readOnly = false)
+	public void deleteChannelList(List<String> channelIds) {
+		Map<String,Object> queryMap = new HashMap<String,Object>();
+		queryMap.put("delFlag", BaseEntity.DEL_FLAG_DELETE);
+		queryMap.put("channelIds", channelIds);
+		channelService.deleteChannelList(queryMap);
+	}
+
 
 	public List<String> getCanDeleteAdChannel(String networkId, List<String> channelIds){
 		Map<String,Object> queryMap = new HashMap<String,Object>();

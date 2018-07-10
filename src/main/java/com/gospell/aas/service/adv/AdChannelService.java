@@ -1,11 +1,11 @@
 package com.gospell.aas.service.adv;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.gospell.aas.common.mapper.JsonMapper;
+import com.gospell.aas.dto.adv.*;
+import com.gospell.aas.webservice.netty.dto.DeleteChannelDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
@@ -20,11 +20,6 @@ import com.gospell.aas.common.persistence.Page;
 import com.gospell.aas.common.utils.IdGen;
 import com.gospell.aas.common.utils.adv.AdChannelUtils;
 import com.gospell.aas.common.utils.adv.AdComboUtils;
-import com.gospell.aas.dto.adv.AdChannelDTO;
-import com.gospell.aas.dto.adv.AdChannelTypeDTO;
-import com.gospell.aas.dto.adv.AdcomboUsedDTO;
-import com.gospell.aas.dto.adv.ChannelDTO;
-import com.gospell.aas.dto.adv.NetWorkDTO;
 import com.gospell.aas.entity.adv.AdChannel;
 import com.gospell.aas.entity.adv.AdCombo;
 import com.gospell.aas.entity.adv.AdNetwork;
@@ -130,7 +125,7 @@ public class AdChannelService extends BaseService {
 	/**
 	 * 获取
 	 * 
-	 * @param AdChannelIds
+	 * @param channelId
 	 *            广告类型ID
 	 * @return
 	 */
@@ -154,62 +149,121 @@ public class AdChannelService extends BaseService {
 		}
 	}
 
+	/**
+	* @Description:  A. 当节目名称一样，节目号变为另一个ID时(无论该ID原来是否存在)，将包含该节目名称的套餐的相关节目修改为新的节目号；
+	B. 当出现新的节目名称，该节目名称对应的频道号原来就存在时，将包含该频道号的套餐的相关节目修改为新节目名称
+	C. 当出现新的节目名称，并且相关联的频道号也为新的，那么套餐无变化
+	D: 删除发送器传来需要删除的数据并删除相应套餐对应的频道数据
+	E: 如果与频道相关的套餐里面的频道数据为空了 删除对应的套餐、销售记录、和广告数据。
+	* @Param:
+	* @return:
+	* @Author: Mr.Zuo
+	* @Date: 2018/7/6 **
+	*/
 	@Transactional(readOnly = false)
-	public void saveChannelByNetwork(List<ChannelDTO> dtoList, AdNetwork network) throws ServiceException {
-		List<String> channelIdList = Lists.newArrayList();
+	public String saveChannelByNetwork(List<ChannelDTO> dtoList, AdNetwork network) throws ServiceException {
+		List<String> channelNameList = Lists.newArrayList();
 		for (int i = 0; i < dtoList.size(); i++) {
-			String channelId = dtoList.get(i).getChannelId();
-			if(StringUtils.isBlank(channelId)){
+			String channelId = dtoList.get(i).getChannelName();
+			if (StringUtils.isBlank(channelId)) {
 				continue;
 			}
-			channelIdList.add(dtoList.get(i).getChannelId());
+			channelNameList.add(dtoList.get(i).getChannelName());
 		}
-		if(null == channelIdList || channelIdList.size() ==0){
-			return;
+		if (null == channelNameList || channelNameList.size() == 0) {
+			return null;
 		}
 		List<AdChannel> addList = Lists.newArrayList();
+		List<String> deletechannel = Lists.newArrayList();
 		List<String> deletechannelIds = Lists.newArrayList();
-	    Map<String,Object> queryMap = new HashMap<String,Object>();
-			queryMap.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
-			queryMap.put("networkId", network.getId());
-			List<AdChannel> networkList =   channelDao.getAdChannelByNetWorkId(queryMap);
+		Map<String, Object> queryMap = new HashMap<String, Object>();
+		queryMap.put("networkId", network.getId());
+		List<AdChannel> networkList = channelDao.getAdChannelByNetWorkId(queryMap);//查询出该发送器下的所有频道
 		Map<String, List<AdType>> adTypemap = getAdType(dtoList);
-			Map<String, AdChannel> map = new HashMap<String,AdChannel>();
-			for (int i = 0; i < networkList.size(); i++) {
-				map.put(networkList.get(i).getChannelId(), networkList.get(i));
-			}
-			for (int i = 0; i < dtoList.size(); i++) {
-				AdChannel channel = null;
-				String channelId = dtoList.get(i).getChannelId();
-				if(dtoList.get(i).getDeleteFlag() != null && dtoList.get(i).getDeleteFlag().equals("0")){
-					if (map.containsKey(channelId)) {//判断数据库是否存在该值
-						channel = map.get(channelId);
-					}else{
+
+		Map<String, AdChannel> idMap = new HashMap<String, AdChannel>();
+		Map<String, AdChannel> nameMap = new HashMap<String, AdChannel>();
+		Map<String, String> deleteMap = new HashMap<String, String>();
+		for (int i = 0; i < networkList.size(); i++) {
+			idMap.put(networkList.get(i).getChannelId(), networkList.get(i));
+			nameMap.put(networkList.get(i).getChannelName(), networkList.get(i));
+		}
+		for (int i = 0; i < dtoList.size(); i++) {
+			AdChannel channel = null;
+			String channelName = dtoList.get(i).getChannelName();
+			String channelId = dtoList.get(i).getChannelId();
+			if (dtoList.get(i).getDeleteFlag() != null && dtoList.get(i).getDeleteFlag().equals("0")) {
+				if (nameMap.containsKey(channelName)) {//判断数据库是否存在该值
+					channel = nameMap.get(channelName);
+					channel.setChannelId(channelId);
+					deleteMap.put(channelId,channelName);
+				} else {
+					if (idMap.containsKey(channelId)) {
+						channel = idMap.get(channelId);
+						channel.setChannelName(channelName);
+						deleteMap.put(channelId,channelName);
+					} else {
 						channel = new AdChannel();
 						channel.setId(IdGen.uuid());
+						channel.setChannelId(channelId);
+						channel.setChannelName(channelName);
 					}
-					channel.setAdNetWork(network);
-					channel.setChannelId(dtoList.get(i).getChannelId());
-					channel.setChannelName(dtoList.get(i).getChannelName());
-					channel.setChannelType(dtoList.get(i).getChannelType());
-					channel.setServiceId(dtoList.get(i).getServiceId());
-					channel.setServiceName(dtoList.get(i).getServiceName());
-					channel.setIsMainChannel(dtoList.get(i).getIsMainChannel());
-					channel.setIsVideoChannel(dtoList.get(i).getIsVideoChannel());
-					channel.setDelFlag(BaseEntity.DEL_FLAG_NORMAL);
-					if (null != adTypemap && adTypemap.containsKey(dtoList.get(i).getChannelId())) {
-						channel.setTypeList(adTypemap.get(dtoList.get(i).getChannelId()));
-					}
-					addList.add(channel);
-				}else{
-					deletechannelIds.add(channelId);
 				}
+				channel.setAdNetWork(network);
+				channel.setChannelType(dtoList.get(i).getChannelType());
+				channel.setServiceId(dtoList.get(i).getServiceId());
+				channel.setServiceName(dtoList.get(i).getServiceName());
+				channel.setIsMainChannel(dtoList.get(i).getIsMainChannel());
+				channel.setIsVideoChannel(dtoList.get(i).getIsVideoChannel());
+				channel.setDelFlag(BaseEntity.DEL_FLAG_NORMAL);
+				if (null != adTypemap && adTypemap.containsKey(channelId)) {
+					channel.setTypeList(adTypemap.get(channelId));
+				}
+				addList.add(channel);
+			} else {
+				deletechannel.add(channelId);
 			}
-			thisDao.clear();
-			thisDao.save(addList);
-			if(deletechannelIds!=null && deletechannelIds.size()>0){
-				adNetworkService.deleteChannels(network.getId(), deletechannelIds);				
+		}
+
+
+		thisDao.clear();
+
+		String returnStr = null;
+		List<AdChannel> dellist = Lists.newArrayList();
+		Map<String,Object> updateFlagmap = new HashMap<String,Object>();
+		updateFlagmap.put("networkId", network.getId());
+		for (Map.Entry<String,String> entry : deleteMap.entrySet()){
+			updateFlagmap.put("channelId",entry.getKey());
+			updateFlagmap.put("channelName",entry.getValue());
+			List<AdChannel> l1 = channelDao.getAdChannels(updateFlagmap);
+			dellist.addAll(l1);
+		}
+		for (AdChannel ch :
+				dellist) {
+			thisDao.delete(ch);
+		}
+		thisDao.flush();
+		thisDao.save(addList);
+
+
+		if (deletechannel != null && deletechannel.size() > 0) {
+			adNetworkService.deleteChannels(network.getId(), deletechannel);//删除频道并删除相应套餐关联的频道
+			queryMap.put("channelIds", deletechannel);
+			channelDao.deleteChannelList(queryMap);
+			List<SelectChannelDTO> channelList = new ArrayList<SelectChannelDTO>();
+
+			for (String s : deletechannel) {
+				SelectChannelDTO sd = new SelectChannelDTO();
+				sd.setChannelId(s);
+				channelList.add(sd);
 			}
+			DeleteChannelDTO deletedto = new DeleteChannelDTO();
+			deletedto.setIsDelete(String.valueOf(true));
+			deletedto.setChannelList(channelList);
+			returnStr = JsonMapper.toJsonString(deletedto);
+		}
+		channelDao.checkCombo();//如果与频道相关的套餐里面的频道数据为空了 删除对应的套餐、销售记录、和广告数据。
+		return returnStr;
 
 	}
 
@@ -217,8 +271,8 @@ public class AdChannelService extends BaseService {
 	/**
 	 * //根据上传的频道信息获取数据库已经存在的数据,并且删除多余的数据，比如原来存在cctv-1.现在上传的频道不存在该频道
 	 * 
-	 * @param channelIdList
-	 * @param networkId
+	 * @param dtoList
+	 * @param network
 	 * @return
 	 */
 	@Transactional(readOnly = false)
@@ -308,7 +362,7 @@ public class AdChannelService extends BaseService {
 	/**
 	 * 获取每个频道的广告类型
 	 * 
-	 * @param dto
+	 * @param dtoList
 	 * @return
 	 */
 	public Map<String, List<AdType>> getAdType(List<ChannelDTO> dtoList) {
@@ -611,7 +665,11 @@ public class AdChannelService extends BaseService {
 		channelDao.updateChannel(map);
 		
 	}
-	
+
+	public void deleteChannelList(Map<String,Object> map){
+		channelDao.updateChannel(map);
+	}
+
 	List<AdChannel> getCanDeleteAdChannel(Map<String,Object> map){
 		return channelDao.getCanDeleteAdChannel(map);
 	}

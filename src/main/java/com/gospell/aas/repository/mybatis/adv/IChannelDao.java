@@ -44,6 +44,16 @@ public interface IChannelDao  extends BaseMybatisDao<AdChannel>{
 	List<AdChannel> getChannelNotRepeat(Map<String,Object> map)throws Exception;
 	
 	public void updateChannel(Map<String,Object> map) ;
+
+	public void deleteChannelList(Map<String,Object> map);
+
+	public void deleteByChannelIds(Map<String,Object> map);
+
+	public void deleteChannel(Map<String,Object> map);
+
+	List<AdChannel> getAdChannels(Map<String,Object> map) ;
+
+	public void checkCombo();
 	
 	
 }

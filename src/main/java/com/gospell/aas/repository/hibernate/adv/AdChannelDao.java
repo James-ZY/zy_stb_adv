@@ -31,5 +31,13 @@ public class AdChannelDao extends BaseDao<AdChannel> {
 		return find("from AdChannel where  adNetWork.networkId =:p1 and delFlag = :p2",
 				new Parameter( networkId, BaseEntity.DEL_FLAG_NORMAL));
 	}
+
+	public List<AdChannel> findChannels(String networkId,String channleId,String channleName){
+/*
+		return find("from AdChannel where  adNetWork.networkId = :p1 and ((channelId = :p2 and  channelName != :p3) || (channelId != :p4 and  channelName = :p5))" ,
+*/
+		return find("from AdChannel where  adNetWork.networkId = :p1 and ((channelId = :p2 and  channelName <> :p3) or (channelId <> :p4 and  channelName = :p5))" ,
+				new Parameter(networkId,channleId,channleName,channleId,channleName));
+	}
  
 }

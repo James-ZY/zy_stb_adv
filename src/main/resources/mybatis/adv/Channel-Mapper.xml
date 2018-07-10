@@ -270,7 +270,6 @@
 			<include refid="combosql"/>
 		from ad_channel ca
 		left join ad_combo_channel ac on ca.id = ac.ad_channel_id
-		where ca.del_flag=#{delFlag}
 		and ca.ad_network_id =#{networkId}
 	</select>
 	
@@ -300,7 +299,7 @@
 				  '${item}'
 			   </foreach>
 		</if>
-		and  cc.ad_combo_id is NULL
+		<!--and  cc.ad_combo_id is NULL-->
 	</select>
 	
 	<update id="updateChannel" parameterType="map">
@@ -315,7 +314,54 @@
 				  '${item}'
 			   </foreach>
 		</if>
-		and  cc.ad_combo_id is NULL
+		<!--and  cc.ad_combo_id is NULL-->
 	</update>
-	
+
+	<delete id="deleteChannelList" parameterType="map">
+		delete cc from ad_combo_channel cc
+		LEFT JOIN ad_channel ac  on cc.ad_channel_id = ac.id
+		where ac.ad_channel_id in
+		<foreach collection="channelIds" item="item" index="index"  open="(" separator="," close=")">
+			'${item}'
+		</foreach>
+	</delete>
+
+	<delete id="deleteByChannelIds" parameterType="map">
+		DELETE c from ad_channel c
+		LEFT JOIN ad_network n on c.ad_network_id = n.id
+		where c.ad_network_id = #{networkId}
+		and c.del_flag = 1
+		and c.ad_channel_id in
+		<foreach collection="deletechannelIds" item="item" index="index"  open="(" separator="," close=")">
+			'${item}'
+		</foreach>
+	</delete>
+
+	<update id="checkCombo">
+	UPDATE  ad_combo c
+	LEFT JOIN ad_sell s on c.id = s.ad_combo_id
+	LEFT JOIN ad_element e on c.id = e.ad_combo_id
+	set c.del_flag = 1,s.del_flag = 1,e.del_flag = 1
+
+	where c.id in (SELECT a.id from
+	(SELECT c1.id from ad_combo c1
+	LEFT JOIN ad_combo_channel ac on c1.id = ac.ad_combo_id
+	where c1.ad_is_flag = 1 and ISNULL(ac.ad_channel_id)) a
+	);
+	</update>
+
+	<delete id="deleteChannel" parameterType="map">
+	delete ca from ad_channel ca
+	 where ca.ad_network_id = #{networkId}
+	  and ((ca.ad_channel_id = #{channelId} and   ca.ad_channel_name != #{channelName}) or (ca.ad_channel_id != #{channelId} and   ca.ad_channel_name = #{channelName}))
+	</delete>
+
+	<select id="getAdChannels" resultMap="channelMap1"  parameterType="map">
+		select
+		<include refid="channelSql1"/>
+		from ad_channel ca
+		where ca.ad_network_id = #{networkId}
+		and ((ca.ad_channel_id = #{channelId} and   ca.ad_channel_name != #{channelName}) or (ca.ad_channel_id != #{channelId} and   ca.ad_channel_name = #{channelName}))
+	</select>
+
 </mapper> 

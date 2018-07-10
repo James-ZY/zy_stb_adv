@@ -454,8 +454,11 @@ $(function(){
         		banClick();
         		setQuickSelectedChannel();
         	}else{
+        		var channelIds = $("#channelIds").val();
         		get_channel();
-        		get_selectedChannel(ad_id);
+        		if(channelIds != null && channelIds != "" ){
+                    get_selectedChannel(ad_id);
+                }
         		banClick();
         		judgeStatus(); 
         	}
