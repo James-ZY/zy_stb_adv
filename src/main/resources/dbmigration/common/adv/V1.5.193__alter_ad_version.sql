@@ -1,0 +1,1 @@
+UPDATE `ad_version` SET `version_id`='5.1.0.14-20180629_RC', `create_by`='admin', `create_date`='2018-06-29 10:00:00' WHERE `id`='1';

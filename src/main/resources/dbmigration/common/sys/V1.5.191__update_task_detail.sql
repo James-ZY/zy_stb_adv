@@ -1,0 +1,1 @@
+UPDATE `task_detail` SET `id`='4', `job_name`='Task Scheduling', `job_group`='QuartzTask', `job_status`='1', `cron_expression`='0 0 0-23 * * ?', `bean_class`='com.gospell.aas.service.quartz.PutEndTask', `execute_method`='dataBaseManage', `job_desc`='Task Scheduling'  WHERE (`id`='4');
