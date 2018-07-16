@@ -525,9 +525,10 @@ public class AdChannelService extends BaseService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<NetWorkDTO> getChannelListByNetWorkAndTypeId(String networkId,String typeId,String startTime,String endTime,String startDate,String endDate,String sendMode,String channelIds) throws Exception {
+	public List<NetWorkDTO> getChannelListByNetWorkAndTypeId(String networkId,String comboId,String typeId,String startTime,String endTime,String startDate,String endDate,String sendMode,String channelIds) throws Exception {
 		Map<String,Object> queryMap = new HashMap<String,Object>();
 		queryMap.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
+		queryMap.put("comboId", comboId);
 		queryMap.put("typeId", typeId);
 		queryMap.put("networkId", networkId);
 		List<AdChannelDTO> list = channelDao.getChannelByNetworkIdAndTypeId(queryMap);
@@ -535,7 +536,7 @@ public class AdChannelService extends BaseService {
 		List<AdChannelDTO> allList1 = Lists.newArrayList();
 		List<String> typeList = channelDao.getChannelType(networkId);
 		if (null != list && list.size() > 0) {
-			Map<String,Object> queryMap1 =getChannelByCombo(networkId, typeId, startTime, endTime,startDate,endDate,sendMode);
+			Map<String,Object> queryMap1 =getChannelByCombo(networkId,comboId, typeId, startTime, endTime,startDate,endDate,sendMode);
 			List<AdChannel> channel_list = null;
 			if(queryMap1 != null){
 				queryMap.put("ids", queryMap1.get("ids"));
@@ -608,10 +609,11 @@ public class AdChannelService extends BaseService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public Map<String,Object> getChannelByCombo(String networkId,String typeId,String startTime,String endTime,String startDate,String endDate,String sendMode) throws Exception {
+	public Map<String,Object> getChannelByCombo(String networkId,String comboId,String typeId,String startTime,String endTime,String startDate,String endDate,String sendMode) throws Exception {
 		Map<String,Object> queryMap = new HashMap<String,Object>();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		queryMap.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
+		queryMap.put("comboId", comboId);
 		queryMap.put("typeId", typeId);
 		queryMap.put("networkId", networkId);
 		queryMap.put("sendMode", sendMode);

@@ -599,23 +599,27 @@ $(function() {
                     $("#move").css("display","none");
                 }
                 isPosition=data.isPosition;
-                if(data.childList==undefined){
-                    $("#adcombo_chlidType").html("");
-                    $('#adcombo_id_chlidType').css("display","none");
-                }else{
-                    if(data !=null && data.childList.length!=0){
-                        var len=data.childList.length;
-                        var html='<option :selected>'+accipiter.getLang_(messageLang,"userform.select")+'</option>';
-                        for(var i=0;i<len;i++){
+                if(data !=null && data.typeId == 8 && data.childList!=undefined && data.childList.length!=0){
+                    var chlidType = data.childTypeId;
+                    var len=data.childList.length;
+                    var html='<option>'+accipiter.getLang_(messageLang,"userform.select")+'</option>';
+                    for(var i=0;i<len;i++){
+                        if(chlidType==data.childList[i].id){
+                            html+='<option selected="selected" value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
+                        }else{
                             html+='<option value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
                         }
-                        $("#adcombo_chlidType").html("");
-                        $("#adcombo_chlidType").html(html);
-                        $('#adcombo_id_chlidType').css("display","block");
-                    }else{
-                        $("#adcombo_chlidType").html("");
-                        $('#adcombo_id_chlidType').css("display","none");
                     }
+                    $("#adcombo_chlidType").html("");
+                    $("#adcombo_chlidType").html(html);
+                    $('#adcombo_id_chlidType').css("display","block");
+                    $("#adcombo_chlidType").select2();
+                    $('#adcombo_id_type').css("display","block");
+                    $('#adcombo_id_type').find(".lbl").text(data.typeName);
+                    $('#adcombo_chlidType').attr("disabled",true);
+                }else{
+                    $("#adcombo_chlidType").html("");
+                    $('#adcombo_id_chlidType').css("display","none");
                 }
                 adClassId=data.typeId;
                 var controlTypeId=parseInt(data.typeId.getAdvType());
@@ -905,27 +909,34 @@ $(function() {
                         }else{
                             $(".list_content .item").css("margin","10px");
                         }
+                        $(".pcshowTime").change(function(){
+                            var min = $("#psTs").val();
+                            var selLen = $(this).parent().parent().parent().parent().find("li[class='item selected']").length;
+                            var iptVal = parseInt($(this).val());
+                            if(selLen == 1 && iptVal > 0 && iptVal<parseInt(min)){
+                                    $(this).val(min);
+                            }
+                            if(selLen > 1){
+                                if(iptVal<parseInt(min)){
+                                    $(this).val(min);
+                                }
+                            }
+                            var adTypeId = $("#adTypeId").val();
+                            if(adTypeId == 5){
+                                var node = $(this).parent().parent().parent().parent().parent();
+                                if(node.attr("class").indexOf("advStandard_list_Content")==-1){
+                                    checkSet("hd");
+                                }else{
+                                    checkSet("sd");
+                                }
+                            }
+                        });
                     }
                     //绑定上传素材弹窗
                     $(".add_item").off("click").on("click",function(){
                         getSelectedResources();
                         resolution = $(this).attr("for");
                         uploadLayer(ClassId,advertiser_id,resolution);
-                    });
-                    $(".pcshowTime ").off('keyup').on('keyup', function (event) {
-                        var min = $("#psTs").val();
-                        if(parseInt($(this).val())<parseInt(min)){
-                            $(this).val(min);
-                        }
-                        var adTypeId = $("#adTypeId").val();
-                        if(adTypeId == 5){
-                            var node = $(this).parent().parent().parent().parent().parent();
-                            if(node.attr("class").indexOf("advStandard_list_Content")==-1){
-                                checkSet("hd");
-                            }else{
-                                checkSet("sd");
-                            }
-                        }
                     });
                     $(".timeSet").off('keyup').on('keyup', function (event) {
                         var min = $("#psTs").val();
@@ -1090,6 +1101,8 @@ $(function() {
             $("#endDate").attr("disabled",false);
             $("#adv_isFlag").attr("disabled",false);
             $("#playTime").attr("disabled",false);
+            $("#adCategoryId").attr("disabled",false);
+            $("#adCategoryName").attr("disabled",false);
             var adTypeId = $("#adTypeId").val();
             if(adTypeId ==5){
                 $("#sdFx").attr("disabled",false);
@@ -1358,36 +1371,30 @@ $(function() {
                 contentType: "application/json; charset=utf-8",
                 dataType : "json",
                 success:function(data){
-                    if(data ==null){
-                        $("#adcombo_chlidType").html("");
-                        $('#adcombo_id_chlidType').css("display","none");
-                    }else{
-                        if(data.childList!=undefined){
-                            if(data !=null && data.childList.length!=0){
-                                var chlidType=$("#chlidType").text();
-                                var len=data.childList.length;
-                                var html='<option>'+accipiter.getLang_(messageLang,"userform.select")+'</option>';
-                                for(var i=0;i<len;i++){
-                                    if(chlidType==data.childList[i].id){
-                                        html+='<option selected="selected" value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
-                                    }else{
-                                        html+='<option value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
-                                    }
-                                }
-                                $("#adcombo_chlidType").html("");
-                                $("#adcombo_chlidType").html(html);
-                                $('#adcombo_id_chlidType').css("display","block");
-                                $("#adcombo_chlidType").select2();
+                    if(data !=null && data.typeId == 8 && data.childList!=undefined && data.childList.length!=0){
+                        var chlidType = data.childTypeId;
+                        var len=data.childList.length;
+                        var html='<option>'+accipiter.getLang_(messageLang,"userform.select")+'</option>';
+                        for(var i=0;i<len;i++){
+                            if(chlidType==data.childList[i].id){
+                                html+='<option selected="selected" value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
                             }else{
-                                $("#adcombo_chlidType").html("");
-                                $('#adcombo_id_chlidType').css("display","none");
+                                html+='<option value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
                             }
                         }
+                        $("#adcombo_chlidType").html("");
+                        $("#adcombo_chlidType").html(html);
+                        $('#adcombo_id_chlidType').css("display","block");
+                        $("#adcombo_chlidType").select2();
                         $('#adcombo_id_type').css("display","block");
                         $('#adcombo_id_type').find(".lbl").text(data.typeName);
+                        $('#adcombo_chlidType').attr("disabled",true);
+                    }else{
+                        $("#adcombo_chlidType").html("");
+                        $('#adcombo_id_chlidType').css("display","none");
+                    }
                         adClassId=data.typeId;
                         isPosition=data.isPosition;
-                    }
                     var controlTypeId=parseInt(data.typeId.getAdvType());
                     if(data != null && controlTypeId == 6){
                         $('.playTime').css("display", "block");

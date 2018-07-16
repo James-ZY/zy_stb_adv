@@ -737,6 +737,7 @@ public class AdComboService extends BaseService {
 			dto.setComboId(c.getId());
 			dto.setComboFlag(c.getIsFlag());
 			dto.setTypeId(c.getAdType().getId());
+			dto.setChildTypeId(null == c.getChildAdType()?"":c.getChildAdType().getId());
 			dto.setTypeName(c.getAdType().getTypeName());
 			List<AdType> child = c.getAdType().getChildList();
 			if (null != child && child.size() > 0) {
@@ -1184,6 +1185,7 @@ public class AdComboService extends BaseService {
 			canSellList = mybatisDao.selectChannelAdComboByType(map);
 		} else {
 			map.put("isFlag", AdCombo.ADCOMOBO_NETWORK_ISFLAG);
+			map.put("nowDate", new Date());
 			canSellList = mybatisDao.selectNotChannelAdComboByType(map);
 		}
 		if (canSellList != null && canSellList.size() > 0) {
@@ -1306,10 +1308,11 @@ public class AdComboService extends BaseService {
 	 * @param networkList
 	 * @return
 	 */
-	public ComboCountDTO  checkComboIsConflict(String typeId,String networkList,String startDate,String endDate,String sendMode,String districts){
+	public ComboCountDTO  checkComboIsConflict(String typeId,String chlidType,String networkList,String startDate,String endDate,String sendMode,String districts){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
 		map.put("typeId", typeId);
+		map.put("chlidType", chlidType);
 		map.put("startDate", startDate);
 		map.put("endDate", endDate);
 		map.put("sendMode", sendMode);

@@ -243,7 +243,6 @@
         <form:hidden path="addText"/>
         <form:hidden path="advertiser.id"/>
         <form:hidden path="showWay"/>
-        <form:hidden path="childAdType.id"/>
         <form:hidden path="oldAdCategoryId"/>
         <form:hidden path="adCategory.id"/>
         <form:hidden path="playTime"/>
@@ -267,6 +266,7 @@
         <form:hidden path="adCombo.isFlag"/>
         <form:hidden path="adCombo.networkIds"/>
         <form:hidden path="adCombo.adType.id"/>
+        <form:hidden path="adCombo.childAdType.id"/>
         <form:hidden path="adCombo.hdRange.id"/>
         <form:hidden path="adCombo.sdRange.id"/>
         <form:hidden path="adCombo.hdTrack.id"/>

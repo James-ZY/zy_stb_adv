@@ -374,8 +374,12 @@ public class AdelementController extends BaseController {
 				}
 
 			}
-
-			Integer ite = thisService.getAdelementCount(null, entity.getAdCombo().getId(), entity.getStartDate(), entity.getEndDate(), entity.getChildAdType().getId(), entity.getId());
+			AdType childType = entity.getAdCombo().getChildAdType();
+			String childTypeId = null;
+			if(null != childType){
+				childTypeId = childType.getId();
+			}
+			Integer ite = thisService.getAdelementCount(null, entity.getAdCombo().getId(), entity.getStartDate(), entity.getEndDate(),childTypeId , entity.getId());
 			if(ite>0){
 				addMessage(redirectAttributes, "adelement.already.exist");
 				return "redirect:/adv/adelement/?repage";
@@ -454,12 +458,12 @@ public class AdelementController extends BaseController {
 		model.addAttribute("typeName", localeTypeName);
 		String childTypeName="";
 		String childTypeId="";
-		if (null != entity.getChildAdType()) {
-			AdType type = entity.getChildAdType();
+		if (null != entity.getAdCombo().getChildAdType()) {
+			AdType type = entity.getAdCombo().getChildAdType();
 			String id = type.getId();
 			if(StringUtils.isNotBlank(id)){
 				childTypeId = type.getId();
-				AdType childtype = AdTypeUtils.get(entity.getChildAdType().getId());
+				AdType childtype = AdTypeUtils.get(entity.getAdCombo().getChildAdType().getId());
 
 				childTypeName = childtype.getTypeName();
 			}
@@ -695,17 +699,16 @@ public class AdelementController extends BaseController {
 						model.addAttribute("hdPoint",hdPoint);
 					}
 				}
+				if (null != combo.getChildAdType()) {
+					AdType type = combo.getChildAdType();
+					String id = type.getId();
 
-			}
-			if (null != entity.getChildAdType()) {
-				AdType type = entity.getChildAdType();
-				String id = type.getId();
+					if(StringUtils.isNotBlank(id)){
+						childTypeId= type.getId();
+						AdType childtype = AdTypeUtils.get(type.getId());
 
-				if(StringUtils.isNotBlank(id)){
-					childTypeId= type.getId();
-					AdType childtype = AdTypeUtils.get(entity.getChildAdType().getId());
-
-					childTypeName = childtype.getTypeName();
+						childTypeName = childtype.getTypeName();
+					}
 				}
 			}
 			String sd =getMessage("no");
@@ -1168,13 +1171,13 @@ public class AdelementController extends BaseController {
 			String localeTypeName = AdTypeUtils.getLocaleAdTypeName(typeName);
 			model.addAttribute("typeName", localeTypeName);
 			String childTypeName="";
-			if (null != entity.getChildAdType()) {
-				AdType type = entity.getChildAdType();
+			if (null != entity.getAdCombo().getChildAdType()) {
+				AdType type = entity.getAdCombo().getChildAdType();
 				String id = type.getId();
 
 				if(StringUtils.isNotBlank(id)){
 					childTypeId = type.getId();
-					AdType childtype = AdTypeUtils.get(entity.getChildAdType().getId());
+					AdType childtype = AdTypeUtils.get(entity.getAdCombo().getChildAdType().getId());
 
 					childTypeName = childtype.getTypeName();
 				}

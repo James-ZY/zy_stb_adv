@@ -76,6 +76,12 @@
 		s.status as s_t_status,
 		s.is_position as s_t_is_position
 	</sql>
+	<sql id="comboChildTypeSql">
+		ct.id as ct_id,
+		ct.ad_type_name as ct_type_name,
+		ct.status as ct_status,
+		ct.is_position as ct_is_position
+	</sql>
 	<sql id="channelSql">
 		ca.id as ca_id,
 		ca.ad_channel_id as ca_ad_channel_id,
@@ -293,13 +299,16 @@
       	<result column="c_ad_sel_area" property="selArea"/>
       	<result column="c_del_flag" property="delFlag"/>
       	<association property="adType" resultMap="childTypeByComboMap"/>
+		<association property="childAdType" resultMap="childByComboMap"/>
     </resultMap>
 	<select id="getAdTypeByComboId" resultMap="comboToAdvMap" parameterType="AdCombo">
 		select 
 		<include refid="comboSql"/>,
+		<include refid="comboChildTypeSql"/>,
 		<include refid="typeSql"/>,
 		<include refid="childTypeSql"/>
 		from ad_combo c
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		left join ad_type s on t.id= s.parent_id and t.del_flag=#{delFlag}
 		where
@@ -312,11 +321,15 @@
 	<select id="getAdComboNotByNetworkId" resultMap="comboNotByNetworkMap">
 		select 
 		<include refid="comboSql"/>,
-		<include refid="typeSql"/>
+		<include refid="typeSql"/>,
+		<include refid="comboChildTypeSql"/>
+
 		from ad_combo c
 		left join ad_combo_network cn on c.id = cn.ad_combo_id 
 		left join ad_network n on cn.ad_network_id = n.id and n.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
+
 		where
 		c.del_flag =#{delFlag}
 		and c.`status` = #{status}
@@ -355,6 +368,7 @@
 		select 
 		<include refid="comboSql"/>,
 		<include refid="typeSql"/>,
+		<include refid="comboChildTypeSql"/>,
 		<include refid="sdTrackField" />,
 		<include refid="hdTrackField" />
 		from ad_combo_push_record cp
@@ -362,6 +376,7 @@
 		left join ad_combo_network cn on c.id = cn.ad_combo_id 
 		left join ad_network n on cn.ad_network_id = n.id and n.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		left join ad_track sk on c.sdtrack_id = sk.id and sk.del_flag=#{delFlag}
 		left join ad_track hk on c.hdtrack_id = hk.id and hk.del_flag=#{delFlag}
 		where
@@ -392,11 +407,13 @@
 	<select id="getSingleAdComboNotChannel" resultMap="comboNotByNetworkMap">
 		select 
 		<include refid="comboSql"/>,
-		<include refid="typeSql"/>
+		<include refid="typeSql"/>,
+		<include refid="comboChildTypeSql"/>
 		from ad_combo c
 		left join ad_combo_network cn on c.id = cn.ad_combo_id 
 		left join ad_network n on cn.ad_network_id = n.id and n.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		where
 		c.del_flag =#{delFlag}
 		and c.id=#{comboId}
@@ -450,6 +467,9 @@
 		where c.del_flag=#{delFlag} 
 		<if test="sendMode != null and sendMode != ''">
 		 and c.send_mode = #{sendMode}	
+		</if>
+		<if test="comboId != null and comboId != ''">
+			and c.id != #{comboId}
 		</if>
 		and
 		((
@@ -565,10 +585,12 @@
 		where c.del_flag=#{delFlag}
 		and c.ad_is_flag = #{isFlag}
 		and c.status = #{status}
-		<!-- and n.id in 
-		<foreach item="item" index="index" collection="networkList" open="(" separator="," close=")">  
-  			#{item}  
- 		</foreach>  -->
+		 and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{nowDate}, '%Y-%m-%d')
+
+		 <!-- and n.id in
+         <foreach item="item" index="index" collection="networkList" open="(" separator="," close=")">
+               #{item}
+          </foreach>  -->
 		and t.id=#{typeId}
 		and c.is_valid = #{isValid}
 		order by c.update_date desc
@@ -707,6 +729,9 @@
 			</if>
 		</if>
 		AND c.ad_type_id = #{typeId}
+		 <if test="chlidType != null and chlidType != ''">
+			 and c.ad_child_type_id = #{chlidType}
+		 </if>
 		and
 		(
 		(DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
@@ -983,7 +1008,8 @@
       	<result column="c_ad_sel_area" property="selArea"/>
       	<result column="c_del_flag" property="delFlag"/>
       	<association property="adType" resultMap="typeByComboMap"/>
-      	 
+		<association property="childAdType" resultMap="childByComboMap"/>
+
 	</resultMap>
 	
 	<resultMap type="AdType" id="typeByComboMap">
@@ -991,6 +1017,12 @@
 		<result column="t_type_name" property="typeName"/>
 		<result column="t_status" property="status"/>
 		<result column='t_is_position' property="isPosition"/>
+	</resultMap>
+	<resultMap type="AdType" id="childByComboMap">
+		<id column="ct_id" property="id"/>
+		<result column="ct_type_name" property="typeName"/>
+		<result column="ct_status" property="status"/>
+		<result column='ct_is_position' property="isPosition"/>
 	</resultMap>
 	<resultMap type="AdType" id="childTypeByComboMap">
 		<id column="t_id" property="id"/>

@@ -23,6 +23,9 @@ public class TypeDTO {
 
 	@JsonProperty(value="typeId")
 	private String typeId;//广告类型Id
+
+	@JsonProperty(value="childTypeId")
+	private String childTypeId;//广告子类型Id
 	
 	@JsonProperty(value="isPosition")
 	private String isPosition;//广告类型是否需要坐标（0需要 1不需要）
@@ -63,6 +66,14 @@ public class TypeDTO {
 
 	public void setTypeId(String typeId) {
 		this.typeId = typeId;
+	}
+
+	public String getChildTypeId() {
+		return childTypeId;
+	}
+
+	public void setChildTypeId(String childTypeId) {
+		this.childTypeId = childTypeId;
 	}
 
 	public String getTypeName() {

@@ -53,11 +53,12 @@
     	</if> 
     	<if test="_parameter.containsKey('adTypeId')">  
         	AND c.ad_type_id = #{adTypeId} 
-    	</if>  
-    	<if test="_parameter.containsKey('adNetworkId')">  
-        	AND c.ad_network_id = #{adNetworkId} 
-    	</if> 
-	 	
+    	</if>
+		<if test="adNetworkId != null and adNetworkId !=''">
+			AND c.ad_network_id = #{adNetworkId}
+		</if>
+
+
 
 	</select>
 	

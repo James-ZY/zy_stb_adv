@@ -45,7 +45,12 @@
 		s.is_move as s_t_is_move,
 		s.is_position as s_t_is_position
 	</sql>
-
+	<sql id="comboChildTypeSql">
+		ct.id as ct_id,
+		ct.ad_type_name as ct_type_name,
+		ct.status as ct_status,
+		ct.is_position as ct_is_position
+	</sql>
 	<sql id="advertiserField">
 		k.id AS k_id,
 		k.advertiser_id AS k_advertiser_id,
@@ -172,6 +177,7 @@
 		<include refid="adelementField" />,
 		<include refid="adComboField" />,
 		<include refid="typeField" />,
+		<include refid="comboChildTypeSql"/>,
 		<include refid="childTypeField" />,
 		<include refid="sdPositionField" />,
 		<include refid="hdPositionField" />,
@@ -180,6 +186,7 @@
 		FROM
 		ad_element a
 		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id= t.id and t.del_flag=#{delFlag}
 		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
 		left join ad_postion m on a.ad_position_id = m.id and m.del_flag=#{delFlag}
@@ -266,12 +273,14 @@
 		<include refid="adelementField" />,
 		<include refid="adComboField" />,
 		<include refid="typeField" />,
+		<include refid="comboChildTypeSql"/>,
 		<include refid="childTypeField" />,
 		<include refid="advertiserField"/>,
 		<include refid="usersql"/>
 		FROM
 		ad_element a
 		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id= t.id and t.del_flag=#{delFlag}
 		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
 		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag=#{delFlag}
@@ -351,12 +360,14 @@
 		<include refid="adelementField" />,
 		<include refid="adComboField" />,
 		<include refid="typeField" />,
+		<include refid="comboChildTypeSql"/>,
 		<include refid="childTypeField" />,
 		<include refid="advertiserField"/>,
 		<include refid="usersql"/>
 		FROM
 		ad_element a
 		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag=#{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id= t.id and t.del_flag=#{delFlag}
 		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
 		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag=#{delFlag}
@@ -490,12 +501,14 @@
 		<include refid="adelementField" />,
 		<include refid="adComboField" />,
 		<include refid="typeField" />,
+		<include refid="comboChildTypeSql"/>,
 		<include refid="childTypeField" />,
 		<include refid="advertiserField"/>,
 		<include refid="adControlField"/>,
 		<include refid="hdAdControlField"/>
 		from ad_element a
 		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
 		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
 		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
@@ -585,6 +598,7 @@
 		<include refid="adelementField" />,
 		<include refid="adComboField" />,
 		<include refid="typeField" />,
+		<include refid="comboChildTypeSql"/>,
 		<include refid="childTypeField" />,
 		<include refid="advertiserField"/>,
 		<include refid="adControlField"/>,
@@ -592,6 +606,7 @@
 		from ad_adv_network ma
 		left join ad_element a on ma.adv_id = a.ad_id and a.del_flag=#{delFlag}
 		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
 		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
 		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
@@ -655,12 +670,14 @@
 		<include refid="adelementField" />,
 		<include refid="adComboField" />,
 		<include refid="typeField" />,
+		<include refid="comboChildTypeSql"/>,
 		<include refid="childTypeField" />,
 		<include refid="advertiserField"/>,
 		<include refid="adControlField"/>,
 		<include refid="hdAdControlField"/>
 		from ad_element a
 		left join ad_combo c on a.ad_combo_id = c.id and c.del_flag= #{delFlag}
+		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id= t.id and t.del_flag= #{delFlag}
 		left join ad_type s on a.ad_child_type_id= s.id and s.del_flag=#{delFlag}
 		left join ad_advertiser k on a.advertiser_id= k.id and k.del_flag= #{delFlag}
@@ -887,6 +904,12 @@
 		<result property="isMove" column="t_is_move"/>
 		<result property="isPosition" column="t_is_position"/>
 	</resultMap>
+	<resultMap type="AdType" id="childByComboMap">
+		<id column="ct_id" property="id"/>
+		<result column="ct_type_name" property="typeName"/>
+		<result column="ct_status" property="status"/>
+		<result column='ct_is_position' property="isPosition"/>
+	</resultMap>
 
 	<resultMap type="AdCombo" id="comboResult">
 		<id property="id" column="c_id" />
@@ -904,6 +927,7 @@
 		<result property="showCount" column="c_show_count"/>
 		<result property="status" column="c_status"/>
 		<association property="adType" resultMap="typeResult"/>
+		<association property="childAdType" resultMap="childByComboMap"/>
 	</resultMap>
 
 

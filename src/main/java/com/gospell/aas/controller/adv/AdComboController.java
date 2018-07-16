@@ -489,6 +489,7 @@ public class AdComboController extends BaseController {
 	public String findChannel(@RequestBody Map<String, Object> map,
 			HttpServletRequest request, HttpServletResponse response) {
 		String networkId = (String) map.get("networkId");
+		String comboId = (String) map.get("comboId");
 		String typeId = (String) map.get("typeId");
 		String startTime = (String) map.get("startTime");
 		String endTime = (String) map.get("endTime");
@@ -500,7 +501,7 @@ public class AdComboController extends BaseController {
 		try {
 
 			dtoList = channelService.getChannelListByNetWorkAndTypeId(
-					networkId, typeId, startTime, endTime, startDate, endDate,sendMode, channelIds);
+					networkId, comboId, typeId, startTime, endTime, startDate, endDate,sendMode, channelIds);
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -651,6 +652,7 @@ public class AdComboController extends BaseController {
 	@RequestMapping(value = "find_network_by_typeId", method = RequestMethod.POST)
 	public String findNetWorkByTypeId(@RequestBody Map<String, Object> map,
 			HttpServletRequest request, HttpServletResponse response) {
+		String comboId = (String) map.get("comboId");
 		String typeId = (String) map.get("typeId");
 		String chlidType = (String) map.get("chlidType");
 		String startDate = (String) map.get("startDate");
@@ -659,7 +661,7 @@ public class AdComboController extends BaseController {
 		String advertiserId = (String) map.get("advertiserId");
 		List<SelectAdNetworkDTO> dtoList = null;
 		try {
-			dtoList = networkService.findNetWorkByTypeAndCombo(typeId,
+			dtoList = networkService.findNetWorkByTypeAndCombo(comboId,typeId,
 					chlidType, startDate, endDate,sendMode, advertiserId);
 		} catch (Exception e) {
 			logger.error("套餐添加或者修改的时候获取网络发送器失败", e);
@@ -793,6 +795,7 @@ public class AdComboController extends BaseController {
 	public String checkComboIsConflict(@RequestBody Map<String, Object> map,
 			HttpServletRequest request, HttpServletResponse response) {
 		String typeId = (String) map.get("typeId");
+		String chlidType = (String) map.get("chlidType");
 		String networkList = (String) map.get("networkIds");
 		String startDate = (String) map.get("startDate");
 		String endDate = (String) map.get("endDate");
@@ -800,7 +803,7 @@ public class AdComboController extends BaseController {
 		String districts = (String) map.get("districts");
 		ComboCountDTO dto = null;
 		try {
-			dto = thisService.checkComboIsConflict(typeId, networkList,startDate,endDate,sendMode,districts);
+			dto = thisService.checkComboIsConflict(typeId, chlidType,networkList,startDate,endDate,sendMode,districts);
 		} catch (Exception e) {
 			logger.error("判断套餐是否冲突失败", e);
 			e.printStackTrace();

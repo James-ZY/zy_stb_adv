@@ -300,7 +300,7 @@ public class AdNetworkService extends BaseService {
 	 *
 	 * @throws Exception
 	 */
-	public List<SelectAdNetworkDTO> findNetWorkByTypeAndCombo(String typeId,String chlidType,String startDate,String endDate,String sendMode,String advertiserId)
+	public List<SelectAdNetworkDTO> findNetWorkByTypeAndCombo(String comboId,String typeId,String chlidType,String startDate,String endDate,String sendMode,String advertiserId)
 			throws Exception {
 		List<AdNetwork> allList = findAllNetworkByTypeId(typeId);
 		if (null == allList || allList.size() == 0) {
@@ -308,6 +308,7 @@ public class AdNetworkService extends BaseService {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
+		map.put("comboId",comboId);
 		map.put("typeId", typeId);
 		map.put("status", AdNetwork.NETWORK_YES_STATUS);
 		map.put("isValid", AdCombo.ADCOMOBO_YES_VALID);

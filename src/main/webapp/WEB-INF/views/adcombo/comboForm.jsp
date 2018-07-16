@@ -23,7 +23,8 @@
 	<script type="text/javascript">
 	var control;
 	$(document).ready(function() {
-		checkType();
+        showChildType();
+        checkType();
 		$("#comboName").focus();
 		$("#inputForm").validate({
 			rules: {
@@ -425,6 +426,60 @@
     		var data = {"startTime":startTime};
     		return data;
     	}
+    	function showChildType() {
+            var typeId = $("#typeId").val();
+            var childAdTypeId = $("#childAdTypeId").val();
+
+            if(typeId == 8){
+                var o ={"id":typeId};
+                var data = JSON.stringify(o);
+                getchlidType(data,childAdTypeId);
+            }else{
+                $('#adcombo_id_chlidType').css("display", "none");
+            }
+        }
+
+    //获取子广告类型
+    function getchlidType(e,child){
+        $.ajax({
+            url:accipiter.getRootPath()+"/adv/quickAdelement/getAdChlidType",
+            async: false,
+            type:"POST",
+            data:e,
+            contentType: "application/json; charset=utf-8",
+            dataType : "json",
+            success:function(data){
+                if(data.childList==undefined){
+                    $("#adcombo_chlidType").html("");
+                    $('#adcombo_id_chlidType').css("display","none");
+                }else{
+                    if(data !=null && data.childList.length!=0){
+                        var len=data.childList.length;
+                        var html='<option value="">'+accipiter.getLang_(messageLang,"userform.select")+'</option>';
+                        for(var i=0;i<len;i++){
+                            if(data.childList[i].id == child){
+                                html+='<option value='+data.childList[i].id+' selected="selected">'+data.childList[i].typeName+'</option>';
+                            }else{
+                                html+='<option value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
+                            }
+                        }
+                        $("#adcombo_chlidType").html("");
+                        $("#adcombo_chlidType").html(html);
+                        $("#adcombo_chlidType").select2();
+                        $('#adcombo_id_chlidType').css("display","block");
+                    }else{
+                        $("#adcombo_chlidType").html("");
+                        $('#adcombo_id_chlidType').css("display","none");
+                    }
+                }
+                adClassId=data.typeId;
+
+            },
+            error: function (err) {
+
+            }
+        });
+    }
 	</script>
 	<style type="text/css">
 		.timeSelect{
@@ -532,6 +587,7 @@
 	<form:form id="inputForm" modelAttribute="adCombo" action="${ctx}/adv/combo/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<input id="comboId" name="comboId" type="hidden" value=${comboId}>
+		<input id="childAdTypeId" name="childAdTypeId" type="hidden" value="${adCombo.childAdType.id}">
 		<input id="oldStatus" name="oldStatus" type="hidden" value=${adCombo.status}>
 		<input id="sdId" name="sdId" type="hidden" value=${adCombo.sdRange.id}>
 		<input id="hdId" name="hdId" type="hidden" value=${adCombo.hdRange.id}>
@@ -577,10 +633,20 @@
 		 	<div class="control-group NetWorkContent">
 				<label class="control-label"><spring:message code='adv.type'/>:</label>
 				<div class="controls" >
-					<form:select path="typeId"  class="required">
+					<form:select path="typeId"  class="required" onchange="showChildType();">
 							<option value=""><spring:message code='userform.select'/></option>
 							<form:options items="${fns:getAdTypeByIsFlag(0)}" itemLabel="typeName" itemValue="id" htmlEscape="false"/>
 					</form:select>
+				</div>
+			</div>
+			<div class="control-group" id="adcombo_id_chlidType" style="display:none">
+				<label class="control-label"><spring:message code='adv.son.type' />:</label>
+				<div class="controls">
+					<p id="chlidType" style="display:none"></p>
+					<form:select path="childAdType.id" class="required" id="adcombo_chlidType">
+						<option value=""> <spring:message code='userform.select' /></option>
+					</form:select>
+					<label class="info-messages"><p></p></label>
 				</div>
 			</div>
 			<div class="control-group" style="display: block;">

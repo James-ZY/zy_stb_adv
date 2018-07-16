@@ -228,12 +228,12 @@ public class AdSelfAdelementController extends BaseController {
 		model.addAttribute("typeName", localeTypeName);
 		String childTypeName="";
 		String childTypeId="";
-		if (null != entity.getChildAdType()) {
-			AdType type = entity.getChildAdType();
+		if (null != entity.getAdCombo().getChildAdType()) {
+			AdType type = entity.getAdCombo().getChildAdType();
 			String id = type.getId();
 			if(StringUtils.isNotBlank(id)){
 				childTypeId = type.getId();
-				AdType childtype = AdTypeUtils.get(entity.getChildAdType().getId());
+				AdType childtype = AdTypeUtils.get(entity.getAdCombo().getChildAdType().getId());
 
 				childTypeName = childtype.getTypeName();
 			}

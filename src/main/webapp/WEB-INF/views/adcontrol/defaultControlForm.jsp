@@ -145,7 +145,7 @@
 			<div class="controls">
 				<form:select path="adType.id" class="select required" id="adType">
 					<option value=""> <spring:message code='userform.select' /></option>
-					<form:options items="${fns:getAdTypeById('1,3,9')}" itemLabel="typeName" itemValue="id" htmlEscape="false"/>
+					<form:options items="${fns:getAdTypeById('1,9')}" itemLabel="typeName" itemValue="id" htmlEscape="false"/>
 				</form:select>
 				<label class="info-messages"><p></p></label>
 			</div>

@@ -138,7 +138,7 @@
 					
 					</div>
 				</div>
-				<c:if test="${!empty adelement.childAdType}">
+				<c:if test="${!empty childTypeName}">
 				<p class="childType" style="display:none">${childTypeId}</p>
 					<div class="control-group list">
 						<label class="control-label"><spring:message code='adv.son.type' />:</label>

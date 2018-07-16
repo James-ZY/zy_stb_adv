@@ -275,8 +275,8 @@ public class AdNetWorkReSource {
 		checkDefault(map,AdType.Type_BROCAST,AdDefaultControll.FLAG_SD,network);
 		checkDefault(map,AdType.Type_BROCAST,AdDefaultControll.FLAG_HD,network);
 		//设置默认换台图片
-		/*checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_SD,network);
-		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_HD,network);*/
+		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_SD,network);
+		checkDefault(map,AdType.Type_CHANGE_CHANNEL,AdDefaultControll.FLAG_HD,network);
 	}
 
 	//判断该发送器是否有默认图片设置
@@ -467,7 +467,7 @@ public class AdNetWorkReSource {
 				param.setCanUpdate(SysParam.CANUPDATE_NO);
 				paramService.save(param);
 
-				map.put("paramType", SysParam.NETWORK_PICTURE_RATE);
+				/*map.put("paramType", SysParam.NETWORK_PICTURE_RATE);
 				map.put("paramKey", dto.getNetworkId());
 				param = paramService.getParam(map);
 				if (null == param) {
@@ -476,10 +476,10 @@ public class AdNetWorkReSource {
 					param.setParamKey(dto.getNetworkId());
 
 				}
-				param.setParamValue(dto.getPictureRate()==null?"1.25":dto.getPictureRate());
+				param.setParamValue(dto.getPictureRate()==null?"10":dto.getPictureRate());
 				param.setEnable(SysParam.ENABLE_YES);
 				param.setCanUpdate(SysParam.CANUPDATE_NO);
-				paramService.save(param);
+				paramService.save(param);*/
 
 				result.setStatus(Status.OK.getCode());
 				return result;

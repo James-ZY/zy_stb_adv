@@ -45,7 +45,7 @@ public class SysParam extends IdEntity<SysParam> {
 	public static final Integer CANUPDATE_YES=1;//能
 	//CU开头表示能够自行添加修改的参数
 	public static String NETWORK_VIDEO_RATE = "NVR";//视频码率前缀
-	public static String NETWORK_PICTURE_RATE = "NPR";//图片码率前缀
+	public static String NETWORK_PICTURE_RATE = "CU_NPR";//图片通道内存设置
 	public static String ADELEMENT_TIME_SET = "ATS";//发送器推送广告间隔时间控制
 	public static String BOOT_PICTURE_TOTAL_TIME = "CU_BPTT";//开机图片总时长
 	public static String BOOT_PICTURE_TIME_SET = "CU_BPTS";//开机单图片时长

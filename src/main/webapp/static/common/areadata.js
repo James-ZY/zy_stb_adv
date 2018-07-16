@@ -686,6 +686,7 @@ function getNetworkByDis(districts,operatorsId,netName){
                     var post_data = {
                         "networkIds": networkIds,
                         "typeId": typeId,
+                        "chlidType":chlidType,
                         "startDate": startDate,
                         "endDate": endDate,
                         "sendMode": sendMode,

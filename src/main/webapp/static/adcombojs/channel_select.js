@@ -34,6 +34,7 @@ $(function(){
         }
         var html='';
         var typeId=$("#adTypeSelect").find("option:selected").val();
+        var comboId = $("#comboId").val();
         $('.channel_content_ul').html("");
         $.ajax({
             type:"post",
@@ -56,7 +57,7 @@ $(function(){
                 	var startTime=getPlayTime().startTime;
                 	var endTime=getPlayTime().endTime;
                 	var channelIds = $("#channelIds").val();
-                    var post_data2={"networkId":comment["networkId"],"typeId":typeId,startTime:startTime,endTime:endTime,startDate:startDate,endDate:endDate,sendMode:sendMode,channelIds:channelIds};
+                    var post_data2={"networkId":comment["networkId"],"comboId":comboId,"typeId":typeId,startTime:startTime,endTime:endTime,startDate:startDate,endDate:endDate,sendMode:sendMode,channelIds:channelIds};
                     var str2 = JSON.stringify(post_data2);
                     var t_str=comment["networkId"];
              	   $.ajax({
@@ -841,6 +842,7 @@ $(function(){
 	    }
 	    function getInvalidNetWork(){
 	    	var isFlag = $("#isFlag").val();
+	    	var comboId = $("#comboId").val();
 	    	var sendMode = "";
 	    	if(isFlag == "0"){
 	    		sendMode = $("#sendModeWG").val();
@@ -854,17 +856,17 @@ $(function(){
 		        var endDate=$("#endDate").val();
 
 		        var post_data;
+                var chlidType = $("#adcombo_chlidType").val();
+                if(typeId == 8){
+                    if(chlidType == null || chlidType ==""){
+                        $("#adcombo_id_chlidType").find('label[class="info-messages"] p').text(accipiter.getLang_(messageLang,"advChildTypeSelect"));
+                        return false;
+                    }else{
+                        $("#adcombo_id_chlidType").find('label[class="info-messages"] p').text("");
+                    }
+                }
 		        if(netWorkType=="quick"){
 		        	var advertiserId = $("#advertiser_id").val();
-		        	var chlidType = $("#adcombo_chlidType").val();
-		        	if(typeId == 7 || typeId ==8){
-		        		if(chlidType == null || chlidType ==""){
-		        		  $("#adcombo_id_chlidType").find('label[class="info-messages"] p').text(accipiter.getLang_(messageLang,"advChildTypeSelect"));	
-		        		  return false;
-		        		}else{
-		        		  $("#adcombo_id_chlidType").find('label[class="info-messages"] p').text("");
-		        		}
-		        	}
 		        	if(startDate==null || startDate ==""){
 		    			document.getElementById("startdate_span").innerText = accipiter.getLang_(messageLang,"adv.start.date");
 		    			return false;
@@ -882,7 +884,7 @@ $(function(){
 			        if(startDate==null || startDate =="" || endDate==null || endDate=="" || sendMode == null || sendMode == ""){
 			        	return false;
 			        }
-			    	post_data={"typeId":typeId,"startDate":startDate,"endDate":endDate,"sendMode":sendMode};
+			    	post_data={"comboId":comboId,"typeId":typeId,"chlidType":chlidType,"startDate":startDate,"endDate":endDate,"sendMode":sendMode};
 		        }
 		        var psData = JSON.stringify(post_data);
 		    	$.ajax({
@@ -950,7 +952,9 @@ $(function(){
 				        if(type=="quick"){
 				        	var curnetId = this1.parent().attr("id");
 				        	var typeId = $("#typeId").val();
-				        	var networkIds=curnetId;
+                            var chlidType = $("#adcombo_chlidType").val();
+
+                            var networkIds=curnetId;
 
 				        	var option=$('.networkContent .option[name="1"]');
 					        var len=option.length;
@@ -958,7 +962,7 @@ $(function(){
 					            var data=option[i].parentNode.getAttribute("id");
 					        		networkIds+=","+data;
 					        }
-					       var post_data = {"networkIds":networkIds,"typeId":typeId,"startDate":startDate,"endDate":endDate,"sendMode":sendMode}; 
+					       var post_data = {"networkIds":networkIds,"typeId":typeId,"chlidType":chlidType,"startDate":startDate,"endDate":endDate,"sendMode":sendMode};
 					       var psData = JSON.stringify(post_data);
 					    	$.ajax({
 					    		 type:"post",
@@ -1091,7 +1095,7 @@ $(function(){
 				 $("#adTypeSelect").find('option:selected').attr("selected",false);
 				 $("#adTypeSelect").select2();		 
 				 var typeId=$(this).children('option:selected').val();
-				 if(typeId!==""){
+				 if(typeId!=""){
 					 $('.control-network').css("display","block");
 		           	    getInvalidNetWork();
 			    		var ad_id =$("#comboId").val();
@@ -1151,7 +1155,7 @@ $(function(){
 				 $("#WGArea").css("display","none");
 				 $("#selDataResultWG").html("");
 				 $("#selDisResultWG").css("display","none");
-				 getInvalidNetWork();
+				 /*getInvalidNetWork();*/
 			 }
 		}
 		

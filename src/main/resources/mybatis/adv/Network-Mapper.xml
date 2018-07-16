@@ -125,24 +125,27 @@
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		<!-- 	left join ad_sell s on c.id = s.ad_combo_id and s.del_flag=0
             LEFT JOIN ad_element e on e.ad_combo_id = c.id and e.del_flag=0  -->
-		<if test="chlidType != null and chlidType != null and advertiserId !=null">
+<!--		<if test="chlidType != null and chlidType != null and advertiserId !=null">
 			left join ad_sell s on c.id = s.ad_combo_id and s.del_flag=0
 			LEFT JOIN ad_element e on e.ad_combo_id = c.id and e.del_flag=0
-		</if>
+		</if>-->
 		where  n.del_flag=#{delFlag}
 		and n.ad_status =#{status}
 		and c.is_valid = #{isValid}
 		and t.id=#{typeId}
 		<!-- and s.status = '1'	-->
-		<if test="chlidType != null and chlidType != null and advertiserId !=null">
-			and e.ad_status != '7'
+		<if test="chlidType != null and chlidType != ''">
+			and c.ad_child_type_id = #{chlidType}
 		</if>
 		<if test="sendMode != null and sendMode != ''">
 			and c.send_mode = #{sendMode}
 		</if>
-		<if test="chlidType != null and chlidType != null and advertiserId !=null">
-			and (s.advertiser_id !=#{advertiserId} || (e.ad_child_type_id = #{chlidType} and s.advertiser_id =#{advertiserId}  ))
+		<if test="comboId != null and comboId != ''">
+			and c.id != #{comboId}
 		</if>
+		<!--<if test="chlidType != null and chlidType != null">
+			and (s.advertiser_id !=#{advertiserId} || (e.ad_child_type_id = #{chlidType} and s.advertiser_id =#{advertiserId}  ))
+		</if>-->
 		<if test="startDate != null and endDate != null">
 			and
 			(
@@ -169,26 +172,26 @@
 		left join ad_combo_network cn on n.id = cn.ad_network_id
 		left join ad_combo c on cn.ad_combo_id = c.id and c.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
-		<if test="chlidType != null and chlidType != null and advertiserId !=null">
+	<!--	<if test="chlidType != null and chlidType != null and advertiserId !=null">
 			left join ad_sell s on c.id = s.ad_combo_id and s.del_flag=0
 			LEFT JOIN ad_element e on e.ad_combo_id = c.id and e.del_flag=0
-		</if>
+		</if>-->
 		where  n.del_flag=#{delFlag}
 		and n.ad_status =#{status}
 		and c.is_valid = #{isValid}
 		and t.id=#{typeId}
+		<if test="chlidType != null and chlidType != null">
+			and c.ad_child_type_id = #{chlidType}
+		</if>
 		<if test="networkId != null and networkId != ''">
 			and n.id = #{networkId}
-		</if>
-		<if test="chlidType != null and chlidType != null and advertiserId !=null">
-			and e.ad_status != '7'
 		</if>
 		<if test="sendMode != null and sendMode != ''">
 			and c.send_mode = #{sendMode}
 		</if>
-		<if test="chlidType != null and chlidType != null and advertiserId !=null">
+<!--		<if test="chlidType != null and chlidType != null and advertiserId !=null">
 			and (s.advertiser_id !=#{advertiserId} || (e.ad_child_type_id = #{chlidType} and s.advertiser_id =#{advertiserId}  ))
-		</if>
+		</if>-->
 		<if test="startDate != null and endDate != null">
 			and
 			(

@@ -203,10 +203,17 @@
 					</c:choose>	
 				</td>	
 				<shiro:hasPermission name="adv:adSet:edit">
-					<td>						 
-					  <a href="${ctx}/adv/defaultControl/form?id=${adDefaultControll.id}"><spring:message code='update' /></a>				 						 
-					  <a href="${ctx}/adv/defaultControl/delete?id=${adDefaultControll.id}" onclick="return confirmx('<spring:message code='confirm.delete' />', this.href)"><spring:message code='delete' /></a>						  
-	    			</td>
+					<c:choose>
+						<c:when test="${adDefaultControll.adType.typeId==3}">
+							<td></td>
+						</c:when>
+						<c:otherwise>
+							<td>
+								<a href="${ctx}/adv/defaultControl/form?id=${adDefaultControll.id}"><spring:message code='update'/></a>
+								<a href="${ctx}/adv/defaultControl/delete?id=${adDefaultControll.id}" onclick="return confirmx('<spring:message code='confirm.delete'/>', this.href)"><spring:message code='delete'/></a>
+							</td>
+						</c:otherwise>
+					</c:choose>
 				</shiro:hasPermission>
 			</tr>
 		</c:forEach>

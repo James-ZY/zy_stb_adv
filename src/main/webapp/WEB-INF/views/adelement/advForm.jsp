@@ -352,8 +352,8 @@
 		<div class="control-group" id="adcombo_id_chlidType" style="display:none">
 			<label class="control-label"><spring:message code='adv.son.type' />:</label>
 			<div class="controls">
-			    <p id="chlidType" style="display:none">${adelement.childAdType.id}</p>
-				<form:select path="childAdType.id" class="required" id="adcombo_chlidType">
+			    <p id="chlidType" style="display:none">${adelement.adCombo.childAdType.id}</p>
+				<form:select path="adCombo.childAdType.id" class="required" id="adcombo_chlidType">
 				  <option value=""> <spring:message code='userform.select' /></option>																			
 				</form:select>
 			</div>

@@ -59,6 +59,8 @@ public class AdCombo extends IdEntity<AdCombo> {
 	// private Integer weekStart;//日期规划,区别每周或者其他（比如法定假日）的不同的天的播出开始时间
 	// private Integer weekEnd;//日期规划,区别每周或者其他（比如法定假日）的不同的天的播出的结束时间
 	private AdType adType;// 广告类型
+	private AdType childAdType;//子广告类型，比如菜单广告有四种子广告类型（ 主菜单, 音量条	,频道列表, EPG）
+
 	private Integer showTime;// 单次展示时间（插屏图片和滚动广告）
 	private Integer intervalTime ;// 间隔时间（插屏图片和滚动广告）
 	private Integer showCount;// 展示次数（插屏图片和滚动广告）
@@ -275,6 +277,18 @@ public class AdCombo extends IdEntity<AdCombo> {
 
 	public void setAdType(AdType adType) {
 		this.adType = adType;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "ad_child_type_id")
+	@NotFound(action = NotFoundAction.IGNORE)
+	@JsonIgnore
+	public AdType getChildAdType() {
+		return childAdType;
+	}
+
+	public void setChildAdType(AdType childAdType) {
+		this.childAdType = childAdType;
 	}
 
 	@ManyToMany(fetch = FetchType.EAGER)

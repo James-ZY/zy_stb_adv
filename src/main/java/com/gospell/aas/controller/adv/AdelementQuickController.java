@@ -252,7 +252,7 @@ public class AdelementQuickController extends BaseController {
 			if (StringUtils.isNotBlank(id)) {
 				combo = comboService.get(id);
 				combo.setStatus(AdCombo.ADCOMOBO_ALREADY_STATUS);
-				Integer ite = thisService.getAdelementCount(null, id, entity.getStartDate(), entity.getEndDate(), entity.getChildAdType().getId(), null);
+				Integer ite = thisService.getAdelementCount(null, id, entity.getStartDate(), entity.getEndDate(), entity.getAdCombo().getChildAdType().getId(), null);
 				if(ite>0){
 					addMessage(redirectAttributes, "adelement.already.exist");
 					return "redirect:/adv/adelement/?repage";
@@ -261,6 +261,9 @@ public class AdelementQuickController extends BaseController {
 				combo = entity.getAdCombo();
 				if(combo.getAdType().getId()!=null){
 					combo.setAdType(adTypeService.get(combo.getAdType().getId()));
+				}
+				if(combo.getChildAdType().getId()!=null){
+					combo.setChildAdType(adTypeService.get(combo.getChildAdType().getId()));
 				}
 				combo.setComboName(entity.getAdName());
 				combo.setStatus(AdCombo.ADCOMOBO_ALREADY_STATUS);				
@@ -344,6 +347,11 @@ public class AdelementQuickController extends BaseController {
 				}
 				if(combo.getAdType().getId()!=null){
 					combo.setAdType(adTypeService.get(combo.getAdType().getId()));
+					if(combo.getAdType().getId().equals(AdType.Type_MENUE_ADV)){
+						if(combo.getChildAdType().getId()!=null){
+							combo.setChildAdType(adTypeService.get(combo.getChildAdType().getId()));
+						}
+					}
 				}
 				if (null != combo) {
 					comboName = combo.getComboName();
@@ -419,13 +427,13 @@ public class AdelementQuickController extends BaseController {
 				}
 
 			}
-			if (null != entity.getChildAdType()) {
-				AdType type = entity.getChildAdType();
+			if (null != entity.getAdCombo().getChildAdType()) {
+				AdType type = entity.getAdCombo().getChildAdType();
 				String id = type.getId();
 
 				if(StringUtils.isNotBlank(id)){
 					childTypeId= type.getId();
-					AdType childtype = AdTypeUtils.get(entity.getChildAdType().getId());
+					AdType childtype = AdTypeUtils.get(entity.getAdCombo().getChildAdType().getId());
 					 
 					childTypeName = childtype.getTypeName();
 				}

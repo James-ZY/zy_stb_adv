@@ -186,8 +186,8 @@
 					<c:otherwise><td class="td-fore1"></td><td class="td-fore1"></td></c:otherwise>
 				</c:choose>
 				<c:choose>
-						<c:when test="${!empty adelement.childAdType}">
-							<td>${adelement.childAdType.typeName}</td>
+						<c:when test="${!empty adelement.adCombo.childAdType}">
+							<td>${adelement.adCombo.childAdType.typeName}</td>
 						</c:when>
 						<c:otherwise><td></td></c:otherwise>
 				</c:choose>

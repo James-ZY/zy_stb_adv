@@ -506,7 +506,7 @@ $(function() {
                     $("#adcombo_chlidType").html("");
                     $('#adcombo_id_chlidType').css("display","none");
                 }else{
-                    if(data !=null && data.childList.length!=0){
+                    if(data !=null &&  data.typeId == 8 && data.childList.length!=0){
                         var len=data.childList.length;
                         var html='<option value="">'+accipiter.getLang_(messageLang,"userform.select")+'</option>';
                         for(var i=0;i<len;i++){
