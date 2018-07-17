@@ -738,11 +738,7 @@ public class AdelementService extends BaseService {
 			map1.put("delFlag", BaseEntity.DEL_FLAG_NORMAL);
 			List<AdDefaultControll> hdlist = defaultControllDao.getControlByTypeId(map1);
 			if(hdlist != null && hdlist.size()>0){
-				if(dto.getAdvType().equals(AdType.Type_CHANGE_CHANNEL)){
-					dto.setHd_file_path(getDefaultFilePathByControll(hdlist));
-				}else{
-					dto.setHd_file_path(getDefaultFilePathByControll(hdlist)+"@5");
-				}
+				dto.setHd_file_path(getDefaultFilePathByControll(hdlist)+"@5");
 			}
 		}else{
 			List<AdControll> controllerList = adelement.getControllerList();
@@ -1027,7 +1023,7 @@ public class AdelementService extends BaseService {
 	public void closeDown(final String id, final Integer isDeleteNow)
 			throws Exception {
 		final Adelement a = get(id);
-		if (a.getAdCombo().getAdType().getId().equals(AdType.Type_OPEN_IMGAE) || a.getAdCombo().getAdType().getId().equals(AdType.Type_BROCAST) || a.getAdCombo().getAdType().getId().equals(AdType.Type_CHANGE_CHANNEL)) {
+		if(a.getAdCombo().getAdType().getId().equals(AdType.Type_OPEN_IMGAE) || a.getAdCombo().getAdType().getId().equals(AdType.Type_BROCAST)){
 			taskExecutor.execute(new Runnable() {
 
 				@Override
@@ -1082,7 +1078,7 @@ public class AdelementService extends BaseService {
 			throws Exception {
 
 		final Adelement a = get(id);
-		if (a.getAdCombo().getAdType().getId().equals(AdType.Type_OPEN_IMGAE) || a.getAdCombo().getAdType().getId().equals(AdType.Type_BROCAST) || a.getAdCombo().getAdType().getId().equals(AdType.Type_CHANGE_CHANNEL)) {
+		if(a.getAdCombo().getAdType().getId().equals(AdType.Type_OPEN_IMGAE) || a.getAdCombo().getAdType().getId().equals(AdType.Type_BROCAST)){
 			taskExecutor.execute(new Runnable() {
 
 				@Override
@@ -1333,7 +1329,7 @@ public class AdelementService extends BaseService {
 			paramMap.put("paramType", SysParam.NETWORK_PICTURE_RATE);
 		}
 		SysParam param = sysParamDao.getMinParam(paramMap);
-		Integer minRate = 10000000;
+		Integer minRate = 1250000;
 		if(param!=null){
 			BigDecimal b = new BigDecimal(param.getParamValue());
 			minRate =b.multiply(new BigDecimal(1000000)).intValue();
@@ -1370,7 +1366,7 @@ public class AdelementService extends BaseService {
 			paramMap.put("paramType", SysParam.NETWORK_PICTURE_RATE);
 		}
 		SysParam param = sysParamDao.getMinParam(paramMap);
-		Integer minRate = 10000000;
+		Integer minRate = 1250000;
 		if(param!=null){
 			BigDecimal b = new BigDecimal(param.getParamValue());
 			minRate =b.multiply(new BigDecimal(1000000)).intValue();

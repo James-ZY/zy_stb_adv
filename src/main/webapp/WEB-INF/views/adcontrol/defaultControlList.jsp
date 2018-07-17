@@ -82,7 +82,7 @@
 				<label><spring:message code='adv.type' />：</label>
 				<form:select path="adType.id">
 						<option value=""> <spring:message code='userform.select' /></option>
-						<form:options items="${fns:getAdTypeById('1,3,9')}" itemLabel="typeName" itemValue="id" htmlEscape="false"/>
+						<form:options items="${fns:getAdTypeById('1,9')}" itemLabel="typeName" itemValue="id" htmlEscape="false"/>
 				</form:select>
 			</div>
 			<div class="query-item">
