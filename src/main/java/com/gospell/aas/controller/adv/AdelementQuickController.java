@@ -427,16 +427,29 @@ public class AdelementQuickController extends BaseController {
 				}
 
 			}
-			if (null != entity.getAdCombo().getChildAdType()) {
+			if (combo.getAdType().getId().equals(AdType.Type_MENUE_ADV) && null != combo.getChildAdType()) {
+				AdType type = combo.getChildAdType();
+				String id = type.getId();
+
+				if(StringUtils.isNotBlank(id)){
+					childTypeId= type.getId();
+					AdType childtype = AdTypeUtils.get(type.getId());
+
+					childTypeName = childtype.getTypeName();
+				}
+				entity.setChildAdType(type);
+			}
+			if(combo.getAdType().getId().equals(AdType.Type_PROMPT_WINDOW)){
 				AdType type = entity.getAdCombo().getChildAdType();
 				String id = type.getId();
 
 				if(StringUtils.isNotBlank(id)){
 					childTypeId= type.getId();
-					AdType childtype = AdTypeUtils.get(entity.getAdCombo().getChildAdType().getId());
-					 
+					AdType childtype = AdTypeUtils.get(type.getId());
+
 					childTypeName = childtype.getTypeName();
 				}
+				entity.setChildAdType(type);
 			}
 			String sd =getMessage("no");
 			String hd=getMessage("no");

@@ -520,9 +520,26 @@ $(function() {
                         $("#adcombo_chlidType").html(html);
                         $("#adcombo_chlidType").select2();
                         $('#adcombo_id_chlidType').css("display","block");
+                    }else if(data.typeId == 7){
+                        var chlidType = $("#chlidType").text();
+                        var len=data.childList.length;
+                        var html='<option :selected>'+accipiter.getLang_(messageLang,"userform.select")+'</option>';
+                        for(var i=0;i<len;i++){
+                            if(chlidType==data.childList[i].id){
+                                html+='<option selected="selected" value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
+                            }else{
+                                html+='<option value='+data.childList[i].id+'>'+data.childList[i].typeName+'</option>';
+                            }
+                        }
+                        $("#adcombo_chlidType").html("");
+                        $("#adcombo_chlidType").html(html);
+                        $('#adcombo_id_chlidType').css("display","block");
+                        $("#adcombo_chlidType").select2();
+                        $('#adcombo_chlidType').attr("disabled",false);
                     }else{
                         $("#adcombo_chlidType").html("");
                         $('#adcombo_id_chlidType').css("display","none");
+                        $('#adcombo_chlidType').attr("disabled",false);
                     }
                 }
                 adClassId=data.typeId;

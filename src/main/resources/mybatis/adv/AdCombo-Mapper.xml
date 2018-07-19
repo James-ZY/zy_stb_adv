@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="com.gospell.aas.repository.mybatis.adv.IAdComboDao">
 
@@ -87,8 +87,8 @@
 		ca.ad_channel_id as ca_ad_channel_id,
 		ca.ad_channel_name as ca_ad_channel_name
 	</sql>
- 
- 	<sql id="comboStatisticsSql">
+
+	<sql id="comboStatisticsSql">
 		DISTINCT c.id as c_id,
 		c.ad_combo_name as c_ad_combo_name,
 		c.ad_is_flag as c_ad_is_flag,
@@ -108,7 +108,7 @@
 		c.`week` as c_week,
 		c.del_flag as c_del_flag
 	</sql>
-	
+
 	<sql id="comboMapId">
 		DISTINCT c.id as c_id,
 		c.ad_combo_id as combo_id,
@@ -133,50 +133,50 @@
 		hk.show_time as hk_show_time
 	</sql>
 
-		<!-- 根据广告套餐ID（与频道无关）返回发送器ID -->
+	<!-- 根据广告套餐ID（与频道无关）返回发送器ID -->
 	<resultMap id="comboMap" type="com.gospell.aas.dto.adv.AdComboByUserDTO">
-      	<result column="c_id" property="id"/>
-      	<result column="combo_id" property="adComboId"/>
-      	<result column="combo_name" property="comboName"/>
-    </resultMap>
-    
-    <resultMap id="findPageMap" type="Adcombo">
-     	<id column="c_id" property="id"/>
-      	<result column="c_ad_combo_name" property="comboName"/>
-      	<result column="c_ad_is_flag" property="isFlag"/>
-      	<result column="c_start_hour" property="startHour"/>
-      	<result column="c_end_hour" property="endHour"/>
-      	<result column="c_start_minutes" property="startMinutes"/>
-      	<result column="c_start_second" property="startSecond"/>
-      	<result column="c_end_second" property="endSecond"/>
-      	<result column="c_end_minutes" property="endMinutes"/>
-      	<result column="c_show_time" property="showTime"/>
-      	<result column="c_interval_time" property="intervalTime"/>
-      	<result column="c_show_count" property="showCount"/>
-      	<result column="c_week" property="week"/>
-      	<result column="c_del_flag" property="delFlag"/>
-      	<result column="c_is_put" property="isPut"/>
-      	<result column="c_status" property="status"/>
-      	<result column="c_valid_start_time" property="validStartTime"/>
-      	<result column="c_valid_end_time" property="validEndTime"/>
-      	<result column="c_send_mode" property="sendMode"/>
+		<result column="c_id" property="id"/>
+		<result column="combo_id" property="adComboId"/>
+		<result column="combo_name" property="comboName"/>
+	</resultMap>
+
+	<resultMap id="findPageMap" type="Adcombo">
+		<id column="c_id" property="id"/>
+		<result column="c_ad_combo_name" property="comboName"/>
+		<result column="c_ad_is_flag" property="isFlag"/>
+		<result column="c_start_hour" property="startHour"/>
+		<result column="c_end_hour" property="endHour"/>
+		<result column="c_start_minutes" property="startMinutes"/>
+		<result column="c_start_second" property="startSecond"/>
+		<result column="c_end_second" property="endSecond"/>
+		<result column="c_end_minutes" property="endMinutes"/>
+		<result column="c_show_time" property="showTime"/>
+		<result column="c_interval_time" property="intervalTime"/>
+		<result column="c_show_count" property="showCount"/>
+		<result column="c_week" property="week"/>
+		<result column="c_del_flag" property="delFlag"/>
+		<result column="c_is_put" property="isPut"/>
+		<result column="c_status" property="status"/>
+		<result column="c_valid_start_time" property="validStartTime"/>
+		<result column="c_valid_end_time" property="validEndTime"/>
+		<result column="c_send_mode" property="sendMode"/>
 		<result column="c_track_mode" property="trackMode"/>
 		<result column="c_ad_area" property="area"/>
-      	<result column="c_ad_sel_area" property="selArea"/>
-      	<result column="c_is_valid" property="isValid"/>
-      	<association property="adType" resultMap="typeByComboMap"/>
-    </resultMap>
-    <select id="findAll" parameterType="AdCombo" resultMap="findPageMap">
-   		select  
-   		<include refid="findAllSql"/>,
-   		<include refid="typeSql"/>
-   		from ad_combo c
-   		left join ad_combo_channel ac on c.id = ac.ad_combo_id
+		<result column="c_ad_sel_area" property="selArea"/>
+		<result column="c_is_valid" property="isValid"/>
+		<association property="adType" resultMap="typeByComboMap"/>
+	</resultMap>
+	<select id="findAll" parameterType="AdCombo" resultMap="findPageMap">
+		select
+		<include refid="findAllSql"/>,
+		<include refid="typeSql"/>
+		from ad_combo c
+		left join ad_combo_channel ac on c.id = ac.ad_combo_id
 		left join ad_channel cc on ac.ad_channel_id = cc.id and cc.del_flag=#{delFlag}
 		left join ad_network n on  cc.ad_network_id = n.id and n.del_flag=#{delFlag}
 		left join ad_combo_network an on c.id = an.ad_combo_id
 		left join ad_network nn on an.ad_network_id = nn.id and nn.del_flag=#{delFlag}
-	 	left join ad_type t on c.ad_type_id = t.id and t.del_flag =#{delFlag}
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag =#{delFlag}
 		where
 		c.del_flag =#{delFlag}
 		<if test="networkId != null and networkId != ''">
@@ -185,7 +185,7 @@
 		<if test="channleName != null and channleName != ''">
 			and UPPER(cc.ad_channel_name)  like CONCAT('%', UPPER(#{channleName}), '%')
 		</if>
-		
+
 		<if test="channelId != null and channelId != ''">
 			and cc.ad_channel_id  like CONCAT('%', #{channelId}, '%')
 		</if>
@@ -199,39 +199,39 @@
 			and c.ad_is_flag  =#{isFlag}
 		</if>
 		<if test="adType != null">
-			 <if test="adType.id != null and adType.id !=''">
-			  and t.id = #{adType.id}
-			 </if>
+			<if test="adType.id != null and adType.id !=''">
+				and t.id = #{adType.id}
+			</if>
 		</if>
 		<choose>
-        		<when test="validStartTime != null and validEndTime != null">
-        			  and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
-        			  and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
-        		</when>
-        		<when test="validStartTime != null and validEndTime == null">
-        		  and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
-        		</when>
-        		<when test="validStartTime == null and validEndTime != null">
-        		   and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
-        		</when>
-        </choose>
-		
+			<when test="validStartTime != null and validEndTime != null">
+				and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
+				and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
+			</when>
+			<when test="validStartTime != null and validEndTime == null">
+				and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
+			</when>
+			<when test="validStartTime == null and validEndTime != null">
+				and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]>   DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
+			</when>
+		</choose>
+
 		<if test="isExpired != null and isExpired != ''">
-			 <if test="isExpired ==0">
-			 and  DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(now(), '%Y-%m-%d')
-			 </if>
-			  <if test="isExpired == 1">
-			  and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<]]>  DATE_FORMAT(now(), '%Y-%m-%d')
-			 </if>
+			<if test="isExpired ==0">
+				and  DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(now(), '%Y-%m-%d')
+			</if>
+			<if test="isExpired == 1">
+				and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<]]>  DATE_FORMAT(now(), '%Y-%m-%d')
+			</if>
 		</if>
-		 <if test="page.orderBy !=null and page.orderBy !=''">
-        		ORDER BY ${page.orderBy}
-        </if>
-    </select>
+		<if test="page.orderBy !=null and page.orderBy !=''">
+			ORDER BY ${page.orderBy}
+		</if>
+	</select>
 	<select id="getComboByUserId" resultMap="comboMap">
-		select 
+		select
 		<include refid="comboMapId"/>
-		 from ad_combo c
+		from ad_combo c
 		left join ad_sell s on c.id = s.ad_combo_id
 		left join ad_advertiser a on s.advertiser_id = a.id
 		left join sys_user u on a.id = u.advertiser_id
@@ -239,11 +239,11 @@
 		c.del_flag ='0'
 		and s.del_flag='0'
 		and a.del_flag='0'
-	    and s.end_date >= #{date}
+		and s.end_date >= #{date}
 		and c.`status` =#{status}
 		and u.id=#{id}
 	</select>
-	
+
 	<select id="getComboByAdvId" resultMap="comboMap">
 		select
 		<include refid="comboMapId"/>
@@ -254,55 +254,55 @@
 		c.del_flag ='0'
 		and s.del_flag='0'
 		and a.del_flag='0'
-	    and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{date}, '%Y-%m-%d')
+		and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>   DATE_FORMAT(#{date}, '%Y-%m-%d')
 		and c.`status` =#{status}
 		and a.id=#{id}
 	</select>
-	
+
 	<select id="findAdComboByComboName" resultType="AdCombo" parameterType="AdCombo">
 		select
-		 <include refid="comboSql"/>
+		<include refid="comboSql"/>
 		from ad_combo c
 		where
 		c.del_flag =#{delFlag}
 		and c.ad_combo_name=#{comboName}
 	</select>
-	
+
 	<update id="updateIsPut">
 		update ad_combo c
 		set c.is_put = 1
 		where c.id in
-		 <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
-  			#{item}  
- 		</foreach>  
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
 	</update>
-	
+
 	<resultMap id="comboToAdvMap" type="AdCombo">
-	    <id column="c_id" property="id"/>
-      	<result column="c_ad_combo_name" property="comboName"/>
-      	<result column="c_ad_is_flag" property="isFlag"/>
-      	<result column="c_start_hour" property="startHour"/>
-      	<result column="c_end_hour" property="endHour"/>
-      	<result column="c_start_minutes" property="startMinutes"/>
-      	<result column="c_start_second" property="startSecond"/>
-      	<result column="c_end_second" property="endSecond"/>
-      	<result column="c_end_minutes" property="endMinutes"/>
-      	<result column="c_show_time" property="showTime"/>
-      	<result column="c_interval_time" property="intervalTime"/>
-      	<result column="c_show_count" property="showCount"/>
+		<id column="c_id" property="id"/>
+		<result column="c_ad_combo_name" property="comboName"/>
+		<result column="c_ad_is_flag" property="isFlag"/>
+		<result column="c_start_hour" property="startHour"/>
+		<result column="c_end_hour" property="endHour"/>
+		<result column="c_start_minutes" property="startMinutes"/>
+		<result column="c_start_second" property="startSecond"/>
+		<result column="c_end_second" property="endSecond"/>
+		<result column="c_end_minutes" property="endMinutes"/>
+		<result column="c_show_time" property="showTime"/>
+		<result column="c_interval_time" property="intervalTime"/>
+		<result column="c_show_count" property="showCount"/>
 		<result column="c_picture_interval" property="pictureInterval"/>
 		<result column="c_picture_times" property="pictureTimes"/>
-      	<result column="c_week" property="week"/>
-      	<result column="c_send_mode" property="sendMode"/>
+		<result column="c_week" property="week"/>
+		<result column="c_send_mode" property="sendMode"/>
 		<result column="c_track_mode" property="trackMode"/>
 		<result column="c_ad_area" property="area"/>
-      	<result column="c_ad_sel_area" property="selArea"/>
-      	<result column="c_del_flag" property="delFlag"/>
-      	<association property="adType" resultMap="childTypeByComboMap"/>
+		<result column="c_ad_sel_area" property="selArea"/>
+		<result column="c_del_flag" property="delFlag"/>
+		<association property="adType" resultMap="childTypeByComboMap"/>
 		<association property="childAdType" resultMap="childByComboMap"/>
-    </resultMap>
+	</resultMap>
 	<select id="getAdTypeByComboId" resultMap="comboToAdvMap" parameterType="AdCombo">
-		select 
+		select
 		<include refid="comboSql"/>,
 		<include refid="comboChildTypeSql"/>,
 		<include refid="typeSql"/>,
@@ -316,16 +316,16 @@
 		and t.del_flag=#{delFlag}
 		and c.id=#{id}
 	</select>
-	
+
 	<!-- 与频道无关广告套餐查询 -->
 	<select id="getAdComboNotByNetworkId" resultMap="comboNotByNetworkMap">
-		select 
+		select
 		<include refid="comboSql"/>,
 		<include refid="typeSql"/>,
 		<include refid="comboChildTypeSql"/>
 
 		from ad_combo c
-		left join ad_combo_network cn on c.id = cn.ad_combo_id 
+		left join ad_combo_network cn on c.id = cn.ad_combo_id
 		left join ad_network n on cn.ad_network_id = n.id and n.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
@@ -334,14 +334,14 @@
 		c.del_flag =#{delFlag}
 		and c.`status` = #{status}
 		and c.ad_is_flag=#{isFlag}
-		 
+
 		<!-- and c.is_put=#{isPut} -->
 		and c.valid_end_time <![CDATA[>=]]> DATE_FORMAT(NOW(),'%Y-%m-%d')
 		and n.ad_network_id=#{networkId}
 	</select>
 	<!-- 通过广告发送器Id查询与频道有关的广告 -->
 	<select id="getAdComboByNetworkId" resultMap="comboByNetworkMap">
-		select 
+		select
 		<include refid="comboSql"/>,
 		<include refid="typeSql"/>,
 		<include refid="channelSql"/>,
@@ -355,17 +355,17 @@
 		left join ad_track sk on c.sdtrack_id = sk.id and sk.del_flag=#{delFlag}
 		left join ad_track hk on c.hdtrack_id = hk.id and hk.del_flag=#{delFlag}
 		where
-		 c.del_flag =#{delFlag}
+		c.del_flag =#{delFlag}
 		and c.`status` = #{status}
 		and c.ad_is_flag=#{isFlag}
 		<!-- and c.is_put=#{isPut} -->
 		and c.valid_end_time <![CDATA[>=]]> DATE_FORMAT(NOW(),'%Y-%m-%d')
 		and n.ad_network_id=#{networkId}
 	</select>
-	
+
 	<!-- 根据中间表与频道无关广告套餐查询 -->
 	<select id="getPutFailNotChannelAdCombo" resultMap="comboNotByNetworkMap">
-		select 
+		select
 		<include refid="comboSql"/>,
 		<include refid="typeSql"/>,
 		<include refid="comboChildTypeSql"/>,
@@ -373,7 +373,7 @@
 		<include refid="hdTrackField" />
 		from ad_combo_push_record cp
 		left join ad_combo c on cp.ad_combo_id = c.id
-		left join ad_combo_network cn on c.id = cn.ad_combo_id 
+		left join ad_combo_network cn on c.id = cn.ad_combo_id
 		left join ad_network n on cn.ad_network_id = n.id and n.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
@@ -384,10 +384,10 @@
 		and c.ad_is_flag=#{isFlag}
 		and cp.client_id=#{clientId}
 	</select>
-	
-		<!-- 通过广告发送器Id查询与频道有关的广告 -->
+
+	<!-- 通过广告发送器Id查询与频道有关的广告 -->
 	<select id="getPutFailChannelAdCombo" resultMap="comboByNetworkMap">
-		select 
+		select
 		<include refid="comboSql"/>,
 		<include refid="typeSql"/>,
 		<include refid="channelSql"/>
@@ -402,15 +402,15 @@
 		and c.ad_is_flag=#{isFlag}
 		and cp.client_id=#{clientId}
 	</select>
-	
+
 	<!-- 获取频道无关的单个广告套餐查询 -->
 	<select id="getSingleAdComboNotChannel" resultMap="comboNotByNetworkMap">
-		select 
+		select
 		<include refid="comboSql"/>,
 		<include refid="typeSql"/>,
 		<include refid="comboChildTypeSql"/>
 		from ad_combo c
-		left join ad_combo_network cn on c.id = cn.ad_combo_id 
+		left join ad_combo_network cn on c.id = cn.ad_combo_id
 		left join ad_network n on cn.ad_network_id = n.id and n.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		LEFT JOIN ad_type ct on c.ad_child_type_id =  ct.id and ct.del_flag=#{delFlag}
@@ -418,10 +418,10 @@
 		c.del_flag =#{delFlag}
 		and c.id=#{comboId}
 	</select>
-	
+
 	<!-- 获取与频道有关的单个套餐的的详细信息 -->
 	<select id="getSingleAdComboChannel" resultMap="comboByNetworkMap">
-		select 
+		select
 		<include refid="comboSql"/>,
 		<include refid="typeSql"/>,
 		<include refid="channelSql"/>,
@@ -438,35 +438,35 @@
 		c.del_flag =#{delFlag}
 		and c.id=#{comboId}
 	</select>
-	
+
 	<select id="getAdComboByDelete" resultMap="comboByDeleteMap" parameterType="map">
-		select 
+		select
 		<include refid="comboSql"/>
 		from ad_combo c
 		where
-		 c.`status` = #{status}
+		c.`status` = #{status}
 		and c.is_put=#{isPut}
 		and c.del_flag=#{delFlag}
 	</select>
-	 
-	 
-	
+
+
+
 	<select id="getComboByNetworkIdAndTypeId" resultMap="comboByChannelMap"  parameterType="map">
-		select 
+		select
 		<include refid="comboSql"/>,
 		<include refid="channelSql"/>,
 		<include refid="sdTrackField" />,
 		<include refid="hdTrackField" />
 		from ad_combo c
-		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag} 
+		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		left join ad_combo_channel cc on c.id = cc.ad_combo_id
-		left join ad_channel ca on cc.ad_channel_id = ca.id and ca.del_flag=#{delFlag} 
+		left join ad_channel ca on cc.ad_channel_id = ca.id and ca.del_flag=#{delFlag}
 		left join ad_network n on ca.ad_network_id = n.id and n.del_flag=#{delFlag}
 		left join ad_track sk on c.sdtrack_id = sk.id and sk.del_flag=#{delFlag}
 		left join ad_track hk on c.hdtrack_id = hk.id and hk.del_flag=#{delFlag}
-		where c.del_flag=#{delFlag} 
+		where c.del_flag=#{delFlag}
 		<if test="sendMode != null and sendMode != ''">
-		 and c.send_mode = #{sendMode}	
+			and c.send_mode = #{sendMode}
 		</if>
 		<if test="comboId != null and comboId != ''">
 			and c.id != #{comboId}
@@ -474,83 +474,83 @@
 		and
 		((
 		(DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		) or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
 		)
 		))
 		and c.is_valid = #{isValid}
-		and t.id=#{typeId} 
+		and t.id=#{typeId}
 		and n.id=#{networkId}
 	</select>
-	
+
 	<select id="find" resultMap="findAdCombo" parameterType="AdCombo">
-		select 
+		select
 		<include refid="adcomboSql"/>
-		 from ad_combo c 
+		from ad_combo c
 		where c.del_flag=#{delFlag}
 		and c.id=#{id}
 	</select>
-	
+
 	<select id="findComboByAdv" resultMap="findAdCombo" parameterType="map">
-		select 
+		select
 		<include refid="adcomboSql"/>
-		 from ad_combo c 
-		 left join ad_element e on c.id = e.ad_combo_id and e.del_flag=#{delFlag}
+		from ad_combo c
+		left join ad_element e on c.id = e.ad_combo_id and e.del_flag=#{delFlag}
 		where c.del_flag=#{delFlag}
 		and e.id=#{id}
 	</select>
-	
+
 	<select id="getAdComboByAType" resultMap="comboStatisticsMap">
-	 select 
-	 <include refid="comboStatisticsSql"/>,
-	 <include refid="typeSql"/>
-	  from ad_combo c 
-	  left join ad_type t on c.ad_type_id = t.id
-	  where 
-	  c.id in
-	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
-		    #{item}
-   </foreach>
-   
-    	
+		select
+		<include refid="comboStatisticsSql"/>,
+		<include refid="typeSql"/>
+		from ad_combo c
+		left join ad_type t on c.ad_type_id = t.id
+		where
+		c.id in
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+
+
 	</select>
 	<!-- 获取套餐的销售时间总和 -->
 	<select id="getAdComboStatisticSellDTO" resultMap="sellDayMap" parameterType="AdCombo">
-		select c.id as c_id,sum(getSellTime(#{validStartTime},#{validEndTime},s.start_date,s.end_date)) as s_day from ad_combo c 
+		select c.id as c_id,sum(getSellTime(#{validStartTime},#{validEndTime},s.start_date,s.end_date)) as s_day from ad_combo c
 		left join ad_sell s on s.ad_combo_id = c.id and s.del_flag=#{delFlag}
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		where c.del_flag=#{delFlag}
 		and
 		(
 		(DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
-			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
+		and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
 		) or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
-			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
+		and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
 		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
-			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
-			and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
+		and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
+		and DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
 		)or (DATE_FORMAT(s.start_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
-			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
-			and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
+		and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[<=]]>  DATE_FORMAT(#{validEndTime}, '%Y-%m-%d')
+		and DATE_FORMAT(s.end_date, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{validStartTime}, '%Y-%m-%d')
 		)
 		)
-		<if test="null != comboName and comboName !=''">  
-      	 	 and c.ad_combo_name = #{comboName} 
-      </if>
+		<if test="null != comboName and comboName !=''">
+			and c.ad_combo_name = #{comboName}
+		</if>
 		<if test="null != adType">
 			and t.id = #{adType.id}
 		</if>
- 		group by c.id order by s_day Desc
+		group by c.id order by s_day Desc
 	</select>
-	
-	 <select id="getAdcomboSellAdvtiserDay" resultMap="sellAdvtierDayMap" parameterType="AdCombo">
+
+	<select id="getAdcomboSellAdvtiserDay" resultMap="sellAdvtierDayMap" parameterType="AdCombo">
 		select a.id as a_id,a.`name` as a_name,sum(getSellTime(#{validStartTime},#{validEndTime},s.start_date,s.end_date)) as a_day from ad_advertiser a
 	 
 		left join ad_sell s on s.advertiser_id = a.id and s.del_flag=#{delFlag}
@@ -574,54 +574,54 @@
 	 and c.id=#{id}
   	 group by a_id,a_name order by a_day Desc
 	 </select>
-	 <!-- 获取当前与频道无关的广告套餐（参数树广告类型ID和发送器ID） -->
-	 <select id="selectNotChannelAdComboByType" resultMap="adcomboSellMap" parameterType="map">
-	 	select 
-	 	<include refid="comboSellSql"/>
-	 	 from ad_combo c
+	<!-- 获取当前与频道无关的广告套餐（参数树广告类型ID和发送器ID） -->
+	<select id="selectNotChannelAdComboByType" resultMap="adcomboSellMap" parameterType="map">
+		select
+		<include refid="comboSellSql"/>
+		from ad_combo c
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		left join ad_combo_network cn on c.id= cn.ad_combo_id
 		left join ad_network n on cn.ad_network_id = n.id and n.del_flag=#{delFlag}
 		where c.del_flag=#{delFlag}
 		and c.ad_is_flag = #{isFlag}
 		and c.status = #{status}
-		 and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{nowDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{nowDate}, '%Y-%m-%d')
 
-		 <!-- and n.id in
-         <foreach item="item" index="index" collection="networkList" open="(" separator="," close=")">
-               #{item}
-          </foreach>  -->
+		<!-- and n.id in
+        <foreach item="item" index="index" collection="networkList" open="(" separator="," close=")">
+              #{item}
+         </foreach>  -->
 		and t.id=#{typeId}
 		and c.is_valid = #{isValid}
 		order by c.update_date desc
-	 </select>
+	</select>
 	<!-- 查询当前有效的与频道有关的广告套餐，用于销售 -->
 	<select id="selectChannelAdComboByType" resultMap="adcomboSellMap" parameterType="map">
-		select 
-			<include refid="comboSellSql"/>
+		select
+		<include refid="comboSellSql"/>
 		from ad_combo c
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
-		left join ad_combo_channel cc on cc.ad_combo_id = c.id 
+		left join ad_combo_channel cc on cc.ad_combo_id = c.id
 		left join ad_channel ca on cc.ad_channel_id = ca.id and ca.del_flag=#{delFlag}
 		left join ad_network n on ca.ad_network_id = n.id and n.del_flag=#{delFlag}
 		where c.del_flag=#{delFlag}
 		and c.ad_is_flag = #{isFlag}
 		and c.status = #{status}
-	    and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{nowDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]>  DATE_FORMAT(#{nowDate}, '%Y-%m-%d')
 		<!-- and n.id in 
 		<foreach item="item" index="index" collection="networkList" open="(" separator="," close=")">  
   			#{item}  
  		</foreach>  -->
- 		and c.is_valid = #{isValid}
- 		<if test="typeId != null and typeId != ''">
-		and t.id=#{typeId}
+		and c.is_valid = #{isValid}
+		<if test="typeId != null and typeId != ''">
+			and t.id=#{typeId}
 		</if>
 		order by c.update_date desc
 	</select>
-	
+
 	<select id="selectNotChannelNetworkByCombo" resultMap="networkBytypeMap" parameterType="map">
-		select 
-			<include refid="networkSql"/>
+		select
+		<include refid="networkSql"/>
 		from ad_combo c
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
 		left join ad_combo_network cn on c.id= cn.ad_combo_id
@@ -629,21 +629,21 @@
 		where c.del_flag = #{delFlag}
 		and c.id =#{id}
 	</select>
-	
+
 	<select id="selectChannelNetworkByCombo" resultMap="networkBytypeMap" parameterType="map">
-		select 
-			<include refid="networkSql"/>
+		select
+		<include refid="networkSql"/>
 		from ad_combo c
 		left join ad_type t on c.ad_type_id = t.id and t.del_flag=#{delFlag}
-		left join ad_combo_channel cc on cc.ad_combo_id = c.id 
+		left join ad_combo_channel cc on cc.ad_combo_id = c.id
 		left join ad_channel ca on cc.ad_channel_id = ca.id and ca.del_flag=#{delFlag}
 		left join ad_network n on ca.ad_network_id = n.id and n.del_flag=#{delFlag}
 		where c.del_flag = #{delFlag}
 		and c.id =#{id}
 	</select>
-	
-	
-		 
+
+
+
 	<select id="sellNotChannelComboInNetworkNow" resultType="Integer" parameterType="map">
 	select count(DISTINCT c.id) from ad_sell s
 	left join ad_combo c on s.ad_combo_id = c.id and c.del_flag =#{delFlag}
@@ -690,7 +690,7 @@
 			and ac.del_flag = #{delFlag}
 			and ac.is_valid = #{yesIsValid}
 	</update>
-	
+
 	<select id="getComboCountByTypeIdAndNetwork" resultType="Integer" parameterType="map">
  		select count(DISTINCT c.id) from ad_combo c
 		left join ad_combo_network cn on c.id = cn.ad_combo_id
@@ -711,133 +711,133 @@
 		and ca.ad_channel_id=#{channeId}
 		and n.ad_network_id=#{networkId} 
 	</select>
-	<!-- 判断套餐是否冲突 与频道无关 -->	
-	 <select id="checkComboIsExist" parameterType="map" resultMap="comboCountMap">
+	<!-- 判断套餐是否冲突 与频道无关 -->
+	<select id="checkComboIsExist" parameterType="map" resultMap="comboCountMap">
 		SELECT
-			c.id a_id,
-			c.ad_combo_name,
-			n.ad_network_id
+		c.id a_id,
+		c.ad_combo_name,
+		n.ad_network_id
 		FROM
-			ad_combo c
+		ad_combo c
 		LEFT JOIN ad_combo_network n ON c.id = n.ad_combo_id
-		where 
+		where
 		c.del_flag = #{delFlag}
 		<if test="sendMode != null and sendMode != ''">
-		  and c.send_mode = #{sendMode}
+			and c.send_mode = #{sendMode}
 			<if test="sendMode ==2 and districts != null and districts != ''">
 				and c.ad_sel_area = #{districts}
 			</if>
 		</if>
 		AND c.ad_type_id = #{typeId}
-		 <if test="chlidType != null and chlidType != ''">
-			 and c.ad_child_type_id = #{chlidType}
-		 </if>
+		<if test="typeId == 8 and chlidType != null and chlidType != ''">
+			and c.ad_child_type_id = #{chlidType}
+		</if>
 		and
 		(
 		(DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		) or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
 		)
 		)
-		and n.ad_network_id IN 
+		and n.ad_network_id IN
 		<foreach collection="netWorkList" item="item" index="index"  open="(" separator="," close=")">
 			'${item}'
 		</foreach>
 	</select>
- <select id="checkComboIsConflict" parameterType="map" resultMap="comboCountMap">
+	<select id="checkComboIsConflict" parameterType="map" resultMap="comboCountMap">
 		SELECT a2.* from (SELECT a1.id a_id,a1.ad_combo_name,a1.ad_network_id,count(1) count from (SELECT
-			c.id,
-			c.ad_combo_name,
-			c.ad_type_id,
-			n.ad_network_id
+		c.id,
+		c.ad_combo_name,
+		c.ad_type_id,
+		n.ad_network_id
 		FROM
-			ad_combo c
+		ad_combo c
 		LEFT JOIN ad_combo_network n ON c.id = n.ad_combo_id
-		where 
+		where
 		c.del_flag = #{delFlag}
 		<if test="sendMode != null and sendMode != ''">
-		  and c.send_mode = #{sendMode}
+			and c.send_mode = #{sendMode}
 			<if test="sendMode ==2 and districts != null and districts != ''">
 				and c.ad_sel_area = #{districts}
 			</if>
 		</if>
 		AND c.ad_type_id = #{typeId}
-		and n.ad_network_id IN 
+		and n.ad_network_id IN
 		<foreach collection="netWorkList" item="item" index="index"  open="(" separator="," close=")">
 			'${item}'
 		</foreach>
-	 ) a1 GROUP BY a1.id) a2 where a2.count = #{size}
+		) a1 GROUP BY a1.id) a2 where a2.count = #{size}
 	</select>
 	<!-- 判断选择的频道是否存在套餐（与频道无关） -->
 	<select id="getAdNetworkCombo" parameterType="map" resultType="Integer">
-	SELECT count(1) from ad_combo c
-	LEFT JOIN ad_combo_network an on c.id = an.ad_combo_id
-	where c.del_flag = #{delFlag} and  c.ad_type_id = #{typeId}
-	<if test="comboId != null and comboId != ''">
-	and c.id != #{comboId}	
-	</if>
-	<if test="sendMode != null and sendMode != ''">
-	and c.send_mode = #{sendMode}	
-	</if>
-	and
-		(
-		(DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-		) or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-		)
-		)
-	and an.ad_network_id in 
-	<foreach collection="netWorkList" item="item" index="index"  open="(" separator="," close=")">
-			'${item}'
-	</foreach>
-	</select>
-	<!-- 判断选择的频道是否存在套餐（与频道相关） -->
-	<select id="getAdChannelCombo" parameterType="map" resultType="Integer">
-			SELECT count(1) count from ad_combo c
-		LEFT JOIN ad_combo_channel ac on ac.ad_combo_id = c.id
-		where c.del_flag = #{delFlag} and  c.ad_type_id = #{typeId} 
+		SELECT count(1) from ad_combo c
+		LEFT JOIN ad_combo_network an on c.id = an.ad_combo_id
+		where c.del_flag = #{delFlag} and  c.ad_type_id = #{typeId}
 		<if test="comboId != null and comboId != ''">
-		and c.id != #{comboId}	
+			and c.id != #{comboId}
 		</if>
 		<if test="sendMode != null and sendMode != ''">
-		and c.send_mode = #{sendMode}	
+			and c.send_mode = #{sendMode}
 		</if>
 		and
 		(
 		(DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		) or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
 		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-			and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
 		)
 		)
-		and ( 
-		   ((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[<=]]> #{startTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[>=]]>#{endTime} )
+		and an.ad_network_id in
+		<foreach collection="netWorkList" item="item" index="index"  open="(" separator="," close=")">
+			'${item}'
+		</foreach>
+	</select>
+	<!-- 判断选择的频道是否存在套餐（与频道相关） -->
+	<select id="getAdChannelCombo" parameterType="map" resultType="Integer">
+		SELECT count(1) count from ad_combo c
+		LEFT JOIN ad_combo_channel ac on ac.ad_combo_id = c.id
+		where c.del_flag = #{delFlag} and  c.ad_type_id = #{typeId}
+		<if test="comboId != null and comboId != ''">
+			and c.id != #{comboId}
+		</if>
+		<if test="sendMode != null and sendMode != ''">
+			and c.send_mode = #{sendMode}
+		</if>
+		and
+		(
+		(DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		) or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		)or (DATE_FORMAT(c.valid_start_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[<=]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+		and DATE_FORMAT(c.valid_end_time, '%Y-%m-%d') <![CDATA[>=]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+		)
+		)
+		and (
+		((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[<=]]> #{startTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[>=]]>#{endTime} )
 		or ((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[>=]]> #{startTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[<=]]>#{endTime})
 		or ((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[>=]]> #{startTime} and  (c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[<=]]> #{endTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[<=]]>#{endTime})
 		or ((c.start_hour*3600+c.start_minutes*60+c.start_second) <![CDATA[<=]]> #{startTime} and  (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[>=]]>#{startTime} and (c.end_hour*3600+c.end_minutes*60+c.end_second) <![CDATA[<=]]>#{endTime})
 		)
-		and ac.ad_channel_id in 
-        <foreach collection="channelList" item="item" index="index"  open="(" separator="," close=")">
+		and ac.ad_channel_id in
+		<foreach collection="channelList" item="item" index="index"  open="(" separator="," close=")">
 			'${item}'
 		</foreach>
 	</select>
@@ -870,111 +870,111 @@
 		order by c.valid_start_time desc
 	</select>
 	<resultMap id="networkBytypeMap" type="AdNetwork">
-     	<id column="n_id" property="id"/>
-     	<result column="n_ad_network_id" property="networkId"/>
-     	<result column="n_network_name" property="networkName"/>
-    </resultMap>
-    <resultMap id="sellDayMap" type="com.gospell.aas.dto.adv.AdComboStatisticSellDTO">
-      	<id column="c_id" property="comboId"/>
-      	<result column="s_day" property="sellDay"/>
-    </resultMap>
-    
-    <resultMap type="AdCombo" id="adcomboSellMap">
-		<id column="c_id" property="id"/>
-      	<result column="c_ad_combo_name" property="comboName"/>
-      	<result column="c_update_date" property="updateDate"/>
+		<id column="n_id" property="id"/>
+		<result column="n_ad_network_id" property="networkId"/>
+		<result column="n_network_name" property="networkName"/>
 	</resultMap>
-     <resultMap id="sellAdvtierDayMap" type="com.gospell.aas.dto.adv.ComboAdvtiserSellDTO">
-      	<id column="a_id" property="advId"/>
-      	<result column="a_name" property="name"/>
-      	<result column="a_day" property="sellDay"/>
-    </resultMap>
-    
-    <resultMap id="notChannelSellDayMap" type="com.gospell.aas.dto.adv.AdComboNotChannelSellDTO">
-   	  <id column="s_id" property="sellId"/>
-      <result column="c_id" property="comboId"/>
-      <result column="s_start_date" property="startDate"/>
-      <result column="s_end_date" property="endDate"/>
-    </resultMap>
-    
+	<resultMap id="sellDayMap" type="com.gospell.aas.dto.adv.AdComboStatisticSellDTO">
+		<id column="c_id" property="comboId"/>
+		<result column="s_day" property="sellDay"/>
+	</resultMap>
+
+	<resultMap type="AdCombo" id="adcomboSellMap">
+		<id column="c_id" property="id"/>
+		<result column="c_ad_combo_name" property="comboName"/>
+		<result column="c_update_date" property="updateDate"/>
+	</resultMap>
+	<resultMap id="sellAdvtierDayMap" type="com.gospell.aas.dto.adv.ComboAdvtiserSellDTO">
+		<id column="a_id" property="advId"/>
+		<result column="a_name" property="name"/>
+		<result column="a_day" property="sellDay"/>
+	</resultMap>
+
+	<resultMap id="notChannelSellDayMap" type="com.gospell.aas.dto.adv.AdComboNotChannelSellDTO">
+		<id column="s_id" property="sellId"/>
+		<result column="c_id" property="comboId"/>
+		<result column="s_start_date" property="startDate"/>
+		<result column="s_end_date" property="endDate"/>
+	</resultMap>
+
 	<resultMap type="AdCombo" id="findAdCombo">
 		<id column="c_id" property="id"/>
-      	<result column="c_ad_is_flag" property="isFlag"/>
-      	<result column="c_valid_start_time" property="validStartTime"/>
-      	<result column="c_valid_end_time" property="validEndTime"/>
+		<result column="c_ad_is_flag" property="isFlag"/>
+		<result column="c_valid_start_time" property="validStartTime"/>
+		<result column="c_valid_end_time" property="validEndTime"/>
 	</resultMap>
 	<resultMap type="AdCombo" id="comboByDeleteMap">
 		<id column="c_id" property="id"/>
-      	<result column="c_ad_combo_name" property="comboName"/>
-      	<result column="c_ad_is_flag" property="isFlag"/>
- 		<result column="c_start_hour" property="startHour"/>
-      	<result column="c_end_hour" property="endHour"/>
-      	<result column="c_start_minutes" property="startMinutes"/>
-      	<result column="c_start_second" property="startSecond"/>
-      	<result column="c_end_second" property="endSecond"/>
-      	<result column="c_end_minutes" property="endMinutes"/>
-      	<result column="c_show_time" property="showTime"/>
-      	<result column="c_interval_time" property="intervalTime"/>
-      	<result column="c_show_count" property="showCount"/>
+		<result column="c_ad_combo_name" property="comboName"/>
+		<result column="c_ad_is_flag" property="isFlag"/>
+		<result column="c_start_hour" property="startHour"/>
+		<result column="c_end_hour" property="endHour"/>
+		<result column="c_start_minutes" property="startMinutes"/>
+		<result column="c_start_second" property="startSecond"/>
+		<result column="c_end_second" property="endSecond"/>
+		<result column="c_end_minutes" property="endMinutes"/>
+		<result column="c_show_time" property="showTime"/>
+		<result column="c_interval_time" property="intervalTime"/>
+		<result column="c_show_count" property="showCount"/>
 		<result column="c_picture_interval" property="pictureInterval"/>
 		<result column="c_picture_times" property="pictureTimes"/>
-      	<result column="c_week" property="week"/>
+		<result column="c_week" property="week"/>
 		<result column="c_send_mode" property="sendMode"/>
 		<result column="c_track_mode" property="trackMode"/>
 		<result column="c_ad_area" property="area"/>
-      	<result column="c_ad_sel_area" property="selArea"/>
-      	<result column="c_del_flag" property="delFlag"/>
+		<result column="c_ad_sel_area" property="selArea"/>
+		<result column="c_del_flag" property="delFlag"/>
 	</resultMap>
 	<resultMap type="AdCombo" id="comboByNetworkMap">
 		<id column="c_id" property="id"/>
-      	<result column="c_ad_combo_name" property="comboName"/>
-      	<result column="c_ad_is_flag" property="isFlag"/>
-      	<result column="c_start_hour" property="startHour"/>
-      	<result column="c_end_hour" property="endHour"/>
-      	<result column="c_start_minutes" property="startMinutes"/>
-      	<result column="c_start_second" property="startSecond"/>
-      	<result column="c_end_second" property="endSecond"/>
-      	<result column="c_end_minutes" property="endMinutes"/>
-      	<result column="c_show_time" property="showTime"/>
-      	<result column="c_interval_time" property="intervalTime"/>
-      	<result column="c_show_count" property="showCount"/>
+		<result column="c_ad_combo_name" property="comboName"/>
+		<result column="c_ad_is_flag" property="isFlag"/>
+		<result column="c_start_hour" property="startHour"/>
+		<result column="c_end_hour" property="endHour"/>
+		<result column="c_start_minutes" property="startMinutes"/>
+		<result column="c_start_second" property="startSecond"/>
+		<result column="c_end_second" property="endSecond"/>
+		<result column="c_end_minutes" property="endMinutes"/>
+		<result column="c_show_time" property="showTime"/>
+		<result column="c_interval_time" property="intervalTime"/>
+		<result column="c_show_count" property="showCount"/>
 		<result column="c_picture_interval" property="pictureInterval"/>
 		<result column="c_picture_times" property="pictureTimes"/>
-      	<result column="c_week" property="week"/>
-      	<result column="c_send_mode" property="sendMode"/>
+		<result column="c_week" property="week"/>
+		<result column="c_send_mode" property="sendMode"/>
 		<result column="c_track_mode" property="trackMode"/>
 		<result column="c_ad_area" property="area"/>
-      	<result column="c_ad_sel_area" property="selArea"/>
-      	<result column="c_del_flag" property="delFlag"/>
-      	<association property="adType" resultMap="typeByComboMap"/>
+		<result column="c_ad_sel_area" property="selArea"/>
+		<result column="c_del_flag" property="delFlag"/>
+		<association property="adType" resultMap="typeByComboMap"/>
 		<association property="hdTrack" resultMap="hdTrackResult"/>
 		<association property="sdTrack" resultMap="sdTrackResult"/>
-      	<collection property="channelList" ofType="AdChannel" resultMap="channelByComboMap"/>
+		<collection property="channelList" ofType="AdChannel" resultMap="channelByComboMap"/>
 	</resultMap>
 	<resultMap type="AdCombo" id="comboByChannelMap">
 		<id column="c_id" property="id"/>
-      	<result column="c_ad_combo_name" property="comboName"/>
-      	<result column="c_ad_is_flag" property="isFlag"/>
-   		<result column="c_start_hour" property="startHour"/>
-      	<result column="c_end_hour" property="endHour"/>
-      	<result column="c_start_minutes" property="startMinutes"/>
-      	<result column="c_start_second" property="startSecond"/>
-      	<result column="c_end_second" property="endSecond"/>
-      	<result column="c_end_minutes" property="endMinutes"/>
-      	<result column="c_show_time" property="showTime"/>
-      	<result column="c_interval_time" property="intervalTime"/>
-      	<result column="c_show_count" property="showCount"/>
+		<result column="c_ad_combo_name" property="comboName"/>
+		<result column="c_ad_is_flag" property="isFlag"/>
+		<result column="c_start_hour" property="startHour"/>
+		<result column="c_end_hour" property="endHour"/>
+		<result column="c_start_minutes" property="startMinutes"/>
+		<result column="c_start_second" property="startSecond"/>
+		<result column="c_end_second" property="endSecond"/>
+		<result column="c_end_minutes" property="endMinutes"/>
+		<result column="c_show_time" property="showTime"/>
+		<result column="c_interval_time" property="intervalTime"/>
+		<result column="c_show_count" property="showCount"/>
 		<result column="c_picture_interval" property="pictureInterval"/>
 		<result column="c_picture_times" property="pictureTimes"/>
-      	<result column="c_week" property="week"/>
-      	<result column="c_send_mode" property="sendMode"/>
+		<result column="c_week" property="week"/>
+		<result column="c_send_mode" property="sendMode"/>
 		<result column="c_track_mode" property="trackMode"/>
 		<result column="c_ad_area" property="area"/>
-      	<result column="c_ad_sel_area" property="selArea"/>
-      	<result column="c_del_flag" property="delFlag"/>
+		<result column="c_ad_sel_area" property="selArea"/>
+		<result column="c_del_flag" property="delFlag"/>
 		<association property="hdTrack" resultMap="hdTrackResult"/>
 		<association property="sdTrack" resultMap="sdTrackResult"/>
-      	<collection property="channelList" ofType="AdChannel" resultMap="channelByComboMap"/>
+		<collection property="channelList" ofType="AdChannel" resultMap="channelByComboMap"/>
 	</resultMap>
 	<resultMap id="hdTrackResult" type="AdTrack">
 		<id property="id" column="hk_id" />
@@ -988,30 +988,30 @@
 	</resultMap>
 	<resultMap type="AdCombo" id="comboNotByNetworkMap">
 		<id column="c_id" property="id"/>
-      	<result column="c_ad_combo_name" property="comboName"/>
-      	<result column="c_ad_is_flag" property="isFlag"/>
-   		<result column="c_start_hour" property="startHour"/>
-      	<result column="c_end_hour" property="endHour"/>
-      	<result column="c_start_minutes" property="startMinutes"/>
-      	<result column="c_start_second" property="startSecond"/>
-      	<result column="c_end_second" property="endSecond"/>
-      	<result column="c_end_minutes" property="endMinutes"/>
-      	<result column="c_show_time" property="showTime"/>
-      	<result column="c_interval_time" property="intervalTime"/>
-      	<result column="c_show_count" property="showCount"/>
+		<result column="c_ad_combo_name" property="comboName"/>
+		<result column="c_ad_is_flag" property="isFlag"/>
+		<result column="c_start_hour" property="startHour"/>
+		<result column="c_end_hour" property="endHour"/>
+		<result column="c_start_minutes" property="startMinutes"/>
+		<result column="c_start_second" property="startSecond"/>
+		<result column="c_end_second" property="endSecond"/>
+		<result column="c_end_minutes" property="endMinutes"/>
+		<result column="c_show_time" property="showTime"/>
+		<result column="c_interval_time" property="intervalTime"/>
+		<result column="c_show_count" property="showCount"/>
 		<result column="c_picture_interval" property="pictureInterval"/>
 		<result column="c_picture_times" property="pictureTimes"/>
-      	<result column="c_week" property="week"/>
-      	<result column="c_send_mode" property="sendMode"/>
+		<result column="c_week" property="week"/>
+		<result column="c_send_mode" property="sendMode"/>
 		<result column="c_track_mode" property="trackMode"/>
 		<result column="c_ad_area" property="area"/>
-      	<result column="c_ad_sel_area" property="selArea"/>
-      	<result column="c_del_flag" property="delFlag"/>
-      	<association property="adType" resultMap="typeByComboMap"/>
+		<result column="c_ad_sel_area" property="selArea"/>
+		<result column="c_del_flag" property="delFlag"/>
+		<association property="adType" resultMap="typeByComboMap"/>
 		<association property="childAdType" resultMap="childByComboMap"/>
 
 	</resultMap>
-	
+
 	<resultMap type="AdType" id="typeByComboMap">
 		<id column="t_id" property="id"/>
 		<result column="t_type_name" property="typeName"/>
@@ -1031,7 +1031,7 @@
 		<result column='t_is_position' property="isPosition"/>
 		<collection property="childList" ofType="AdType" resultMap="typeByComboMap" columnPrefix="s_"/>
 	</resultMap>
-	
+
 	<resultMap type="AdChannel" id="channelByComboMap">
 		<id column="ca_id" property="id"/>
 		<id column="ca_ad_channel_id" property="channelId"/>
@@ -1039,33 +1039,33 @@
 	</resultMap>
 	<resultMap type="AdCombo" id="comboStatisticsMap">
 		<id column="c_id" property="id"/>
-      	<result column="c_ad_combo_name" property="comboName"/>
-      	<result column="c_ad_is_flag" property="isFlag"/>
-      	<result column="c_start_hour" property="startHour"/>
-      	<result column="c_end_hour" property="endHour"/>
-      	<result column="c_start_minutes" property="startMinutes"/>
-      	<result column="c_start_second" property="startSecond"/>
-      	<result column="c_end_second" property="endSecond"/>
-      	<result column="c_end_minutes" property="endMinutes"/>
-      	<result column="c_show_time" property="showTime"/>
-      	<result column="c_interval_time" property="intervalTime"/>
-      	<result column="c_show_count" property="showCount"/>
+		<result column="c_ad_combo_name" property="comboName"/>
+		<result column="c_ad_is_flag" property="isFlag"/>
+		<result column="c_start_hour" property="startHour"/>
+		<result column="c_end_hour" property="endHour"/>
+		<result column="c_start_minutes" property="startMinutes"/>
+		<result column="c_start_second" property="startSecond"/>
+		<result column="c_end_second" property="endSecond"/>
+		<result column="c_end_minutes" property="endMinutes"/>
+		<result column="c_show_time" property="showTime"/>
+		<result column="c_interval_time" property="intervalTime"/>
+		<result column="c_show_count" property="showCount"/>
 		<result column="c_picture_interval" property="pictureInterval"/>
 		<result column="c_picture_times" property="pictureTimes"/>
-      	<result column="c_valid_start_time" property="validStartTime"/>
-      	<result column="c_valid_end_time" property="validEndTime"/>
-      	<result column="c_week" property="week"/>
-      	<result column="c_send_mode" property="sendMode"/>
+		<result column="c_valid_start_time" property="validStartTime"/>
+		<result column="c_valid_end_time" property="validEndTime"/>
+		<result column="c_week" property="week"/>
+		<result column="c_send_mode" property="sendMode"/>
 		<result column="c_track_mode" property="trackMode"/>
 		<result column="c_ad_area" property="area"/>
-      	<result column="c_ad_sel_area" property="selArea"/>
-      	<result column="c_del_flag" property="delFlag"/>
-      	<association property="adType" resultMap="typeByComboMap"/>
+		<result column="c_ad_sel_area" property="selArea"/>
+		<result column="c_del_flag" property="delFlag"/>
+		<association property="adType" resultMap="typeByComboMap"/>
 	</resultMap>
 	<resultMap id="comboCountMap" type="com.gospell.aas.dto.adv.ComboCountDTO">
-      	<id column="a_id" property="adcomboId"/>
-      	<result column="ad_combo_name" property="comboName"/>
-      	<result column="ad_network_id" property="networkId"/>
-      	<result column="count" property="count"/>
-    </resultMap>
+		<id column="a_id" property="adcomboId"/>
+		<result column="ad_combo_name" property="comboName"/>
+		<result column="ad_network_id" property="networkId"/>
+		<result column="count" property="count"/>
+	</resultMap>
 </mapper> 

@@ -372,7 +372,7 @@
 		<input id="hdId" name="adCombo.hdId" type="hidden" value="${adelement.adCombo.hdRange.id}">
 		<input id="sdTrackId" type="hidden" value="${adelement.adCombo.sdTrack.id}">
 		<input id="hdTrackId" type="hidden" value="${adelement.adCombo.hdTrack.id}">
-		<input id="childAdTypeId" name="\childAdTypeId" type="hidden" value="${adelement.adCombo.childAdType.id}">
+		<input id="childAdTypeId" name="childAdTypeId" type="hidden" value="${adelement.adCombo.childAdType.id}">
 		<input id="startHour" name="adCombo.startHour" type="hidden" value="${adelement.adCombo.startHour}">
 		<input id="startMinutes" name="adCombo.startMinutes" type="hidden" value="${adelement.adCombo.startMinutes}">
 		<input id="startSecond" name="adCombo.startSecond" type="hidden" value="${adelement.adCombo.startSecond}">
@@ -450,7 +450,7 @@
 		<div class="control-group" id="adcombo_id_chlidType" style="display:none">
 			<label class="control-label"><spring:message code='adv.son.type' />:</label>
 			<div class="controls">
-			    <p id="chlidType" style="display:none"></p>
+			    <p id="chlidType" style="display:none">${adelement.adCombo.childAdType.id}</p>
 				<form:select path="adCombo.childAdType.id" class="required" id="adcombo_chlidType">
 				  <option value=""> <spring:message code='userform.select' /></option>																			
 				</form:select>

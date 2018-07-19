@@ -161,10 +161,15 @@ public class AdelementService extends BaseService {
 			for (int i = 0; i < list.size(); i++) {
 				AdType adtype = list.get(i).getAdCombo().getAdType();
 				AdTypeUtils.getLocaleAdType(adtype);
-
-				AdType type = list.get(i).getAdCombo().getChildAdType();
+				AdType type = null;
+                if(adtype.getId().equals(AdType.Type_MENUE_ADV)){
+					type = list.get(i).getAdCombo().getChildAdType();
+				}else if(adtype.getId().equals(AdType.Type_PROMPT_WINDOW)){
+					type = list.get(i).getChildAdType();
+				}
 				if (type != null)
 					AdTypeUtils.getLocaleAdType(type);
+				     list.get(i).getAdCombo().setChildAdType(type);
 			}
 		}
 		page.setList(list);
@@ -505,7 +510,7 @@ public class AdelementService extends BaseService {
 	/**
 	 * 当审核通过的时候，推送该广告到客户端
 	 *
-	 * @param entity
+	 * @param a
 	 * @throws Exception
 	 */
 	@Transactional(readOnly = false)
@@ -748,8 +753,8 @@ public class AdelementService extends BaseService {
 		}
 	/*	dto.setSdShowParam(adelement.getSdShowParam());
 		dto.setHdShowParam(adelement.getHdShowParam());*/
-		if (adelement.getAdCombo().getChildAdType() != null) {
-			dto.setSonAdvType(adelement.getAdCombo().getChildAdType().getId());// 广告子类型，现在默认设置为0
+		if (adelement.getChildAdType() != null) {
+			dto.setSonAdvType(adelement.getChildAdType().getTypeId());// 广告子类型，现在默认设置为0
 		} else {
 			dto.setSonAdvType("0");// 广告子类型，现在默认设置为0
 		}

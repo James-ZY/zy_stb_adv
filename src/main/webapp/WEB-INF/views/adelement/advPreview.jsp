@@ -209,6 +209,7 @@
 	    <form:hidden path="advertiser.id"/> 
 	    <form:hidden path="showWay"/>
 	    <form:hidden path="adCombo.childAdType.id"/>
+		<form:hidden path="childAdType.id"/>
 		<form:hidden path="oldAdCategoryId"/>
 	    <form:hidden path="adCategory.id"/>
 	    <form:hidden path="playTime"/>
@@ -232,7 +233,6 @@
 		<form:hidden path="adCombo.showCount"/>
 		<form:hidden path="adCombo.pictureTimes"/>
 		<form:hidden path="adCombo.pictureInterval"/>
-		<input id="sdLeft" name="adCombo.childAdType.id" type="hidden" value="${adeDto.sdX}">
 		<input id="sdLeft" name="sdLeft" type="hidden" value="${adeDto.sdX}">
 	   	<input id="sdTop" name="sdTop" type="hidden" value="${adeDto.sdY}">
 	   	<input id="hdLeft" name="hdLeft" type="hidden" value="${adeDto.hdX}">

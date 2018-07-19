@@ -374,7 +374,12 @@ public class AdelementController extends BaseController {
 				}
 
 			}
-			AdType childType = entity.getAdCombo().getChildAdType();
+			AdType childType = null;
+			if(entity.getAdCombo().getAdType().getId().equals(AdType.Type_MENUE_ADV)){
+				childType = entity.getAdCombo().getChildAdType();
+			}else{
+				childType = entity.getChildAdType();
+			}
 			String childTypeId = null;
 			if(null != childType){
 				childTypeId = childType.getId();
@@ -699,7 +704,7 @@ public class AdelementController extends BaseController {
 						model.addAttribute("hdPoint",hdPoint);
 					}
 				}
-				if (null != combo.getChildAdType()) {
+				if (combo.getAdType().getId().equals(AdType.Type_MENUE_ADV) && null != combo.getChildAdType()) {
 					AdType type = combo.getChildAdType();
 					String id = type.getId();
 
@@ -709,6 +714,19 @@ public class AdelementController extends BaseController {
 
 						childTypeName = childtype.getTypeName();
 					}
+					entity.setChildAdType(combo.getChildAdType());
+				}
+				if(combo.getAdType().getId().equals(AdType.Type_PROMPT_WINDOW)){
+					AdType type = entity.getAdCombo().getChildAdType();
+					String id = type.getId();
+
+					if(StringUtils.isNotBlank(id)){
+						childTypeId= type.getId();
+						AdType childtype = AdTypeUtils.get(type.getId());
+
+						childTypeName = childtype.getTypeName();
+					}
+					entity.setChildAdType(type);
 				}
 			}
 			String sd =getMessage("no");

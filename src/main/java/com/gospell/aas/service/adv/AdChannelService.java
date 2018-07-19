@@ -232,15 +232,22 @@ public class AdChannelService extends BaseService {
 		List<AdChannel> dellist = Lists.newArrayList();
 		Map<String,Object> updateFlagmap = new HashMap<String,Object>();
 		updateFlagmap.put("networkId", network.getId());
+		List<String> delList = Lists.newArrayList();
 		for (Map.Entry<String,String> entry : deleteMap.entrySet()){
 			updateFlagmap.put("channelId",entry.getKey());
 			updateFlagmap.put("channelName",entry.getValue());
 			List<AdChannel> l1 = channelDao.getAdChannels(updateFlagmap);
-			dellist.addAll(l1);
+			if(null != l1 && l1.size()>0){
+				for (AdChannel ch:l1) {
+					delList.add(ch.getChannelId());
+				}
+			}
 		}
-		for (AdChannel ch :
-				dellist) {
-			thisDao.delete(ch);
+		if(null != delList && delList.size()>0){
+			Map<String,Object> deleteFlagmap = new HashMap<String,Object>();
+			deleteFlagmap.put("networkId", network.getId());
+			deleteFlagmap.put("deletechannelIds",delList);
+			channelDao.deleteByChannelIds(deleteFlagmap);
 		}
 		thisDao.flush();
 		thisDao.save(addList);
